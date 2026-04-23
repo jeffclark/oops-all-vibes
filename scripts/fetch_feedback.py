@@ -87,6 +87,24 @@ def _ratio(numerator: float | None, denominator: float | None) -> float | None:
     return round(numerator / denominator, 2)
 
 
+def _read_jeff_note(notes_dir: Path, date_iso: str) -> str | None:
+    """Return the trimmed contents of notes/<date>.md, or None if absent/empty.
+
+    This is how Jeff talks to Georgia. One file per note, dated to match the
+    feedback day (same as the feedback JSON filename). Empty files are ignored
+    so Jeff can clear an unsent note without deleting it.
+    """
+    path = notes_dir / f"{date_iso}.md"
+    if not path.is_file():
+        return None
+    try:
+        content = path.read_text().strip()
+    except OSError as exc:
+        _warn(f"failed to read {path}: {exc}")
+        return None
+    return content if content else None
+
+
 def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None:
     root = repo_root or REPO_ROOT
     api_key = os.environ.get("GOATCOUNTER_API_KEY")
@@ -138,8 +156,11 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
     l30_avg = round(l30_visitors / 30, 2) if l30_visitors is not None else None
     prev7_visitors = prev_7.get("total")
 
-    # If every API call failed, treat as total fetch failure — don't write a file.
-    # The assembler's no-feedback sentinel will fire instead.
+    jeff_note = _read_jeff_note(root / "notes", yesterday.isoformat())
+
+    # If every API call failed AND there's no note, treat as total fetch failure.
+    # A note alone is enough to justify writing the feedback file — Georgia should
+    # always see Jeff's message when he leaves one.
     any_data = any(
         v is not None
         for v in (
@@ -150,10 +171,11 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
             all_time.get("total"),
             prev7_visitors,
             peak_day,
+            jeff_note,
         )
     )
     if not any_data:
-        _warn("no data returned from GoatCounter; skipping feedback write")
+        _warn("no data returned from GoatCounter and no note; skipping feedback write")
         return None
 
     result = {
@@ -177,7 +199,7 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
             "yesterday_vs_7d_avg": _ratio(yesterday_visitors, l7_avg),
             "week_over_week_pct": _pct_change(l7_visitors, prev7_visitors),
         },
-        "jeff_note": None,
+        "jeff_note": jeff_note,
     }
 
     output_dir = root / "feedback"

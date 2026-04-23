@@ -231,3 +231,114 @@ def test_main_wraps_exceptions(monkeypatch):
     monkeypatch.setattr(ff, "fetch_feedback", boom)
     rc = ff.main([])
     assert rc == 0
+
+
+# ---------- jeff_note from notes/<date>.md ----------
+
+
+def _happy_archive(tmp_path: Path, n: int = 3) -> Path:
+    (tmp_path / "archive").mkdir()
+    (tmp_path / "feedback").mkdir()
+    (tmp_path / "notes").mkdir()
+    for i in range(n):
+        d = YESTERDAY - timedelta(days=i)
+        (tmp_path / "archive" / f"{d.isoformat()}.html").write_text("<html></html>")
+    return tmp_path
+
+
+def _session_with_happy_data(monkeypatch):
+    """Return a session that answers any /stats/total call with a small non-null total."""
+    session = MagicMock()
+    session.headers = {}
+
+    def fake_get(url, params=None, timeout=None):
+        resp = MagicMock()
+        resp.raise_for_status = MagicMock()
+        resp.json.return_value = {"total": 10}
+        return resp
+
+    session.get.side_effect = fake_get
+    monkeypatch.setattr(ff.requests, "Session", lambda: session)
+    return session
+
+
+def test_jeff_note_included_when_file_exists(monkeypatch, tmp_path):
+    repo = _happy_archive(tmp_path)
+    (repo / "notes" / f"{YESTERDAY.isoformat()}.md").write_text("the terminal-green day was best. more of that.\n")
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+    _session_with_happy_data(monkeypatch)
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    assert result is not None
+    assert result["jeff_note"] == "the terminal-green day was best. more of that."
+
+
+def test_jeff_note_null_when_file_absent(monkeypatch, tmp_path):
+    repo = _happy_archive(tmp_path)
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+    _session_with_happy_data(monkeypatch)
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    assert result is not None
+    assert result["jeff_note"] is None
+
+
+def test_jeff_note_null_when_file_empty(monkeypatch, tmp_path):
+    repo = _happy_archive(tmp_path)
+    (repo / "notes" / f"{YESTERDAY.isoformat()}.md").write_text("")
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+    _session_with_happy_data(monkeypatch)
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    assert result["jeff_note"] is None
+
+
+def test_jeff_note_null_when_file_whitespace_only(monkeypatch, tmp_path):
+    repo = _happy_archive(tmp_path)
+    (repo / "notes" / f"{YESTERDAY.isoformat()}.md").write_text("   \n\n  \n")
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+    _session_with_happy_data(monkeypatch)
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    assert result["jeff_note"] is None
+
+
+def test_note_alone_is_enough_to_write_file(monkeypatch, tmp_path, capsys):
+    """If the API is fully dark but a note exists, the feedback file still gets written."""
+    repo = _happy_archive(tmp_path)
+    (repo / "notes" / f"{YESTERDAY.isoformat()}.md").write_text("tell me what you think about the archive so far.")
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+
+    def always_500(url, params=None, timeout=None):
+        resp = MagicMock()
+        resp.raise_for_status.side_effect = Exception("HTTP 500")
+        return resp
+
+    session = MagicMock()
+    session.headers = {}
+    session.get.side_effect = always_500
+    monkeypatch.setattr(ff.requests, "Session", lambda: session)
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    assert result is not None
+    assert result["yesterday"]["visitors"] is None
+    assert result["jeff_note"] == "tell me what you think about the archive so far."
+    # File exists on disk
+    written = (repo / "feedback" / f"{YESTERDAY.isoformat()}.json").read_text()
+    assert "tell me what you think" in written
+
+
+def test_note_file_with_trailing_whitespace_is_trimmed(monkeypatch, tmp_path):
+    repo = _happy_archive(tmp_path)
+    (repo / "notes" / f"{YESTERDAY.isoformat()}.md").write_text("  short note  \n\n")
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+    _session_with_happy_data(monkeypatch)
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    assert result["jeff_note"] == "short note"
