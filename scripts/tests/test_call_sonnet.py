@@ -30,7 +30,7 @@ def test_returns_tuple_when_both_tags_present():
     client.messages.create.assert_called_once()
     call_kwargs = client.messages.create.call_args.kwargs
     assert call_kwargs["model"] == "claude-sonnet-4-6"
-    assert call_kwargs["max_tokens"] == 8000
+    assert call_kwargs["max_tokens"] == 16000
     assert call_kwargs["messages"] == [{"role": "user", "content": "prompt"}]
 
 
