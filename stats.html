@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Stats — oops-all-vibes</title>
+<style>
+body{font-family:system-ui,sans-serif;max-width:60em;margin:2em auto;padding:0 1em;color:#222;}
+h1{margin-bottom:.2em;}
+table{border-collapse:collapse;width:100%;font-size:.9em;margin-top:1em;}
+th,td{border:1px solid #ddd;padding:.4em .6em;text-align:left;vertical-align:top;}
+th{background:#f6f6f6;}
+tr.fail{background:#fff0f0;}
+tr.ok{background:#f0fff4;}
+.summary{display:flex;gap:1em;flex-wrap:wrap;margin:1em 0;}
+.card{background:#f6f6f6;padding:.5em 1em;border-radius:4px;min-width:8em;}
+.k{color:#666;font-size:.8em;display:block;}
+.v{font-weight:600;font-size:1.2em;}
+a{color:#0366d6;}
+footer{margin-top:2em;font-size:.85em;color:#666;}
+</style></head>
+<body>
+<h1>Pipeline stats — oops-all-vibes</h1>
+<p>Rolling window: last 1 runs (max 30).</p>
+<div class="summary">
+  <div class="card"><span class="k">runs</span><span class="v">1</span></div>
+  <div class="card"><span class="k">first-try success</span><span class="v">100.0%</span></div>
+  <div class="card"><span class="k">committed</span><span class="v">100.0%</span></div>
+  <div class="card"><span class="k">avg duration</span><span class="v">74.15s</span></div>
+</div>
+<table>
+  <thead><tr><th>date</th><th>attempts</th><th>committed</th><th>failures</th><th>api errors</th><th>duration (s)</th></tr></thead>
+  <tbody>
+    <tr class="ok"><td>2026-04-23</td><td>1</td><td>✓</td><td></td><td>0</td><td>74.15</td></tr>
+  </tbody>
+</table>
+<footer><a href="/">Back to today</a></footer>
+</body></html>
