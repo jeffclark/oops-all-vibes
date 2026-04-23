@@ -315,22 +315,17 @@ def test_assemble_prompt_five_recent_no_older(tmp_path):
         assert f"body-{i}" in out
 
 
-def test_cli_main_prints_prompt_via_real_repo(capsys):
-    """Smoke-test main() against the real repo root with a historical date.
-
-    Uses --date far in the past so any existing log entries fall into the Older
-    bundle and the feedback block resolves to a sentinel (no feedback file on
-    that date). Confirms the top-level invocation works end-to-end.
-    """
+def test_cli_main_prints_prompt_via_real_repo(capsys, monkeypatch, tmp_path):
+    """Smoke-test main() end-to-end by redirecting REPO_ROOT to a fresh fake repo."""
+    repo = _make_fake_repo(tmp_path)
     import scripts.assemble_prompt as mod
 
+    monkeypatch.setattr(mod, "REPO_ROOT", repo)
     rc = mod.main(["--date", "2026-01-01"])
     assert rc == 0
     out = capsys.readouterr().out
-    # Soul and facts must appear
-    assert "Georgia" in out
+    assert "Soul content." in out
     assert "jeff@clarkle.com" in out
-    # With no log/feedback on that date, both sentinels fire
     assert DAY_1_HISTORY_SENTINEL in out
     assert DAY_1_FEEDBACK_SENTINEL in out
     assert "Today is 2026-01-01." in out

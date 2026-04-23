@@ -289,6 +289,9 @@ Today is {today_str}.
 
 Your task:
 1. Build today's site. Output the full HTML (doctype through </html>) inside <site>...</site> tags.
+
+   On the page itself, include your own reflection — why you built it this way, what you were thinking about, whatever is on your mind. This should read as diary, not spec. Style it as part of today's design: sidebar, essay block, margin column, inline section, whatever fits the form. Readers want to see you think; they care about this as much as the design itself. Don't hide it behind a link and don't strip out the parts that aren't strictly "about the site." It's fine if this on-site reflection is the same as your log entry below, a tighter version of it, or a companion to it — your call.
+
 2. Write your log entry for today. Output inside <log>...</log> tags. The log must be markdown with YAML frontmatter exactly like this:
 
    ---
@@ -319,7 +322,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     run_date = args.run_date or datetime.now(timezone.utc).date()
-    sys.stdout.write(assemble_prompt(run_date))
+    sys.stdout.write(assemble_prompt(run_date, repo_root=REPO_ROOT))
     return 0
 
 

@@ -52,8 +52,16 @@ def test_output_parses_as_valid_html():
     assert soup.find("head") is not None
     footer = soup.find("footer")
     assert footer is not None
-    link = footer.find("a")
-    assert link["href"] == "/prompts/2026-04-22.md"
+    hrefs = {a.get("href") for a in footer.find_all("a")}
+    assert hrefs == {"/log/2026-04-22.md", "/prompts/2026-04-22.md"}
+
+
+def test_footer_links_to_log_and_prompt():
+    out = inject_tech(BASE_HTML, "2026-04-22", None)
+    assert 'href="/log/2026-04-22.md"' in out
+    assert "today's log" in out
+    assert 'href="/prompts/2026-04-22.md"' in out
+    assert "today's prompt" in out
 
 
 def test_footer_appended_to_end_of_body():

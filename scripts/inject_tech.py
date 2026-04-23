@@ -41,11 +41,17 @@ def inject_tech(html: str, date_str: str, goatcounter_code: str | None) -> str:
         )
         head.append(script)
 
-    # Always append the prompt-link footer, regardless of goatcounter status
+    # Always append the transparency footer: links to today's log and today's prompt.
     footer = soup.new_tag("footer", style=FOOTER_STYLE)
-    link = soup.new_tag("a", href=f"/prompts/{date_str}.md", style="color:inherit;")
-    link.string = "today's prompt"
-    footer.append(link)
+    log_link = soup.new_tag("a", href=f"/log/{date_str}.md", style="color:inherit;")
+    log_link.string = "today's log"
+    sep = soup.new_tag("span")
+    sep.string = " · "
+    prompt_link = soup.new_tag("a", href=f"/prompts/{date_str}.md", style="color:inherit;")
+    prompt_link.string = "today's prompt"
+    footer.append(log_link)
+    footer.append(sep)
+    footer.append(prompt_link)
 
     if body is not None:
         body.append(footer)
