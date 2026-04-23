@@ -30,11 +30,19 @@ def test_write_outputs_writes_all_four_files(monkeypatch, tmp_path):
     monkeypatch.setattr(wo.subprocess, "run", MagicMock(return_value=MagicMock(returncode=0)))
     wo.write_outputs("2026-04-22", HTML, DIARY, PROMPT, no_commit=True, repo_root=repo)
 
-    assert (repo / "index.html").read_text() == HTML
-    assert (repo / "archive" / "2026-04-22.html").read_text() == HTML
+    # index.html and archive/<date>.html get inject_tech applied; assert
+    # Georgia's original body content survived rather than exact match.
+    index_html = (repo / "index.html").read_text()
+    archive_html = (repo / "archive" / "2026-04-22.html").read_text()
+    assert "hello" in index_html
+    assert index_html == archive_html
+    # Log and prompt saved verbatim
     assert (repo / "log" / "2026-04-22.md").read_text() == DIARY
     assert (repo / "prompts" / "2026-04-22.md").read_text() == PROMPT
+    # Archive index regenerated
     assert (repo / "archive" / "index.html").exists()
+    # Injection hook fired (footer appended)
+    assert "today's prompt" in index_html
 
 
 def test_write_outputs_no_commit_skips_subprocess(monkeypatch, tmp_path):
