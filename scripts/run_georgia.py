@@ -79,9 +79,11 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
 
         is_valid, reasons = validate_output(html, diary, facts, today)
         if is_valid:
-            write_outputs(today, html, diary, prompt, no_commit=no_commit)
+            # Record stats BEFORE write_outputs so this run's stats line is
+            # included in write_outputs's `git add -A` commit.
             committed = True
             record_stats(today, attempts, validation_failures, api_errors, committed, start)
+            write_outputs(today, html, diary, prompt, no_commit=no_commit)
             return 0
 
         validation_failures.append(reasons)
