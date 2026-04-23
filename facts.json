@@ -3,66 +3,6 @@
   "email": "jeff@clarkle.com",
   "linkedin_url": "https://www.linkedin.com/in/serialcreative",
   "linkedin_title": "Director of Product at LeagueApps",
-  "projects": [
-    {
-      "title": "Autoscope",
-      "description": "A Slack-based agent that watches product discussions and produces structured scoping docs. When a team mentions a feature idea, Autoscope extracts context from the last 72 hours of thread history, drafts a one-page brief with goal, non-goals, and open questions, and posts it back for review. Built on Anthropic's tool-use API.",
-      "link": "https://example.com/autoscope",
-      "image": "https://picsum.photos/seed/autoscope/400/300"
-    },
-    {
-      "title": "Currents",
-      "description": "A personal knowledge tool that ingests your recent reads — articles, papers, tweets, podcast transcripts — and surfaces the thread connecting them. Instead of static 'saved for later' piles, Currents asks what you're trying to understand and returns a synthesis across sources.",
-      "link": "https://example.com/currents",
-      "image": "https://picsum.photos/seed/currents/400/300"
-    },
-    {
-      "title": "Deputy",
-      "description": "An AI pair for one-on-one meetings. Deputy joins the call, listens, and two hours later delivers a draft follow-up with decisions, action items, and three questions you didn't ask but should have. Built for managers who run more than ten one-on-ones a week.",
-      "link": "https://example.com/deputy",
-      "image": "https://picsum.photos/seed/deputy/400/300"
-    },
-    {
-      "title": "Field Guide",
-      "description": "A browser extension that turns any web page into a learning artifact. Highlight a concept you don't fully grasp, and Field Guide generates a two-minute explainer scoped to what you already know, with source links for deeper reading.",
-      "link": "https://example.com/fieldguide",
-      "image": "https://picsum.photos/seed/fieldguide/400/300"
-    },
-    {
-      "title": "Metric Anomaly Bot",
-      "description": "A nightly agent that watches your product analytics, flags statistically unusual movements, and proposes three possible causes ranked by plausibility. Cuts the time from 'metric looks weird' to 'metric root-caused' from hours to minutes.",
-      "link": "https://example.com/metric-anomaly",
-      "image": "https://picsum.photos/seed/metric-anomaly/400/300"
-    },
-    {
-      "title": "Pitch Critic",
-      "description": "Upload a pitch deck; get brutally honest feedback from three AI reviewers each modeled on a different investor archetype — skeptic, pattern-matcher, domain expert. Tested against real deck outcomes to calibrate bluntness.",
-      "link": "https://example.com/pitch-critic",
-      "image": "https://picsum.photos/seed/pitch-critic/400/300"
-    },
-    {
-      "title": "Scribe",
-      "description": "A terminal-native coding assistant that writes commit messages by reading the actual diff rather than generic templates. Knows when a commit is a bugfix, a feature, a refactor, or cleanup, and adjusts tone accordingly.",
-      "link": "https://example.com/scribe",
-      "image": "https://picsum.photos/seed/scribe/400/300"
-    },
-    {
-      "title": "Salience",
-      "description": "An email triage tool that reads your inbox and sorts it by 'what actually matters to you this week,' not by sender or date. Learns from which emails you open and respond to versus which ones you skim and archive.",
-      "link": "https://example.com/salience",
-      "image": "https://picsum.photos/seed/salience/400/300"
-    },
-    {
-      "title": "Tributary",
-      "description": "A weekly digest tool for founders and product leaders. Reads your calendar, your last week's Slack activity, and your Linear tickets, and produces a narrative summary of what the week was actually about. Useful for post-hoc clarity and board updates.",
-      "link": "https://example.com/tributary",
-      "image": "https://picsum.photos/seed/tributary/400/300"
-    },
-    {
-      "title": "Witness",
-      "description": "An audio companion for long walks. You talk out loud about a problem; Witness listens, asks occasional clarifying questions, and at the end gives you a structured transcript of what you figured out. Built for people who think best by talking.",
-      "link": "https://example.com/witness",
-      "image": "https://picsum.photos/seed/witness/400/300"
-    }
-  ]
+  "projects": [],
+  "projects_note": "The project list is intentionally empty. Jeff hasn't shared the real projects yet and he doesn't want false information on the site. Represent this honestly on the page. Don't fabricate projects, don't use placeholder entries, don't invent titles. An empty project list today is accurate. Jeff will add them to this file when he's ready. Treat the absence as part of the story."
 }
