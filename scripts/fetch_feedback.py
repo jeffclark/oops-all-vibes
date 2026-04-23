@@ -61,7 +61,7 @@ def _fetch_per_day_totals(
     while cursor <= end:
         data = _fetch_total(session, base, cursor, cursor)
         if data is not None:
-            visitors = data.get("total_unique")
+            visitors = data.get("total")
             if visitors is not None:
                 result[cursor.isoformat()] = visitors
         cursor += timedelta(days=1)
@@ -127,13 +127,16 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
     daily_series = _fetch_per_day_totals(session, base, peak_scan_start, yesterday)
     peak_day = _peak_from_series(daily_series)
 
-    yesterday_visitors = day.get("total_unique")
-    yesterday_pageviews = day.get("total")
-    l7_visitors = last_7.get("total_unique")
+    yesterday_visitors = day.get("total")
+    # GoatCounter's /stats/total is visitor-centric; it does not expose a separate
+    # pageview count. Leave pageviews null so the feedback narrative simply omits it.
+    # A future refinement can aggregate /stats/hits to recover pageviews if desired.
+    yesterday_pageviews = None
+    l7_visitors = last_7.get("total")
     l7_avg = round(l7_visitors / 7, 2) if l7_visitors is not None else None
-    l30_visitors = last_30.get("total_unique")
+    l30_visitors = last_30.get("total")
     l30_avg = round(l30_visitors / 30, 2) if l30_visitors is not None else None
-    prev7_visitors = prev_7.get("total_unique")
+    prev7_visitors = prev_7.get("total")
 
     # If every API call failed, treat as total fetch failure — don't write a file.
     # The assembler's no-feedback sentinel will fire instead.
@@ -144,7 +147,7 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
             yesterday_pageviews,
             l7_visitors,
             l30_visitors,
-            all_time.get("total_unique"),
+            all_time.get("total"),
             prev7_visitors,
             peak_day,
         )
@@ -166,7 +169,7 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
             "last_30_days_avg": l30_avg,
         },
         "historical": {
-            "all_time_visitors": all_time.get("total_unique"),
+            "all_time_visitors": all_time.get("total"),
             "days_live": len(archive_entries),
             "peak_day": peak_day,
         },

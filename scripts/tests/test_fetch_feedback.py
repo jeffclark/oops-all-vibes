@@ -122,27 +122,28 @@ def test_http_500_no_file_written(monkeypatch, tmp_path, capsys):
 
 
 def _happy_responses() -> dict[tuple[str, str], dict]:
-    """Canned /stats/total responses for a known scenario."""
-    # 30-day peak scan range
+    """Canned /stats/total responses for a known scenario.
+
+    Field name `total` matches the real GoatCounter schema: it's visitor count
+    (including events), not pageviews.
+    """
     scan_start = YESTERDAY - timedelta(days=29)
     responses: dict[tuple[str, str], dict] = {
-        # aggregate periods
-        (YESTERDAY.isoformat(), YESTERDAY.isoformat()): {"total": 289, "total_unique": 142},
-        ((YESTERDAY - timedelta(days=6)).isoformat(), YESTERDAY.isoformat()): {"total_unique": 487},
-        ((YESTERDAY - timedelta(days=29)).isoformat(), YESTERDAY.isoformat()): {"total_unique": 1204},
-        ((YESTERDAY - timedelta(days=13)).isoformat(), (YESTERDAY - timedelta(days=7)).isoformat()): {"total_unique": 369},
-        (date(2020, 1, 1).isoformat(), RUN_DATE.isoformat()): {"total_unique": 8430},
+        (YESTERDAY.isoformat(), YESTERDAY.isoformat()): {"total": 142},
+        ((YESTERDAY - timedelta(days=6)).isoformat(), YESTERDAY.isoformat()): {"total": 487},
+        ((YESTERDAY - timedelta(days=29)).isoformat(), YESTERDAY.isoformat()): {"total": 1204},
+        ((YESTERDAY - timedelta(days=13)).isoformat(), (YESTERDAY - timedelta(days=7)).isoformat()): {"total": 369},
+        (date(2020, 1, 1).isoformat(), RUN_DATE.isoformat()): {"total": 8430},
     }
     # per-day peak scan: make day D-14 be the peak
     peak_date = YESTERDAY - timedelta(days=14)
     d = scan_start
     while d <= YESTERDAY:
-        # Don't overwrite the aggregate-period single-day already set above
         if (d.isoformat(), d.isoformat()) in responses:
             d += timedelta(days=1)
             continue
         v = 512 if d == peak_date else 50
-        responses[(d.isoformat(), d.isoformat())] = {"total_unique": v}
+        responses[(d.isoformat(), d.isoformat())] = {"total": v}
         d += timedelta(days=1)
     return responses
 
@@ -171,7 +172,8 @@ def test_happy_path_produces_full_schema(monkeypatch, tmp_path):
 
     # Schema fields
     assert result["date"] == YESTERDAY.isoformat()
-    assert result["yesterday"] == {"visitors": 142, "pageviews": 289}
+    # pageviews intentionally null — GoatCounter /stats/total is visitor-centric
+    assert result["yesterday"] == {"visitors": 142, "pageviews": None}
     assert result["recent"]["last_7_days_visitors"] == 487
     assert result["recent"]["last_7_days_avg"] == round(487 / 7, 2)
     assert result["recent"]["last_30_days_visitors"] == 1204
@@ -206,7 +208,7 @@ def test_wow_null_when_prev_week_unknown(monkeypatch, tmp_path):
         resp.raise_for_status = MagicMock()
         # Only answer yesterday's single-day query; everything else → 500
         if params["start"] == YESTERDAY.isoformat() and params["end"] == YESTERDAY.isoformat():
-            resp.json.return_value = {"total": 289, "total_unique": 142}
+            resp.json.return_value = {"total": 142}
         else:
             resp.raise_for_status.side_effect = Exception("HTTP 500")
         return resp
