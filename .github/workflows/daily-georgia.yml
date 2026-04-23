@@ -1,0 +1,49 @@
+# Daily Georgia — runs the full pipeline once a day.
+#
+# Required configuration (set manually in the repo before the first cron fires):
+#   Secrets (repo settings → Secrets and variables → Actions → Secrets):
+#     - ANTHROPIC_API_KEY        — Sonnet API key
+#     - GOATCOUNTER_API_KEY      — GoatCounter API token
+#   Variables (repo settings → Secrets and variables → Actions → Variables):
+#     - GOATCOUNTER_CODE         — GoatCounter site code (non-secret; appears in the tracking script)
+#
+# The fetcher step is allowed to fail (no analytics yet, API outage, etc.); Georgia still runs.
+
+name: Daily Georgia
+
+on:
+  schedule:
+    - cron: '0 7 * * *'  # ≈3am EST / 2am EDT — acceptable drift
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r requirements.txt
+
+      - name: Fetch yesterday's feedback from GoatCounter
+        env:
+          GOATCOUNTER_API_KEY: ${{ secrets.GOATCOUNTER_API_KEY }}
+          GOATCOUNTER_CODE: ${{ vars.GOATCOUNTER_CODE }}
+        run: python scripts/fetch_feedback.py
+        continue-on-error: true
+
+      - name: Run Georgia
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GOATCOUNTER_CODE: ${{ vars.GOATCOUNTER_CODE }}
+          GEORGIA_PUSH: "true"
+        run: |
+          git config user.name "Georgia"
+          git config user.email "georgia@clarkle.com"
+          python scripts/run_georgia.py
