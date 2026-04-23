@@ -35,7 +35,7 @@ jobs:
         env:
           GOATCOUNTER_API_KEY: ${{ secrets.GOATCOUNTER_API_KEY }}
           GOATCOUNTER_CODE: ${{ vars.GOATCOUNTER_CODE }}
-        run: python scripts/fetch_feedback.py
+        run: python -m scripts.fetch_feedback
         continue-on-error: true
 
       - name: Run Georgia
@@ -46,4 +46,4 @@ jobs:
         run: |
           git config user.name "Georgia"
           git config user.email "georgia@clarkle.com"
-          python scripts/run_georgia.py
+          python -m scripts.run_georgia
