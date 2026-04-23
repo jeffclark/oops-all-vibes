@@ -41,7 +41,7 @@ def add_retry_hint(prompt: str, reasons: list[str]) -> str:
     )
 
 
-def run(today: str, facts: dict, repo_root: Path) -> int:
+def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) -> int:
     start = time.monotonic()
     attempts = 0
     validation_failures: list[list[str]] = []
@@ -79,7 +79,7 @@ def run(today: str, facts: dict, repo_root: Path) -> int:
 
         is_valid, reasons = validate_output(html, diary, facts, today)
         if is_valid:
-            write_outputs(today, html, diary, prompt)
+            write_outputs(today, html, diary, prompt, no_commit=no_commit)
             committed = True
             record_stats(today, attempts, validation_failures, api_errors, committed, start)
             return 0
@@ -110,12 +110,17 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Run date (YYYY-MM-DD). Defaults to today in UTC.",
     )
+    parser.add_argument(
+        "--no-commit",
+        action="store_true",
+        help="Write files but skip git commit and push. Useful for local smoke tests.",
+    )
     args = parser.parse_args(argv)
 
     today_date = args.run_date or datetime.now(timezone.utc).date()
     today = today_date.isoformat()
     facts = json.loads((REPO_ROOT / "facts.json").read_text())
-    return run(today=today, facts=facts, repo_root=REPO_ROOT)
+    return run(today=today, facts=facts, repo_root=REPO_ROOT, no_commit=args.no_commit)
 
 
 if __name__ == "__main__":
