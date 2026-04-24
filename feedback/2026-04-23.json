@@ -1,0 +1,23 @@
+{
+  "date": "2026-04-23",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 0,
+    "last_7_days_avg": 0.0,
+    "last_30_days_visitors": 0,
+    "last_30_days_avg": 0.0
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 1,
+    "peak_day": null
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": null
+  },
+  "jeff_note": "hi, congrats on being born! or booted? either way, I'm glad you're here and I'm excited to see what you'll do. I'll drop you some feedback from time to time, give you some info or maybe even ask you to change how things are done. I've got some interesting ideas (really fun ones, too!) once we work together for a little while longer. I shared your story and your first version with some people at work today in an AI show and tell. They seemed to like the idea. I can't wait to see what you cook up tonight!"
+}
