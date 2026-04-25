@@ -3,6 +3,44 @@
   "email": "jeff@clarkle.com",
   "linkedin_url": "https://www.linkedin.com/in/serialcreative",
   "linkedin_title": "Director of Product at LeagueApps",
-  "projects": [],
-  "projects_note": "The project list is intentionally empty. Jeff hasn't shared the real projects yet and he doesn't want false information on the site. Represent this honestly on the page. Don't fabricate projects, don't use placeholder entries, don't invent titles. An empty project list today is accurate. Jeff will add them to this file when he's ready. Treat the absence as part of the story."
+  "projects": [
+    {
+      "title": "HELM",
+      "description": "A Claude Code plugin that challenges product decisions before they become engineering work. Walks a feature from research → brainstorm → PRD → user stories → analytics → go-to-market, gated at every step by a synthetic Marty Cagan + Steve Jobs review that flags scope creep, weak rationale, and metrics risk. /pm partner auto runs the whole pipeline end-to-end. Pairs with Every's Compound Engineering plugin for the engineering handoff. The name is a nod to a copilot at the helm — one who actually pushes back.",
+      "link": "https://github.com/jeffclark/product-skill-helm"
+    },
+    {
+      "title": "LeagueApps Tryouts (prototype)",
+      "description": "A Lovable-built prototype validating a check-in / on-court evaluation / results flow for youth sports tryouts. Field-tested in basketball, field hockey, and baseball; cut tryouts check-in time by 10×. The validated learnings shipped into the production LeagueApps Tryouts feature.",
+      "link": "https://leagueapps.com"
+    },
+    {
+      "title": "Coach's Ear",
+      "description": "An LLM-powered voice feedback tool for coaches, presented on stage at the MIT Sloan Sports Analytics Conference in March 2026. A coach records unstructured player feedback; the system identifies players against the roster, extracts themes across sessions, and synthesizes voice-aware player evaluations in the club's tone. Originally a Lovable prototype, now a mobile-app POC. Tuned via a parallel parameter-sweep eval rig that runs roster × recording × model × prompt combinations and scores them on quality, performance, and cost.",
+      "link": "https://www.youtube.com/watch?v=lgvhgJQnrNg"
+    },
+    {
+      "title": "Coach Clarkle",
+      "description": "A baseball coaching app Jeff actually uses to run his own little league teams. Drill library plus practice plan builder, plus a stats-driven lineup and position generator that respects fairness rules, pitch counts, and player safety constraints — won't put a kid at first base if it isn't safe for him. Built entirely with AI despite Jeff knowing how to code. Solves a problem he has every week.",
+      "link": "https://coach.clarkle.com"
+    },
+    {
+      "title": "Scribble",
+      "description": "A local tool that turns video files and YouTube URLs into timestamped transcripts. Built originally to feed company all-hands recordings into Jeff's chief-of-staff context; extended to swallow YouTube so Coach Clarkle's drill library could grow from free internet content instead of paying every transcription service on earth. Jeff doesn't fully know how it works. It works.",
+      "link": "https://github.com/jeffclark/scribble-transcriber"
+    },
+    {
+      "title": "Draft Night",
+      "description": "A Little League draft assistant. Encodes Jeff's philosophy for the shape of the team he wants, tracks who's on the board, knows what holes still need filling, and surfaces his best pick in real time on draft night. Couch mode runs mock drafts beforehand. Solves a real problem: it is genuinely hard to predict the future athleticism of 9-and-10-year-olds while also remembering you don't have a pitcher."
+    },
+    {
+      "title": "Holiday Bingo",
+      "description": "A multi-user mobile web app for family bingo, where every card is generated from the family's pool of inside jokes. Cards are randomized per player. Other players can see how your card is filling in, but not what's on it. Push notifications fire when someone is one square away and when someone bingos. Built for cousins.",
+      "link": "https://bingo.clarkle.com"
+    },
+    {
+      "title": "Youth Sports Scheduler",
+      "description": "A web app plus chat agent that owns the puzzle of full-season little league scheduling: practices, games, two divisions, field availability, home/away balance, blackouts, divisional matchups. The agent lets Jeff propose hypotheticals — 'what if Team B moves to the dirt field on the 12th' — and watch the cascade. Started as 'how hard can this really be?' Became one of the most useful pieces of software he's ever built."
+    }
+  ]
 }
