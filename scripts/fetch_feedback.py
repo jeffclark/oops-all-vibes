@@ -72,7 +72,21 @@ def _peak_from_series(series: dict[str, int]) -> dict | None:
     if not series:
         return None
     peak_date = max(series, key=series.__getitem__)
-    return {"date": peak_date, "visitors": series[peak_date]}
+    peak_visitors = series[peak_date]
+    if peak_visitors <= 0:
+        return None
+    return {"date": peak_date, "visitors": peak_visitors}
+
+
+def _earliest_archive_date(archive_entries: list[Path]) -> date | None:
+    """Return the earliest YYYY-MM-DD date parsed from archive filenames, or None."""
+    parsed: list[date] = []
+    for entry in archive_entries:
+        try:
+            parsed.append(date.fromisoformat(entry.stem))
+        except ValueError:
+            continue
+    return min(parsed) if parsed else None
 
 
 def _pct_change(current: int | None, previous: int | None) -> float | None:
@@ -136,13 +150,17 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
     prev_seven_end = yesterday - timedelta(days=7)
     prev_seven_start = yesterday - timedelta(days=13)
     prev_7 = _fetch_total(session, base, prev_seven_start, prev_seven_end) or {}
-    all_time_start = date(2020, 1, 1)
-    all_time = _fetch_total(session, base, all_time_start, run_date) or {}
+    # All-time: bound to the site's actual lifetime, ending yesterday. A 2020→today
+    # span used to silently fail (oversized range and a still-in-progress end date),
+    # leaving Georgia without a total to anchor her narrative.
+    all_time_start = _earliest_archive_date(archive_entries) or yesterday
+    all_time = _fetch_total(session, base, all_time_start, yesterday) or {}
 
-    # Peak day: scan the recent window. Capped so the run doesn't balloon on long-running sites.
+    # Per-day series across the site's lifetime (capped). Powers both peak detection
+    # and the per-day breakdown Georgia uses to reconcile rolling vs daily totals.
     days_to_scan = min(PEAK_SCAN_DAYS, len(archive_entries))
-    peak_scan_start = yesterday - timedelta(days=days_to_scan - 1)
-    daily_series = _fetch_per_day_totals(session, base, peak_scan_start, yesterday)
+    series_start = yesterday - timedelta(days=days_to_scan - 1)
+    daily_series = _fetch_per_day_totals(session, base, series_start, yesterday)
     peak_day = _peak_from_series(daily_series)
 
     yesterday_visitors = day.get("total")
@@ -157,6 +175,23 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
     prev7_visitors = prev_7.get("total")
 
     jeff_note = _read_jeff_note(root / "notes", yesterday.isoformat())
+
+    # Freshness check: GoatCounter's per-day aggregates can lag the rolling totals
+    # by ~1 day, especially for the just-ended day. When the site is younger than
+    # the 7-day window and the per-day sum disagrees with the 7-day total, surface
+    # that explicitly so Georgia doesn't write "zero yesterday" alongside "26 in
+    # the week" without acknowledging the gap.
+    data_freshness_note: str | None = None
+    if (
+        l7_visitors is not None
+        and daily_series
+        and len(archive_entries) < 7
+        and sum(daily_series.values()) != l7_visitors
+    ):
+        data_freshness_note = (
+            "GoatCounter's per-day totals can lag the rolling totals by ~1 day; "
+            "trust the cumulative number more than today's per-day breakdown."
+        )
 
     # If every API call failed AND there's no note, treat as total fetch failure.
     # A note alone is enough to justify writing the feedback file — Georgia should
@@ -199,6 +234,8 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
             "yesterday_vs_7d_avg": _ratio(yesterday_visitors, l7_avg),
             "week_over_week_pct": _pct_change(l7_visitors, prev7_visitors),
         },
+        "days_live_series": daily_series,
+        "data_freshness_note": data_freshness_note,
         "jeff_note": jeff_note,
     }
 

@@ -131,9 +131,9 @@ def _happy_responses() -> dict[tuple[str, str], dict]:
     responses: dict[tuple[str, str], dict] = {
         (YESTERDAY.isoformat(), YESTERDAY.isoformat()): {"total": 142},
         ((YESTERDAY - timedelta(days=6)).isoformat(), YESTERDAY.isoformat()): {"total": 487},
+        # 30-day call AND all-time call (archive = 30 days) hit this same key.
         ((YESTERDAY - timedelta(days=29)).isoformat(), YESTERDAY.isoformat()): {"total": 1204},
         ((YESTERDAY - timedelta(days=13)).isoformat(), (YESTERDAY - timedelta(days=7)).isoformat()): {"total": 369},
-        (date(2020, 1, 1).isoformat(), RUN_DATE.isoformat()): {"total": 8430},
     }
     # per-day peak scan: make day D-14 be the peak
     peak_date = YESTERDAY - timedelta(days=14)
@@ -178,7 +178,9 @@ def test_happy_path_produces_full_schema(monkeypatch, tmp_path):
     assert result["recent"]["last_7_days_avg"] == round(487 / 7, 2)
     assert result["recent"]["last_30_days_visitors"] == 1204
     assert result["recent"]["last_30_days_avg"] == round(1204 / 30, 2)
-    assert result["historical"]["all_time_visitors"] == 8430
+    # All-time is bounded by archive's earliest date (here 30 days back) and
+    # yesterday — same window as the 30-day call, so same total.
+    assert result["historical"]["all_time_visitors"] == 1204
     assert result["historical"]["days_live"] == 30
     assert result["historical"]["peak_day"] is not None
     # Peak must identify the D-14 day with 512 visitors
@@ -190,6 +192,13 @@ def test_happy_path_produces_full_schema(monkeypatch, tmp_path):
     # WoW: (487 - 369) / 369 * 100 = ~31.98%
     assert result["trend"]["week_over_week_pct"] == pytest.approx((487 - 369) / 369 * 100, abs=0.2)
     assert result["jeff_note"] is None
+    # Per-day series spans the scan window (30 days, capped by archive count)
+    series = result["days_live_series"]
+    assert len(series) == 30
+    assert series[YESTERDAY.isoformat()] == 142
+    assert series[(YESTERDAY - timedelta(days=14)).isoformat()] == 512
+    # Site is older than 7 days, so no freshness note even if numbers don't reconcile.
+    assert result["data_freshness_note"] is None
 
 
 # ---------- insufficient-data nulls ----------
@@ -342,3 +351,130 @@ def test_note_file_with_trailing_whitespace_is_trimmed(monkeypatch, tmp_path):
 
     result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
     assert result["jeff_note"] == "short note"
+
+
+# ---------- peak / all-time / freshness ----------
+
+
+def test_peak_day_none_when_all_zero():
+    assert ff._peak_from_series({"2026-04-23": 0, "2026-04-24": 0}) is None
+
+
+def test_peak_day_skips_zero_when_only_day():
+    assert ff._peak_from_series({"2026-04-24": 0}) is None
+
+
+def test_peak_day_returned_when_any_positive():
+    assert ff._peak_from_series({"2026-04-23": 0, "2026-04-24": 5}) == {
+        "date": "2026-04-24",
+        "visitors": 5,
+    }
+
+
+def test_all_time_call_uses_archive_earliest_and_yesterday(monkeypatch, tmp_path):
+    """The all-time fetch must be bounded by the archive's earliest date and
+    yesterday — not 2020→today. The old wide range silently returned null."""
+    repo = _make_repo(tmp_path, archive_count=3)  # YESTERDAY, Y-1, Y-2
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+
+    seen_calls: list[tuple[str, str]] = []
+
+    def fake_get(url, params=None, timeout=None):
+        seen_calls.append((params["start"], params["end"]))
+        resp = MagicMock()
+        resp.raise_for_status = MagicMock()
+        resp.json.return_value = {"total": 7}
+        return resp
+
+    session = MagicMock()
+    session.headers = {}
+    session.get.side_effect = fake_get
+    monkeypatch.setattr(ff.requests, "Session", lambda: session)
+
+    ff.fetch_feedback(RUN_DATE, repo_root=repo)
+
+    earliest = (YESTERDAY - timedelta(days=2)).isoformat()
+    assert (earliest, YESTERDAY.isoformat()) in seen_calls
+    # The old broken range must NOT be queried
+    assert (date(2020, 1, 1).isoformat(), RUN_DATE.isoformat()) not in seen_calls
+
+
+def test_freshness_note_set_when_per_day_disagrees_with_l7(monkeypatch, tmp_path):
+    """Young site with 7-day total > sum of per-day totals → freshness note."""
+    repo = _make_repo(tmp_path, archive_count=2)  # YESTERDAY, Y-1
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+
+    seven_start = YESTERDAY - timedelta(days=6)
+
+    def fake_get(url, params=None, timeout=None):
+        resp = MagicMock()
+        resp.raise_for_status = MagicMock()
+        s, e = params["start"], params["end"]
+        if s == seven_start.isoformat() and e == YESTERDAY.isoformat():
+            resp.json.return_value = {"total": 26}
+        else:
+            resp.json.return_value = {"total": 0}
+        return resp
+
+    session = MagicMock()
+    session.headers = {}
+    session.get.side_effect = fake_get
+    monkeypatch.setattr(ff.requests, "Session", lambda: session)
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    assert result is not None
+    assert result["recent"]["last_7_days_visitors"] == 26
+    assert sum(result["days_live_series"].values()) == 0
+    assert result["data_freshness_note"] is not None
+    assert "lag" in result["data_freshness_note"]
+
+
+def test_freshness_note_none_when_numbers_reconcile(monkeypatch, tmp_path):
+    """Per-day sum matches l7 → no freshness note."""
+    repo = _make_repo(tmp_path, archive_count=2)
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+
+    seven_start = YESTERDAY - timedelta(days=6)
+
+    def fake_get(url, params=None, timeout=None):
+        resp = MagicMock()
+        resp.raise_for_status = MagicMock()
+        s, e = params["start"], params["end"]
+        if s == seven_start.isoformat() and e == YESTERDAY.isoformat():
+            resp.json.return_value = {"total": 20}
+        elif s == e:
+            # Per-day calls — split 20 across the 2 archive days, 0 elsewhere.
+            if s == YESTERDAY.isoformat():
+                resp.json.return_value = {"total": 12}
+            elif s == (YESTERDAY - timedelta(days=1)).isoformat():
+                resp.json.return_value = {"total": 8}
+            else:
+                resp.json.return_value = {"total": 0}
+        else:
+            resp.json.return_value = {"total": 0}
+        return resp
+
+    session = MagicMock()
+    session.headers = {}
+    session.get.side_effect = fake_get
+    monkeypatch.setattr(ff.requests, "Session", lambda: session)
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    assert result is not None
+    # 7-day total matches sum of per-day series → no freshness note.
+    assert result["data_freshness_note"] is None
+
+
+def test_freshness_note_none_when_site_is_old_enough(monkeypatch, tmp_path):
+    """Site ≥7 days → no freshness note even if numbers don't reconcile."""
+    repo = _make_repo(tmp_path, archive_count=10)
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+    _session_with_happy_data(monkeypatch)  # every call returns 10
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    assert result is not None
+    assert result["data_freshness_note"] is None

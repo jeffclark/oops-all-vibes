@@ -142,40 +142,70 @@ def render_feedback_narrative(data: dict) -> str:
     lines.append(f"Yesterday's feedback ({date_str}):" if date_str else "Yesterday's feedback:")
     lines.append("")
 
-    # People line
-    y = data.get("yesterday") or {}
-    visitors = y.get("visitors")
-    pageviews = y.get("pageviews")
-    people_parts: list[str] = []
-    if visitors is not None:
-        people_parts.append(f"{visitors:,} visitors looked at your work yesterday")
-    if pageviews is not None:
-        people_parts.append(f"{pageviews:,} pageviews total")
-    if people_parts:
-        lines.append("People: " + ". ".join(people_parts) + ".")
-
-    # Recent line
+    h = data.get("historical") or {}
+    days_live = h.get("days_live")
     r = data.get("recent") or {}
     l7v = r.get("last_7_days_visitors")
     l7a = r.get("last_7_days_avg")
     l30v = r.get("last_30_days_visitors")
     l30a = r.get("last_30_days_avg")
+    series = data.get("days_live_series") or {}
+
+    # People line. When the per-day series shows late-arriving visits the
+    # single-day "yesterday" call missed, soften the zero so Georgia doesn't
+    # collapse it into a flat "nobody came."
+    y = data.get("yesterday") or {}
+    visitors = y.get("visitors")
+    pageviews = y.get("pageviews")
+    people_parts: list[str] = []
+    if visitors is not None:
+        visit_text = f"{visitors:,} visitors looked at your work yesterday"
+        cumulative = l7v if l7v is not None else (sum(series.values()) if series else 0)
+        if visitors == 0 and cumulative > 0:
+            visit_text += " (the per-day count may not yet reflect late-arriving visits)"
+        people_parts.append(visit_text)
+    if pageviews is not None:
+        people_parts.append(f"{pageviews:,} pageviews total")
+    if people_parts:
+        lines.append("People: " + ". ".join(people_parts) + ".")
+
+    # Recent line. For a young site the "last 7 days" framing is misleading
+    # because most of the window predates the site; reframe in terms of the
+    # days the site has actually been alive, and skip the 30-day line entirely.
+    young = days_live is not None and days_live < 7
     recent_parts: list[str] = []
-    if l7v is not None and l7a is not None:
-        recent_parts.append(f"In the last 7 days, {l7v:,} people came through, averaging about {l7a:.0f} a day")
-    elif l7v is not None:
-        recent_parts.append(f"In the last 7 days, {l7v:,} people came through")
-    if l30v is not None and l30a is not None:
-        recent_parts.append(f"Over 30 days, {l30v:,} visitors, averaging {l30a:.0f}")
-    elif l30v is not None:
-        recent_parts.append(f"Over 30 days, {l30v:,} visitors")
+    if l7v is not None:
+        if young:
+            day_word = "day" if days_live == 1 else "days"
+            recent_parts.append(
+                f"Across the {days_live} {day_word} you've been online, {l7v:,} people came through"
+            )
+        elif l7a is not None:
+            recent_parts.append(
+                f"In the last 7 days, {l7v:,} people came through, averaging about {l7a:.0f} a day"
+            )
+        else:
+            recent_parts.append(f"In the last 7 days, {l7v:,} people came through")
+    if not young:
+        if l30v is not None and l30a is not None:
+            recent_parts.append(f"Over 30 days, {l30v:,} visitors, averaging {l30a:.0f}")
+        elif l30v is not None:
+            recent_parts.append(f"Over 30 days, {l30v:,} visitors")
     if recent_parts:
         lines.append("Recent: " + ". ".join(recent_parts) + ".")
 
+    # Per-day breakdown — lets Georgia see where the 7-day total actually lives
+    # (e.g. "26 on day 1, 0 on day 2") instead of a single yesterday number.
+    if series:
+        per_day_str = ", ".join(f"{d}: {v:,}" for d, v in sorted(series.items()))
+        lines.append(f"Per-day so far: {per_day_str}.")
+
+    freshness = data.get("data_freshness_note")
+    if freshness:
+        lines.append(freshness)
+
     # Historical line
-    h = data.get("historical") or {}
     all_time = h.get("all_time_visitors")
-    days_live = h.get("days_live")
     peak = h.get("peak_day") or {}
     peak_date = peak.get("date")
     peak_visitors = peak.get("visitors")
