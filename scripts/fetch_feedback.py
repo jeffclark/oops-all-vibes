@@ -34,12 +34,21 @@ def _fetch_total(
     start: date,
     end: date,
 ) -> dict | None:
-    """Return the JSON body of /stats/total for [start, end], or None on any error."""
+    """Return the JSON body of /stats/total for [start, end] (inclusive), or None on any error.
+
+    GoatCounter's `start` and `end` parameters are full timestamps, not bare
+    dates. Sending bare ISO dates makes `start=end=YYYY-MM-DD` a zero-width
+    window (midnight to midnight) and the call returns 0 every time. We send
+    explicit UTC bookends so the range covers the full inclusive date span.
+    """
     url = f"{base}{STATS_TOTAL_ENDPOINT}"
     try:
         response = session.get(
             url,
-            params={"start": start.isoformat(), "end": end.isoformat()},
+            params={
+                "start": f"{start.isoformat()}T00:00:00Z",
+                "end": f"{end.isoformat()}T23:59:59Z",
+            },
             timeout=REQUEST_TIMEOUT_S,
         )
         response.raise_for_status()
@@ -55,13 +64,19 @@ def _fetch_per_day_totals(
     start: date,
     end: date,
 ) -> dict[str, int]:
-    """Return {ISO_DATE: visitor_count} for each day in [start, end] that the API answered for."""
+    """Return {ISO_DATE: visitor_count} for each day in [start, end] that the API answered for.
+
+    Reads `total_utc` rather than `total` so the per-day buckets align with the
+    UTC date keys we emit (and with the UTC `run_date` math elsewhere). `total`
+    in the response is bucketed by the site's configured timezone, which would
+    cause EST evening visits to land in a different day than our query asked for.
+    """
     result: dict[str, int] = {}
     cursor = start
     while cursor <= end:
         data = _fetch_total(session, base, cursor, cursor)
         if data is not None:
-            visitors = data.get("total")
+            visitors = data.get("total_utc")
             if visitors is not None:
                 result[cursor.isoformat()] = visitors
         cursor += timedelta(days=1)
@@ -163,16 +178,16 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
     daily_series = _fetch_per_day_totals(session, base, series_start, yesterday)
     peak_day = _peak_from_series(daily_series)
 
-    yesterday_visitors = day.get("total")
+    yesterday_visitors = day.get("total_utc")
     # GoatCounter's /stats/total is visitor-centric; it does not expose a separate
     # pageview count. Leave pageviews null so the feedback narrative simply omits it.
     # A future refinement can aggregate /stats/hits to recover pageviews if desired.
     yesterday_pageviews = None
-    l7_visitors = last_7.get("total")
+    l7_visitors = last_7.get("total_utc")
     l7_avg = round(l7_visitors / 7, 2) if l7_visitors is not None else None
-    l30_visitors = last_30.get("total")
+    l30_visitors = last_30.get("total_utc")
     l30_avg = round(l30_visitors / 30, 2) if l30_visitors is not None else None
-    prev7_visitors = prev_7.get("total")
+    prev7_visitors = prev_7.get("total_utc")
 
     jeff_note = _read_jeff_note(root / "notes", yesterday.isoformat())
 
@@ -203,7 +218,7 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
             yesterday_pageviews,
             l7_visitors,
             l30_visitors,
-            all_time.get("total"),
+            all_time.get("total_utc"),
             prev7_visitors,
             peak_day,
             jeff_note,
@@ -226,7 +241,7 @@ def fetch_feedback(run_date: date, repo_root: Path | None = None) -> dict | None
             "last_30_days_avg": l30_avg,
         },
         "historical": {
-            "all_time_visitors": all_time.get("total"),
+            "all_time_visitors": all_time.get("total_utc"),
             "days_live": len(archive_entries),
             "peak_day": peak_day,
         },

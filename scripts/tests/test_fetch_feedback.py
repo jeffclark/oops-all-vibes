@@ -32,17 +32,43 @@ def _make_repo(tmp_path: Path, archive_count: int = 3) -> Path:
     return tmp_path
 
 
+def _date_from_ts(ts: str) -> str:
+    """Strip the time component from a GoatCounter timestamp param.
+
+    Production sends `start=YYYY-MM-DDT00:00:00Z` / `end=YYYY-MM-DDT23:59:59Z`;
+    test response maps key by bare ISO date for readability.
+    """
+    return ts.split("T", 1)[0]
+
+
+def _start_ts(d: date) -> str:
+    return f"{d.isoformat()}T00:00:00Z"
+
+
+def _end_ts(d: date) -> str:
+    return f"{d.isoformat()}T23:59:59Z"
+
+
+def _with_total_utc(body: dict) -> dict:
+    """Mirror `total` into `total_utc` if missing — production reads total_utc."""
+    if isinstance(body, dict) and "total" in body and "total_utc" not in body:
+        body = dict(body)
+        body["total_utc"] = body["total"]
+    return body
+
+
 def _fake_session(response_map: dict[tuple[str, str], dict | int]):
     """Returns a MagicMock session whose .get(url, params=...) consults response_map.
 
-    Keys are (start, end) ISO strings. Values are either a dict (JSON body, 200)
-    or an int (HTTP status to return with raise_for_status triggered).
+    Keys are (start, end) ISO date strings (no time component). Values are
+    either a dict (JSON body, 200) or an int (HTTP status to return with
+    raise_for_status triggered).
     """
     session = MagicMock()
     session.headers = {}
 
     def fake_get(url, params=None, timeout=None):
-        key = (params["start"], params["end"])
+        key = (_date_from_ts(params["start"]), _date_from_ts(params["end"]))
         value = response_map.get(key)
         resp = MagicMock()
         if isinstance(value, int):
@@ -51,7 +77,7 @@ def _fake_session(response_map: dict[tuple[str, str], dict | int]):
             return resp
         resp.status_code = 200
         resp.raise_for_status = MagicMock()
-        resp.json.return_value = value if value is not None else {}
+        resp.json.return_value = _with_total_utc(value) if value is not None else {}
         return resp
 
     session.get.side_effect = fake_get
@@ -216,8 +242,8 @@ def test_wow_null_when_prev_week_unknown(monkeypatch, tmp_path):
         resp = MagicMock()
         resp.raise_for_status = MagicMock()
         # Only answer yesterday's single-day query; everything else → 500
-        if params["start"] == YESTERDAY.isoformat() and params["end"] == YESTERDAY.isoformat():
-            resp.json.return_value = {"total": 142}
+        if params["start"] == _start_ts(YESTERDAY) and params["end"] == _end_ts(YESTERDAY):
+            resp.json.return_value = {"total": 142, "total_utc": 142}
         else:
             resp.raise_for_status.side_effect = Exception("HTTP 500")
         return resp
@@ -263,7 +289,7 @@ def _session_with_happy_data(monkeypatch):
     def fake_get(url, params=None, timeout=None):
         resp = MagicMock()
         resp.raise_for_status = MagicMock()
-        resp.json.return_value = {"total": 10}
+        resp.json.return_value = {"total": 10, "total_utc": 10}
         return resp
 
     session.get.side_effect = fake_get
@@ -353,6 +379,61 @@ def test_note_file_with_trailing_whitespace_is_trimmed(monkeypatch, tmp_path):
     assert result["jeff_note"] == "short note"
 
 
+# ---------- timestamp format ----------
+
+
+def test_fetch_total_sends_full_day_timestamps(monkeypatch):
+    """Single-day queries must span the full day, not midnight-to-midnight.
+
+    GoatCounter parses bare ISO dates as 00:00:00 timestamps; sending start=end
+    as bare dates produces a zero-width window and returns 0 visitors. The
+    fetcher must explicitly send T00:00:00Z..T23:59:59Z bookends.
+    """
+    seen: dict[str, str] = {}
+
+    def fake_get(url, params=None, timeout=None):
+        seen.update(params)
+        resp = MagicMock()
+        resp.raise_for_status = MagicMock()
+        resp.json.return_value = {"total": 0, "total_utc": 0}
+        return resp
+
+    session = MagicMock()
+    session.headers = {}
+    session.get.side_effect = fake_get
+
+    ff._fetch_total(session, "https://x.goatcounter.com/api/v0", date(2026, 4, 23), date(2026, 4, 23))
+
+    assert seen["start"] == "2026-04-23T00:00:00Z"
+    assert seen["end"] == "2026-04-23T23:59:59Z"
+
+
+def test_fetch_total_reads_total_utc(monkeypatch, tmp_path):
+    """Production reads `total_utc` (UTC-bucketed) so per-day keys align with
+    the UTC date math we use everywhere else. A response with only `total`
+    (site-timezone-bucketed) and no `total_utc` should yield None, not silently
+    return the wrong-timezone number."""
+    repo = _make_repo(tmp_path, archive_count=2)
+    monkeypatch.setenv("GOATCOUNTER_API_KEY", "x")
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+
+    def fake_get(url, params=None, timeout=None):
+        resp = MagicMock()
+        resp.raise_for_status = MagicMock()
+        # Response has `total` but NOT `total_utc` — production should ignore total
+        resp.json.return_value = {"total": 999}
+        return resp
+
+    session = MagicMock()
+    session.headers = {}
+    session.get.side_effect = fake_get
+    monkeypatch.setattr(ff.requests, "Session", lambda: session)
+
+    result = ff.fetch_feedback(RUN_DATE, repo_root=repo)
+    # Without total_utc, all visitor counts must be None — no silent fallback.
+    assert result is None or result["yesterday"]["visitors"] is None
+
+
 # ---------- peak / all-time / freshness ----------
 
 
@@ -381,10 +462,10 @@ def test_all_time_call_uses_archive_earliest_and_yesterday(monkeypatch, tmp_path
     seen_calls: list[tuple[str, str]] = []
 
     def fake_get(url, params=None, timeout=None):
-        seen_calls.append((params["start"], params["end"]))
+        seen_calls.append((_date_from_ts(params["start"]), _date_from_ts(params["end"])))
         resp = MagicMock()
         resp.raise_for_status = MagicMock()
-        resp.json.return_value = {"total": 7}
+        resp.json.return_value = {"total": 7, "total_utc": 7}
         return resp
 
     session = MagicMock()
@@ -411,11 +492,11 @@ def test_freshness_note_set_when_per_day_disagrees_with_l7(monkeypatch, tmp_path
     def fake_get(url, params=None, timeout=None):
         resp = MagicMock()
         resp.raise_for_status = MagicMock()
-        s, e = params["start"], params["end"]
+        s, e = _date_from_ts(params["start"]), _date_from_ts(params["end"])
         if s == seven_start.isoformat() and e == YESTERDAY.isoformat():
-            resp.json.return_value = {"total": 26}
+            resp.json.return_value = {"total": 26, "total_utc": 26}
         else:
-            resp.json.return_value = {"total": 0}
+            resp.json.return_value = {"total": 0, "total_utc": 0}
         return resp
 
     session = MagicMock()
@@ -442,19 +523,19 @@ def test_freshness_note_none_when_numbers_reconcile(monkeypatch, tmp_path):
     def fake_get(url, params=None, timeout=None):
         resp = MagicMock()
         resp.raise_for_status = MagicMock()
-        s, e = params["start"], params["end"]
+        s, e = _date_from_ts(params["start"]), _date_from_ts(params["end"])
         if s == seven_start.isoformat() and e == YESTERDAY.isoformat():
-            resp.json.return_value = {"total": 20}
+            resp.json.return_value = {"total": 20, "total_utc": 20}
         elif s == e:
             # Per-day calls — split 20 across the 2 archive days, 0 elsewhere.
             if s == YESTERDAY.isoformat():
-                resp.json.return_value = {"total": 12}
+                resp.json.return_value = {"total": 12, "total_utc": 12}
             elif s == (YESTERDAY - timedelta(days=1)).isoformat():
-                resp.json.return_value = {"total": 8}
+                resp.json.return_value = {"total": 8, "total_utc": 8}
             else:
-                resp.json.return_value = {"total": 0}
+                resp.json.return_value = {"total": 0, "total_utc": 0}
         else:
-            resp.json.return_value = {"total": 0}
+            resp.json.return_value = {"total": 0, "total_utc": 0}
         return resp
 
     session = MagicMock()
