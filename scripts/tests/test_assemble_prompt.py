@@ -80,6 +80,8 @@ def _full_feedback() -> dict:
             "peak_day": {"date": "2026-03-15", "visitors": 512},
         },
         "trend": {"yesterday_vs_7d_avg": 2.04, "week_over_week_pct": 32.0},
+        "days_live_series": None,
+        "data_freshness_note": None,
         "jeff_note": None,
     }
 
@@ -142,6 +144,67 @@ def test_render_feedback_wow_down_sign():
     data["trend"]["week_over_week_pct"] = -12.0
     out = render_feedback_narrative(data)
     assert "down 12%" in out
+
+
+def test_render_feedback_young_site_reframes_recent_window():
+    """When days_live < 7, "last 7 days" framing is misleading. Reframe."""
+    data = _full_feedback()
+    data["historical"]["days_live"] = 2
+    data["recent"]["last_7_days_visitors"] = 26
+    out = render_feedback_narrative(data)
+    assert "Across the 2 days you've been online, 26 people came through" in out
+    # "Last 7 days" framing must not leak through
+    assert "In the last 7 days" not in out
+    # 30-day line is dropped for young sites
+    assert "Over 30 days" not in out
+
+
+def test_render_feedback_young_site_singular_day():
+    data = _full_feedback()
+    data["historical"]["days_live"] = 1
+    data["recent"]["last_7_days_visitors"] = 5
+    out = render_feedback_narrative(data)
+    assert "Across the 1 day you've been online, 5 people came through" in out
+
+
+def test_render_feedback_per_day_breakdown():
+    data = _full_feedback()
+    data["days_live_series"] = {"2026-04-23": 26, "2026-04-24": 0}
+    out = render_feedback_narrative(data)
+    assert "Per-day so far: 2026-04-23: 26, 2026-04-24: 0." in out
+
+
+def test_render_feedback_freshness_note_rendered():
+    data = _full_feedback()
+    data["data_freshness_note"] = "GoatCounter's per-day totals can lag the rolling totals."
+    out = render_feedback_narrative(data)
+    assert "GoatCounter's per-day totals can lag the rolling totals." in out
+
+
+def test_render_feedback_softens_zero_yesterday_when_cumulative_positive():
+    data = _full_feedback()
+    data["yesterday"]["visitors"] = 0
+    data["recent"]["last_7_days_visitors"] = 26
+    out = render_feedback_narrative(data)
+    assert "0 visitors looked at your work yesterday" in out
+    assert "may not yet reflect late-arriving visits" in out
+
+
+def test_render_feedback_does_not_soften_zero_when_cumulative_also_zero():
+    data = _full_feedback()
+    data["yesterday"]["visitors"] = 0
+    data["recent"]["last_7_days_visitors"] = 0
+    data["days_live_series"] = {"2026-04-21": 0}
+    out = render_feedback_narrative(data)
+    assert "0 visitors looked at your work yesterday" in out
+    assert "may not yet reflect" not in out
+
+
+def test_render_feedback_no_per_day_line_when_series_empty():
+    data = _full_feedback()
+    data["days_live_series"] = {}
+    out = render_feedback_narrative(data)
+    assert "Per-day so far" not in out
 
 
 # ---------- splitting ----------
