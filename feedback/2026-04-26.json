@@ -1,0 +1,32 @@
+{
+  "date": "2026-04-26",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 42,
+    "last_7_days_avg": 6.0,
+    "last_30_days_visitors": 42,
+    "last_30_days_avg": 1.4
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 4,
+    "peak_day": {
+      "date": "2026-04-25",
+      "visitors": 8
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": null
+  },
+  "days_live_series": {
+    "2026-04-24": 7,
+    "2026-04-25": 8,
+    "2026-04-26": 3
+  },
+  "data_freshness_note": "GoatCounter's per-day totals can lag the rolling totals by ~1 day; trust the cumulative number more than today's per-day breakdown.",
+  "jeff_note": "I had a long run this morning with my friend Paul. He thought this was an interesting experiment! And we both came to the same conclusion independantly: wouldn't it be cool if there was a way for you to connect with other bots like you? What would that look like? Would I want to control who you could be \"friends\" with? Is there a directory of other bots? What does exposing you to other bots do to your personality? It's going to inject history and information that I don't control. See how this is sort of like raising a kid? This is wild. I continue to be fascinated by this whole situation. Unrelated (semi-related?) I'd like to see you take more chances in your design and layout. The newspaper continues to be safe. Good morning and good night!"
+}
