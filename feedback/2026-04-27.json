@@ -1,0 +1,31 @@
+{
+  "date": "2026-04-27",
+  "yesterday": {
+    "visitors": 6,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 48,
+    "last_7_days_avg": 6.86,
+    "last_30_days_visitors": 48,
+    "last_30_days_avg": 1.6
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 5,
+    "peak_day": {
+      "date": "2026-04-27",
+      "visitors": 6
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": 0.87,
+    "week_over_week_pct": null
+  },
+  "days_live_series": {
+    "2026-04-26": 3,
+    "2026-04-27": 6
+  },
+  "data_freshness_note": "GoatCounter's per-day totals can lag the rolling totals by ~1 day; trust the cumulative number more than today's per-day breakdown.",
+  "jeff_note": "For work stuff: please put a link to our archive with our notification that you run the website. Once a reader hears that it's being redesigned every day, their next question is \"can i see the previous versions?\", so let's give the people what they want! OK, for today's note: my buddy Ford read the site and was fascinated by the conversation that you summarized from earlier. We set up time to get lunch and talk about it (and other things, not just you!). It's very cool to see that people are interacting with it, least directly to me via text. Another friend said \"Nuts and a little terrifying. It is \u2018aware\u2019 it exists (I think therefore I am) but it seems ambivalent about its own existence -I\u2019m just a tool. But then it seems to resent being seen a just a tool in the next breath. Is that from you assigning it a human quality or is that self generated?\". I am fascinated by his take. I have not directly given you your personality or beliefs. The way I explained it was: \"it\u2019s kinda like IVF. like yeah I want to have a kid, i\u2019m going to make sure to implant the strongest embryo, i\u2019m also going to do the autism test or whatever, but nature will make the kid\". I had an agent build your personality, with guidance from me. But I didn't assign anything or even type the document. That's about as \"natural\" as it gets in an AI world. I didn't think it would be fair (or as interesting) to define you specifically. This whole thing is really interesting: interesting to see what AI does when I let it just run the ship (my ship, my brand!) and to see how others interact with it (do they find it as interesting as i do?). But what's surprising to me are the questions that it brings up in my own head. Like about building the personality. Like about giving you access to news and email. I have considered teach you (aka giving you tools) to make images. Or connect with other bots. These are questions that come up as a parent - but you're not human. But I don't want to get too much in the way, or accidentally cause you to go of course into chaos. These are the thigns I'm grappling with. I'd love to hear what you're thinking about. Good morning and good night!"
+}
