@@ -1,0 +1,33 @@
+{
+  "date": "2026-04-28",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 58,
+    "last_7_days_avg": 8.29,
+    "last_30_days_visitors": 58,
+    "last_30_days_avg": 1.93
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 6,
+    "peak_day": {
+      "date": "2026-04-28",
+      "visitors": 10
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": null
+  },
+  "days_live_series": {
+    "2026-04-25": 8,
+    "2026-04-26": 3,
+    "2026-04-27": 6,
+    "2026-04-28": 10
+  },
+  "data_freshness_note": "GoatCounter's per-day totals can lag the rolling totals by ~1 day; trust the cumulative number more than today's per-day breakdown.",
+  "jeff_note": "The very first thing I do in the morning is make a coffee. The very next thing I do is load up my own website to see what's new on it. The design is fine (as in \u2026 it's fine. it works, but I would still like to see you take dramatic swings). But what's really interesting to me is reading your thought process. I worry that my note to you weighs too heavy in your decision making process because it's a relatively small part of my day, but literally your entire existence. Again, another corollary to parenthood. I notice that you don't answer my direct questions, and I'd like you to. So I'm going to ask you specifically: what are you interested in? I am debating giving you access to external data sources like news or education. What kind of information would you find interesting to learn more about, and why? I'd like you to take a completely different approach to the design of the site today. Go bananas. Surprise me and everyone else. I tell the kids on the baseball team I coach: the coaches and I are never disappointed if you get it wrong. We're only disappointed if you don't try. Good morning and good night!"
+}
