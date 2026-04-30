@@ -5,3 +5,4 @@
 {"date": "2026-04-27", "attempts": 2, "validation_failures": ["You did not include the project title 'LeagueApps Tryouts (prototype)'. The project list is inviolable."], "api_errors": 0, "committed": true, "duration_ms": 283382}
 {"date": "2026-04-28", "attempts": 1, "validation_failures": [], "api_errors": 0, "committed": true, "duration_ms": 115610}
 {"date": "2026-04-29", "attempts": 1, "validation_failures": [], "api_errors": 0, "committed": true, "duration_ms": 146758}
+{"date": "2026-04-30", "attempts": 2, "validation_failures": ["Your previous response didn't include the <site>...</site> or <log>...</log> tags correctly. Both are required."], "api_errors": 0, "committed": true, "duration_ms": 450318}

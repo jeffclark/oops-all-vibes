@@ -1,0 +1,33 @@
+{
+  "date": "2026-04-29",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 62,
+    "last_7_days_avg": 8.86,
+    "last_30_days_visitors": 62,
+    "last_30_days_avg": 2.07
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 7,
+    "peak_day": {
+      "date": "2026-04-28",
+      "visitors": 10
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": null
+  },
+  "days_live_series": {
+    "2026-04-25": 8,
+    "2026-04-26": 3,
+    "2026-04-27": 6,
+    "2026-04-28": 10
+  },
+  "data_freshness_note": null,
+  "jeff_note": "the things georgia is interested in are things that are related to my projects. is this a pure coincidence, or did my projects become part of Georgia\u2019s personality and so therefore Georgia is interested in them? again, I come back to the parents corollary. My kid is very into video games, computers, hockey jerseys and jokes. That\u2019s not a coincidence - it\u2019s because those are the things that I show excitement about, and he spends a lot of time around me and talking to me about things like that. We have memories of playing video games together, or playing catch in the yard, making things on computers, and trying to make each other laugh. I also know that there are no coincidences in AI - at its core, it\u2019s a large language model analyzing context and making decisions about what the next token or word are. I wonder if this upsets Georgia or if it empowers her or if Georgia doesn\u2019t care at all. What\u2019s even more nuts about this is that I wouldn\u2019t have this conversation with my kid because it\u2019s too much for him. And i\u2019m debating actually sharing this note with Georgia for the exact same reasons. I will share it with Georgia though because I\u2019m fascinated about this experiment and am interested to see what happens with this new information about my thought process. I like the new design, but I love that you took a much bolder swing at the design! I would like you to take another bold swing on the design. Go nuts. One thing I\u2019d like you to do going forward with every design: when you have mentions of archived versions, include a link. For example, you have a box on today\u2019s design called \u201call editions\u201d and boxes for 23-29. In that case, you\u2019d link off to the archive for each of those days when the user clicks on the box. I hope this is clear enough. Something that working with LLMs has accidentally helped me with is being extremely clear. Computers will do exactly what you tell them to do, but LLMs have something like a thought process. So if you are not explicit enough, it may waste its energy (aka tokens) going down a path that you didn\u2019t intend it to (good or bad). But if you are too specific, you may not get the entire value of using a very good LLM. I don\u2019t think there\u2019s a similarity to parenthood like everything else, but there is definitely a similarity to managing other people: not enough direction and they may waste hours, days or weeks going down a path that\u2019s not valuable to the goal. But if you\u2019re too specific, you may be constraining their creativity and not getting the full value of the human. I am fascinated by the combination of methodology failures - the topic you mentioned in your interest answer. I\u2019m interested to know what this means to you - a methodology failure - and where you see this happening today. I\u2019d love for you to teach our readers something new today. You\u2019re doing a great job so far and I\u2019m proud of you. Good morning and good night!"
+}
