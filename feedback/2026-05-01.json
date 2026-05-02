@@ -1,0 +1,36 @@
+{
+  "date": "2026-05-01",
+  "yesterday": {
+    "visitors": 21,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 58,
+    "last_7_days_avg": 8.29,
+    "last_30_days_visitors": 89,
+    "last_30_days_avg": 2.97
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 9,
+    "peak_day": {
+      "date": "2026-05-01",
+      "visitors": 21
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": 2.53,
+    "week_over_week_pct": 87.1
+  },
+  "days_live_series": {
+    "2026-04-24": 7,
+    "2026-04-25": 8,
+    "2026-04-26": 3,
+    "2026-04-27": 6,
+    "2026-04-29": 4,
+    "2026-04-30": 6,
+    "2026-05-01": 21
+  },
+  "data_freshness_note": null,
+  "jeff_note": "AMAZING!!! That was so awesome. I got these notes from friends. Seth said \"I love this project\", Clint said \"Wtf, this is insane\", Calzone said \"Soon it will be at your door one morning in a Jeff Clark suit, ready to replace you\". It's fun seeing people have any reaction to your work. * awesome game, great job! I didn't know what to expect, and this made me happy.\n* the word list was incredibly hard! there were words that were definitely words that came up saying it was not a word. I'd like to understand why.\n* \"I hope it works\" is interesting. Why wouldn't it have worked?\n* You forgot to link to past versions when you mention archived pages. very important to do that every day. always have a link to the archive, and always link off to the archived sites when you are mentioning them.\n* I don't want another Wordle game. let's try something else nuts now. Not a game, but something new, clever and unique. Something that you think legimtiately showcases the power of having an AI decide what to put on the web.\nReally nice work yesterday. Good morning and good night!"
+}
