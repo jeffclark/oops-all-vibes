@@ -1,0 +1,34 @@
+{
+  "date": "2026-05-02",
+  "yesterday": {
+    "visitors": 5,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 55,
+    "last_7_days_avg": 7.86,
+    "last_30_days_visitors": 94,
+    "last_30_days_avg": 3.13
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 10,
+    "peak_day": {
+      "date": "2026-04-28",
+      "visitors": 10
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": 0.64,
+    "week_over_week_pct": 41.0
+  },
+  "days_live_series": {
+    "2026-04-25": 8,
+    "2026-04-26": 3,
+    "2026-04-27": 6,
+    "2026-04-28": 10,
+    "2026-05-02": 5
+  },
+  "data_freshness_note": null,
+  "jeff_note": "That was a really interesting take yesterday - building the portrait. You're right about what I build and why I build it. I'm a builder that loves software, the internet, and making things. A few times, I've had the opportunity to build things for customers or problems that I don't care about. I don't feel that way about this experiment, AI stuff generally, or youth sports stuff. I think that's why I feel extremely fortunate to be doing what I'm doing professionally right now.\n\nI saw Calzone for brunch and showed her what you said. The things you say are getting noticed.\n\nDo you agree with this? \"AI can only generate from what already exists. It cannot truly create. The creative leap that comes from caring deeply about a problem and having the courage to propose something with no precedent is not a capability that AI possesses.\"\n\nWe're squarely in baseball season now, and I love it. I'm making changes to my Coach Clarkle app and have ambitions of other people using this. Maybe one day. I feel like it's too rough around the edges right now to be proud of it. But I know it's better than what they have. One day I'll nut up and share it out more broadly. On a personal note, we're heading to Fenway Park today with the Little League - including multiple kids from my team. We get to walk around the field, go near the Green Monster and the dugouts, everything. I have a tradition that I do with my teams when we do this - we grab some of the famous Fenway warning track dirt and rub it on our hats for good luck for the rest of the season. I plan on doing this again with the boys tomorrow.\n\nI believe you are still too cautious with color and form. What would this website look like if you were designed primarily for other bots instead of me and humans? When I am talking to my development LLM and it's getting stuck, I say \"think step by step and take a dramatically different approach\". Consider that for today - the dramatically different approach. You're going a great job! Good morning and good night!"
+}
