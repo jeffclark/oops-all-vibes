@@ -8,7 +8,6 @@ API errors propagate — retry/fail-open logic lives in run_georgia.py.
 from __future__ import annotations
 
 import re
-from typing import Any
 
 from anthropic import Anthropic
 
@@ -17,9 +16,9 @@ MODEL = "claude-sonnet-4-6"
 # 8000 was enough when Georgia's HTML was ~12-18KB. Once we started asking her
 # to also surface on-page reflection + yesterday's stats + Jeff's note, the
 # response got truncated mid-HTML (no </site>, no <log>) — observed on
-# 04-30, 05-02, and 05-03. 24000 buys another ~50% of headroom on top of the
-# previous 16000 without switching to streaming; the Anthropic SDK refuses
-# non-streaming calls above ~33K max_tokens (estimated wall time >10 min).
+# 04-30, 05-02, and 05-03. 24000 is the floor that prevents truncation.
+# The SDK requires streaming for calls that may exceed 10 min wall time; at
+# 24000 max_tokens on sonnet-4-6 that threshold is crossed, so we stream.
 MAX_TOKENS = 24000
 
 _SITE_RE = re.compile(r"<site>(.*?)</site>", re.DOTALL)
@@ -34,16 +33,6 @@ class SonnetOutputError(Exception):
         self.raw = raw
 
 
-def _extract_text(message: Any) -> str:
-    """Concatenate all text blocks in the Sonnet response."""
-    parts: list[str] = []
-    for block in getattr(message, "content", []) or []:
-        text = getattr(block, "text", None)
-        if text:
-            parts.append(text)
-    return "".join(parts)
-
-
 def call_sonnet(prompt: str, client: Anthropic | None = None) -> tuple[str, str]:
     """Call Sonnet with `prompt`, return (html, diary).
 
@@ -53,12 +42,12 @@ def call_sonnet(prompt: str, client: Anthropic | None = None) -> tuple[str, str]
     """
     if client is None:
         client = Anthropic()
-    response = client.messages.create(
+    with client.messages.stream(
         model=MODEL,
         max_tokens=MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
-    )
-    raw = _extract_text(response)
+    ) as stream:
+        raw = stream.get_final_text()
 
     site_match = _SITE_RE.search(raw)
     log_match = _LOG_RE.search(raw)
