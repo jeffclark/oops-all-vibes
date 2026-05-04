@@ -16,11 +16,11 @@ from anthropic import Anthropic
 MODEL = "claude-sonnet-4-6"
 # 8000 was enough when Georgia's HTML was ~12-18KB. Once we started asking her
 # to also surface on-page reflection + yesterday's stats + Jeff's note, the
-# response got truncated mid-HTML (no </site>, no <log>). 16000 gives 2x the
-# headroom without streaming — the Anthropic SDK refuses non-streaming calls
-# above ~33K max_tokens (estimated wall time >10 min). Switching to streaming
-# is a bigger change; 16000 is plenty for Georgia's current output budget.
-MAX_TOKENS = 16000
+# response got truncated mid-HTML (no </site>, no <log>) — observed on
+# 04-30, 05-02, and 05-03. 24000 buys another ~50% of headroom on top of the
+# previous 16000 without switching to streaming; the Anthropic SDK refuses
+# non-streaming calls above ~33K max_tokens (estimated wall time >10 min).
+MAX_TOKENS = 24000
 
 _SITE_RE = re.compile(r"<site>(.*?)</site>", re.DOTALL)
 _LOG_RE = re.compile(r"<log>(.*?)</log>", re.DOTALL)

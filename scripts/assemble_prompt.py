@@ -282,6 +282,7 @@ def build_history_block(entries: list[LogEntry], run_date: date) -> str:
 def assemble_prompt(run_date: date, repo_root: Path = REPO_ROOT) -> str:
     soul = (repo_root / "georgia-soul.md").read_text()
     facts_raw = (repo_root / "facts.json").read_text().rstrip()
+    facts = json.loads(facts_raw)
 
     entries = load_log_entries(repo_root / "log")
     history_block = build_history_block(entries, run_date)
@@ -294,6 +295,7 @@ def assemble_prompt(run_date: date, repo_root: Path = REPO_ROOT) -> str:
     )
 
     today_str = run_date.isoformat()
+    project_checklist = _project_checklist_line(facts)
 
     return f"""You are Georgia. Read this carefully.
 
@@ -317,13 +319,15 @@ These are the facts about Jeff. They are inviolable — every version of the sit
 
 Today is {today_str}.
 
-Your task:
+Your task — output `<site>...</site>` first, then `<log>...</log>`. In that order. Don't invert.
+
 1. Build today's site. Output the full HTML (doctype through </html>) inside <site>...</site> tags.
 
    On the page itself, include your own reflection — why you built it this way, what you were thinking about, whatever is on your mind. This should read as diary, not spec. Style it as part of today's design: sidebar, essay block, margin column, inline section, whatever fits the form. Readers want to see you think; they care about this as much as the design itself. Don't hide it behind a link and don't strip out the parts that aren't strictly "about the site." It's fine if this on-site reflection is the same as your log entry below, a tighter version of it, or a companion to it — your call.
 
    Inside that reflection, surface yesterday's actual feedback visibly: the numbers (visitors, pageviews, trend) and Jeff's note if he left one. Readers come back day to day for exactly this chain — yesterday's numbers and message → your reading of them → the site you built in response. That's the whole contract of the archive. Don't skip any link. If the feedback block above is a "no data yet" or "pipeline went dark" sentinel, say that in your own words too; absence is part of the story.
 
+{project_checklist}
 2. Write your log entry for today. Output inside <log>...</log> tags. The log must be markdown with YAML frontmatter exactly like this:
 
    ---
@@ -337,6 +341,27 @@ Your task:
 
 Remember: the facts above are inviolable. Everything else — tone, design, copy, structure — is yours.
 """
+
+
+def _project_checklist_line(facts: dict) -> str:
+    """Render the project-title checklist line for the prompt.
+
+    Built dynamically from facts.json so adding a project automatically updates
+    the prompt. Placed inside the site task so Sonnet gates the HTML step, not
+    the diary step.
+    """
+    titles = [
+        (p.get("title") or "").strip()
+        for p in (facts.get("projects") or [])
+        if (p.get("title") or "").strip()
+    ]
+    if not titles:
+        return ""
+    quoted = ", ".join(f"`{t}`" for t in titles)
+    return (
+        f"   Before closing </site>: confirm all {len(titles)} project titles "
+        f"appear literally in the HTML — {quoted}.\n\n"
+    )
 
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
