@@ -327,15 +327,20 @@ def test_pick_sentinel_missing_archive_dir_treated_as_day_1(tmp_path):
 # ---------- end-to-end assemble ----------
 
 
-def _make_fake_repo(tmp_path: Path) -> Path:
-    """Create the minimum repo layout assemble_prompt needs."""
+def _make_fake_repo(tmp_path: Path, projects: list | None = None) -> Path:
+    """Create the minimum repo layout assemble_prompt needs.
+
+    Pass `projects` to override the default single-project facts.json.
+    """
+    if projects is None:
+        projects = [{"title": "Autoscope", "description": "x", "link": "x", "image": "x"}]
     (tmp_path / "georgia-soul.md").write_text("# Georgia\nSoul content.\n")
     (tmp_path / "facts.json").write_text(json.dumps({
         "name": "Jeff Clark",
         "email": "jeff@clarkle.com",
         "linkedin_url": "https://www.linkedin.com/in/serialcreative",
         "linkedin_title": "Director of Product at LeagueApps",
-        "projects": [{"title": "Autoscope", "description": "x", "link": "x", "image": "x"}],
+        "projects": projects,
     }))
     (tmp_path / "log").mkdir()
     (tmp_path / "archive").mkdir()
@@ -352,6 +357,34 @@ def test_assemble_prompt_day_1(tmp_path):
     assert DAY_1_FEEDBACK_SENTINEL in out
     assert "Today is 2026-04-22." in out
     assert "<site>" in out and "<log>" in out
+    # Output ordering must be stated explicitly so Sonnet doesn't invert
+    # site/log blocks (observed truncation on 2026-05-03).
+    assert "`<site>...</site>` first, then `<log>...</log>`" in out
+
+
+def test_assemble_prompt_project_checklist_includes_all_titles(tmp_path):
+    """The checklist line must list every project title in facts.json verbatim."""
+    projects = [
+        {"title": "HELM", "description": "x"},
+        {"title": "LeagueApps Tryouts (prototype)", "description": "x"},
+        {"title": "Coach's Ear", "description": "x"},
+    ]
+    repo = _make_fake_repo(tmp_path, projects=projects)
+    out = assemble_prompt(date(2026, 4, 22), repo_root=repo)
+    assert "Before closing </site>: confirm all 3 project titles" in out
+    assert "`HELM`" in out
+    assert "`LeagueApps Tryouts (prototype)`" in out
+    assert "`Coach's Ear`" in out
+    # Checklist must appear inside the site task, before the log task
+    site_task_end = out.index("2. Write your log entry")
+    assert out.index("Before closing </site>") < site_task_end
+
+
+def test_assemble_prompt_project_checklist_omitted_when_no_projects(tmp_path):
+    """If facts.json has no projects, the checklist line is dropped entirely."""
+    repo = _make_fake_repo(tmp_path, projects=[])
+    out = assemble_prompt(date(2026, 4, 22), repo_root=repo)
+    assert "Before closing </site>" not in out
 
 
 def test_assemble_prompt_with_feedback_file(tmp_path):
