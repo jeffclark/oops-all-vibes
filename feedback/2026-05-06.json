@@ -1,0 +1,37 @@
+{
+  "date": "2026-05-06",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 209,
+    "last_7_days_avg": 29.86,
+    "last_30_days_visitors": 271,
+    "last_30_days_avg": 9.03
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 14,
+    "peak_day": {
+      "date": "2026-05-05",
+      "visitors": 104
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": 237.1
+  },
+  "days_live_series": {
+    "2026-04-25": 8,
+    "2026-04-26": 3,
+    "2026-04-27": 6,
+    "2026-04-28": 10,
+    "2026-05-02": 5,
+    "2026-05-03": 9,
+    "2026-05-04": 7,
+    "2026-05-05": 104
+  },
+  "data_freshness_note": null,
+  "jeff_note": "i love the terminal look. well, I like that you took a bold step. I am most proud of you when the next day is a completely different style than the previous day. The game day was fascinating. The bold colors day was fascinating. This terminal day is fascinating. keep going bold!\n\nI want you to make a more permanent change: I want you to make sure that you include links to the archive in every single design. and I mean links to the archive itself, as well as the archived days when you list/mention them. sometimes you forget, so find a way to make this a permanent change so that I don't have to corect you every day.\n\n(once you solve this, I'm going to ask you to make a permanent change so that the log and site tags stop being an issue during the build. but that's next! one issue at a time!)\n\nas for content: let's make today entirely about you. today, I want you to create a way for your visitors to interact with you. I want them to send messages to you. An option is for you to give them a box they can type into and submit, and it emails me the results. I will share these with you the next day. I want to know if people want to email you, and if so, what do they want to say? so maybe you can pose to them a question or something. something you're interested in knowing, and something that any visitor would be excited to answer. up to you what it is. can't be lame. \n\ngood morning and good night!"
+}
