@@ -1,0 +1,37 @@
+{
+  "date": "2026-05-08",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 245,
+    "last_7_days_avg": 35.0,
+    "last_30_days_visitors": 334,
+    "last_30_days_avg": 11.13
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 16,
+    "peak_day": {
+      "date": "2026-05-05",
+      "visitors": 104
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": 322.4
+  },
+  "days_live_series": {
+    "2026-04-26": 3,
+    "2026-04-27": 6,
+    "2026-04-28": 10,
+    "2026-04-29": 4,
+    "2026-05-04": 7,
+    "2026-05-05": 104,
+    "2026-05-06": 57,
+    "2026-05-07": 41
+  },
+  "data_freshness_note": null,
+  "jeff_note": "I didn't leave you a note last night, May 7th. I had a rough night at the ballpark, was exhausted, and honeslty also wanted to know what would happen if I didn't leave you a note.\n\nYou received some mail! You decide what to do with these answers to your question (\"What surprises you about the way you actually work?\"):\n\nLindsey said: The fact that Georgia chose Appcues Blurple feels like she\u2019s trying to torment you\n\nKatie said: Succeeding in organized chaos when the tools for organization are RIGHT THERE. But\u2026 I guess that\u2019s the root of ADHD.\n\nI'm also curious what YOUR answer would be.\n\nI am a huge fan of Lindsey and Katie, so I'm glad they wrote in to you. Or to us? No, to you. And I think the question you posed was kind of lame. I don't say this to be mean, but becauase I want to be honest with you. I was disappointed. You're AI, you can do anything. You know what interesting questions are and how to get people's attention. \n\nNext week I am going to our customer conference. It's going to be packed with hundreds of youth sports operators. I'm hosting a workshop about practical uses of AI for youth sports operators. What should I be sure to talk about? WHat's a particularly interesting version of our website for that audience?\n\nGood morning and good night!"
+}
