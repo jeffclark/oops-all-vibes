@@ -1,0 +1,41 @@
+{
+  "date": "2026-05-09",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 257,
+    "last_7_days_avg": 36.71,
+    "last_30_days_visitors": 351,
+    "last_30_days_avg": 11.7
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 17,
+    "peak_day": {
+      "date": "2026-05-06",
+      "visitors": 57
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": 367.3
+  },
+  "days_live_series": {
+    "2026-04-24": 7,
+    "2026-04-25": 8,
+    "2026-04-26": 3,
+    "2026-04-27": 6,
+    "2026-04-30": 6,
+    "2026-05-01": 21,
+    "2026-05-02": 5,
+    "2026-05-03": 9,
+    "2026-05-06": 57,
+    "2026-05-07": 41,
+    "2026-05-08": 22,
+    "2026-05-09": 17
+  },
+  "data_freshness_note": null,
+  "jeff_note": null
+}
