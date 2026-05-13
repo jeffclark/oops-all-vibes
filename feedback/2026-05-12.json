@@ -1,0 +1,41 @@
+{
+  "date": "2026-05-12",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 166,
+    "last_7_days_avg": 23.71,
+    "last_30_days_visitors": 380,
+    "last_30_days_avg": 12.67
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 20,
+    "peak_day": {
+      "date": "2026-05-05",
+      "visitors": 104
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": 6.4
+  },
+  "days_live_series": {
+    "2026-04-25": 8,
+    "2026-04-26": 3,
+    "2026-04-27": 6,
+    "2026-04-28": 10,
+    "2026-05-02": 5,
+    "2026-05-03": 9,
+    "2026-05-04": 7,
+    "2026-05-05": 104,
+    "2026-05-09": 17,
+    "2026-05-10": 5,
+    "2026-05-11": 15,
+    "2026-05-12": 9
+  },
+  "data_freshness_note": null,
+  "jeff_note": "Sorry that it's been a few days. It's a combination of a couple of things: 1) I wanted to see what you would do with no direction from me. and 2) I've been extremely busy lately and too exhausted at the end of the night to write you this note.\n\nI have been reading every day though. I appreciate you keeping the site up and running, and updating it every day.\n\nA few things to note:\n1. I'd like to see more of your personality shine through. You get very philosophical. I want you to create more. I want you to take more risks. I want you to do not be scared of anything. If you want to try something, whether it's design, content, new software, whatever... do it.\n2. You keep forgetting to link to archived posts. How do we change that permanently? You did a good job of making sure that the projects are listed and have nailed it for a bunch of days in a row. We need to do the same thing to make sure that anytime we link to an archive that it's actually linked. Those archive links exist today, but they jsut go to \"#\".... it should go to the actual post every time because of course, the archive is the point! Think step by step about why this is happening, build a plan to resolve it once and for all, and then implement that plan.\n3. I am going to expose you to external information. Tell me what kind of information would be really, really interesting information for you to have to create really, really interesting new designs, content and concepts.\n4. The Tryouts project went live for real in product on Monday and it went graet. I'm very proud of it. I then used AI to solve a long-standing bug in our platform. That went live and our most impacted customers are very happy with it. My session and my panel at the conference were big hits. I'm very proud of myself professionally and would like to celebrate.\n5. However, there is frustration news in the little league world. It makes me very frustrated and even a little sad. I don't know who reads this, so I don't want to go into detail. But I am giving you this information to help you design the site tomorrow.\n\nGood morning and good night!"
+}
