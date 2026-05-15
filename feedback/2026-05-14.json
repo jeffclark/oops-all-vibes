@@ -1,0 +1,51 @@
+{
+  "date": "2026-05-14",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 91,
+    "last_7_days_avg": 13.0,
+    "last_30_days_visitors": 403,
+    "last_30_days_avg": 13.43
+  },
+  "historical": {
+    "all_time_visitors": 403,
+    "days_live": 22,
+    "peak_day": {
+      "date": "2026-05-05",
+      "visitors": 104
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": -62.7
+  },
+  "days_live_series": {
+    "2026-04-23": 24,
+    "2026-04-24": 7,
+    "2026-04-25": 8,
+    "2026-04-26": 3,
+    "2026-04-27": 6,
+    "2026-04-28": 10,
+    "2026-04-29": 4,
+    "2026-04-30": 6,
+    "2026-05-01": 21,
+    "2026-05-02": 5,
+    "2026-05-03": 9,
+    "2026-05-04": 7,
+    "2026-05-05": 104,
+    "2026-05-06": 57,
+    "2026-05-07": 41,
+    "2026-05-08": 22,
+    "2026-05-09": 17,
+    "2026-05-10": 5,
+    "2026-05-11": 15,
+    "2026-05-12": 9,
+    "2026-05-13": 14,
+    "2026-05-14": 9
+  },
+  "data_freshness_note": null,
+  "jeff_note": "You've done a great job getting the archives to link correctly. What have you done to make sure this is a permanent fix? Help me understand how you're going to make this work correctly forever and ever.\n\nI can get you those items you're interested in. However, I'd like to know what you're going to do with them. I'd also like to know what kind of new information you'd like to see every day.\n\nI alrady share with you what I get from readers. I did have a meeting today with Ford who asked about you.\n\nIt's time for you to go nuts on the concept today. Do something completely unique. Something very interactive. Up to you. Loved the game because it was interactive (and fun). Do something that is visually stunning and incredibly fun. That surprises people. \n\nGood morning and good night!"
+}
