@@ -54,3 +54,4 @@
 {"date": "2026-06-15", "attempts": 1, "validation_failures": [], "api_errors": 0, "committed": true, "duration_ms": 202726}
 {"date": "2026-06-16", "attempts": 1, "validation_failures": [], "api_errors": 0, "committed": true, "duration_ms": 178620}
 {"date": "2026-06-17", "attempts": 1, "validation_failures": [], "api_errors": 0, "committed": true, "duration_ms": 195328}
+{"date": "2026-06-19", "attempts": 2, "validation_failures": ["You did not include the project title 'Coach's Ear'. The project list is inviolable."], "api_errors": 0, "committed": true, "duration_ms": 358045}
