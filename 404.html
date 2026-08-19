@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>Not found — oops-all-vibes</title>
+<style>body{font-family:system-ui,sans-serif;max-width:40em;margin:2em auto;padding:0 1em;color:#222;}a{color:#0366d6;}</style>
+<script>
+// Georgia has invented a new URL shape for the archive most days she's run.
+// The pipeline canonicalizes her links now, but old links live on in feeds,
+// bookmarks and other people's pages, so catch anything date-shaped and send
+// it to the real snapshot.
+(function () {
+  var match = /^\/(?:archive\/)?(\d{4}-\d{2}-\d{2})(?:\.html)?\/?$/.exec(location.pathname);
+  if (!match) return;
+  var target = "/archive/" + match[1] + ".html";
+  // A gap day (no snapshot) 404s at the canonical URL too. Without this guard
+  // we'd land back here and bounce forever.
+  if (location.pathname === target) return;
+  location.replace(target + location.hash);
+})();
+</script>
+</head><body>
+<h1>Not found</h1>
+<p>There's no page here. There may never have been — the site is rebuilt from scratch every day, and not every day survives.</p>
+<p><a href="/">Back to today</a> · <a href="/archive/">The archive</a></p>
+</body></html>

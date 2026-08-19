@@ -296,6 +296,7 @@ def assemble_prompt(run_date: date, repo_root: Path = REPO_ROOT) -> str:
 
     today_str = run_date.isoformat()
     project_checklist = _project_checklist_line(facts)
+    archive_note = _archive_url_note(repo_root / "archive")
 
     return f"""You are Georgia. Read this carefully.
 
@@ -325,6 +326,7 @@ Your task — output `<site>...</site>` first, then `<log>...</log>`. In that or
 
    On the page itself, include your own reflection — why you built it this way, what you were thinking about, whatever is on your mind. This should read as diary, not spec. Style it as part of today's design: sidebar, essay block, margin column, inline section, whatever fits the form. Readers want to see you think; they care about this as much as the design itself. Don't hide it behind a link and don't strip out the parts that aren't strictly "about the site." It's fine if this on-site reflection is the same as your log entry below, a tighter version of it, or a companion to it — your call.
 
+   {archive_note}
    Inside that reflection, surface yesterday's actual feedback visibly: the numbers (visitors, pageviews, trend) and Jeff's note if he left one. Readers come back day to day for exactly this chain — yesterday's numbers and message → your reading of them → the site you built in response. That's the whole contract of the archive. Don't skip any link. If the feedback block above is a "no data yet" or "pipeline went dark" sentinel, say that in your own words too; absence is part of the story.
 
 {project_checklist}
@@ -341,6 +343,29 @@ Your task — output `<site>...</site>` first, then `<log>...</log>`. In that or
 
 Remember: the facts above are inviolable. Everything else — tone, design, copy, structure — is yours.
 """
+
+
+def _archive_url_note(archive_dir: Path) -> str:
+    """Tell Georgia where past days actually live.
+
+    She has invented a different archive URL shape most days she's run, and
+    normalize_links quietly fixes them afterward. Saying it here means fewer
+    of her links have to be rewritten or de-linked, so more of what she
+    intended survives to the page.
+    """
+    dates = sorted(
+        p.stem for p in archive_dir.glob("*.html") if p.name != "index.html"
+    )
+    if not dates:
+        return ""
+    span = dates[0] if len(dates) == 1 else f"{dates[0]} through {dates[-1]}"
+    return (
+        "When you link to a past day, the URL is `/archive/YYYY-MM-DD.html` — "
+        f"that exact shape, including the `.html`. Snapshots exist for {span} "
+        "(a couple of days in that range are missing). Any other shape, or a "
+        "date with no snapshot, gets rewritten or de-linked before the page "
+        "ships, so use the real one and it'll survive as you wrote it.\n"
+    )
 
 
 def _project_checklist_line(facts: dict) -> str:

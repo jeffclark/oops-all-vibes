@@ -7,6 +7,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from scripts.normalize_links import canonical_href
+
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -21,7 +23,11 @@ def build_archive_index(repo_root: Path | None = None) -> None:
         key=lambda p: p.stem,
         reverse=True,
     )
-    items = "\n".join(f'    <li><a href="./{p.name}">{p.stem}</a></li>' for p in entries)
+    # Canonical form, same as every other archive link on the site — one URL
+    # shape everywhere is what keeps these links checkable.
+    items = "\n".join(
+        f'    <li><a href="{canonical_href(p.stem)}">{p.stem}</a></li>' for p in entries
+    )
 
     html = f"""<!DOCTYPE html>
 <html lang="en"><head>

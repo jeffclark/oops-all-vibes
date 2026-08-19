@@ -11,11 +11,40 @@ import sys
 from pathlib import Path
 
 from scripts.build_archive_index import build_archive_index
+from scripts.normalize_links import normalize_links
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 _TRUTHY = {"1", "true", "yes", "on"}
+
+
+def _available_dates(root: Path, date_str: str) -> set[str]:
+    """Dates that have a snapshot, from the caller's point of view.
+
+    date_str is unioned in because archive/<today>.html is written further
+    down this same module — without it, Georgia's link to today would be
+    de-linked as a dead date.
+    """
+    archive = root / "archive"
+    dates = {p.stem for p in archive.glob("*.html") if p.name != "index.html"}
+    dates.add(date_str)
+    return dates
+
+
+def _safe_normalize_links(html: str, available_dates: set[str]) -> str:
+    """normalize_links, but never fatal.
+
+    run_georgia records stats with committed=True *before* calling
+    write_outputs, so anything that raises in here means no site ships while
+    the stats line claims one did. A link we failed to fix is much cheaper
+    than a day with no site, so degrade to a no-op.
+    """
+    try:
+        return normalize_links(html, available_dates)
+    except Exception as exc:  # noqa: BLE001 — a bad link must never cost a day
+        print(f"write_outputs: normalize_links failed ({exc}); using raw HTML", file=sys.stderr)
+        return html
 
 
 def _maybe_inject_tech(html: str, date_str: str) -> str:
@@ -38,7 +67,8 @@ def write_outputs(
 ) -> None:
     root = repo_root or REPO_ROOT
 
-    # Injection (after validation, before writing)
+    # Rewriting + injection (after validation, before writing)
+    html = _safe_normalize_links(html, _available_dates(root, date_str))
     html = _maybe_inject_tech(html, date_str)
 
     # Write Georgia's outputs
