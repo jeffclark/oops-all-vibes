@@ -4,3 +4,6 @@ __pycache__/
 .venv/
 .pytest_cache/
 .DS_Store
+
+# Offline model A/B outputs — regenerate with `python -m scripts.model_ab`
+model-ab/
