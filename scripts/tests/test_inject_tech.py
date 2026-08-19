@@ -53,7 +53,7 @@ def test_output_parses_as_valid_html():
     footer = soup.find("footer")
     assert footer is not None
     hrefs = {a.get("href") for a in footer.find_all("a")}
-    assert hrefs == {"/log/2026-04-22.md", "/prompts/2026-04-22.md"}
+    assert hrefs == {"/archive/", "/log/2026-04-22.md", "/prompts/2026-04-22.md"}
 
 
 def test_footer_links_to_log_and_prompt():
@@ -82,3 +82,17 @@ def test_injection_doesnt_break_existing_validation_signals():
     assert "Jeff Clark" in out
     assert "jeff@clarkle.com" in out
     assert "https://www.linkedin.com/in/serialcreative" in out
+
+
+def test_footer_links_to_archive_index():
+    """Georgia routinely doesn't link /archive/ herself; the footer guarantees
+    the archive is reachable from every page."""
+    out = inject_tech(BASE_HTML, "2026-04-22", None)
+    assert 'href="/archive/"' in out
+    assert "archive" in out
+
+
+def test_footer_separators_between_all_three_links():
+    out = inject_tech(BASE_HTML, "2026-04-22", None)
+    footer = BeautifulSoup(out, "html.parser").find("footer")
+    assert footer.get_text() == "archive · today's log · today's prompt"

@@ -41,16 +41,26 @@ def inject_tech(html: str, date_str: str, goatcounter_code: str | None) -> str:
         )
         head.append(script)
 
-    # Always append the transparency footer: links to today's log and today's prompt.
+    # Always append the transparency footer: the archive, today's log, today's
+    # prompt. The archive link is here because Georgia routinely doesn't link
+    # /archive/ herself — this guarantees it's reachable from every page.
     footer = soup.new_tag("footer", style=FOOTER_STYLE)
+    archive_link = soup.new_tag("a", href="/archive/", style="color:inherit;")
+    archive_link.string = "archive"
     log_link = soup.new_tag("a", href=f"/log/{date_str}.md", style="color:inherit;")
     log_link.string = "today's log"
-    sep = soup.new_tag("span")
-    sep.string = " · "
     prompt_link = soup.new_tag("a", href=f"/prompts/{date_str}.md", style="color:inherit;")
     prompt_link.string = "today's prompt"
+
+    def _sep():
+        sep = soup.new_tag("span")
+        sep.string = " · "
+        return sep
+
+    footer.append(archive_link)
+    footer.append(_sep())
     footer.append(log_link)
-    footer.append(sep)
+    footer.append(_sep())
     footer.append(prompt_link)
 
     if body is not None:

@@ -212,3 +212,141 @@ def test_add_retry_hint_shape():
     assert "- fix the email" in out
     assert "- fix the date" in out
     assert "[/validation-failure]" in out
+
+
+# ---------- the archive-claims gate ----------
+
+
+def _gate_repo(tmp_path):
+    """A repo with two archived days; 2026-04-25 is a gap that never existed."""
+    for sub in ("archive", "log", "feedback", "prompts"):
+        (tmp_path / sub).mkdir(exist_ok=True)
+    for d in ("2026-04-23", "2026-04-24"):
+        (tmp_path / "archive" / f"{d}.html").write_text("<html></html>")
+        (tmp_path / "log" / f"{d}.md").write_text(
+            f"---\ndate: {d}\nimportance: 2\n---\n\nbody.\n"
+        )
+    return tmp_path
+
+
+GATE_DIARY = "---\ndate: 2026-04-25\nimportance: 3\n---\n\nA diary entry, long enough.\n"
+
+
+def _gate_html(archive_body: str) -> str:
+    """Minimal page that passes validate_output, plus an archive section."""
+    return (
+        "<!DOCTYPE html><html><head><title>t</title></head><body>"
+        "<p>Jeff Clark jeff@clarkle.com "
+        "https://www.linkedin.com/in/serialcreative</p>"
+        f'<section id="archive">{archive_body}</section>'
+        + "<p>" + ("filler content for the body length check. " * 40) + "</p>"
+        + "</body></html>"
+    )
+
+
+def _gate_facts():
+    return {
+        "name": "Jeff Clark",
+        "email": "jeff@clarkle.com",
+        "linkedin_url": "https://www.linkedin.com/in/serialcreative",
+        "projects": [],
+    }
+
+
+def _run_gate(monkeypatch, tmp_path, pages):
+    """Run the pipeline over a queue of Sonnet responses. Returns (code, calls)."""
+    repo = _gate_repo(tmp_path)
+    queue = list(pages)
+    calls = []
+
+    def fake_call(prompt):
+        calls.append(prompt)
+        return queue.pop(0), GATE_DIARY
+
+    monkeypatch.setattr(run_module, "call_sonnet", fake_call)
+    # The gate is what's under test, not prompt assembly.
+    monkeypatch.setattr(run_module, "assemble_prompt", lambda *a, **k: "PROMPT")
+    # no_commit=True, so git is never invoked.
+    code = run_module.run("2026-04-25", _gate_facts(), repo, no_commit=True)
+    return code, calls, repo
+
+
+def test_gate_blocks_a_page_that_invents_an_archive_day(monkeypatch, tmp_path):
+    """2026-04-25 has no snapshot — an entry for it is the site inventing
+    its own history, so nothing ships and yesterday's site stays live."""
+    invented = _gate_html('<li data-archive-date="2026-04-22">Day 0</li>')
+    code, calls, repo = _run_gate(monkeypatch, tmp_path, [invented, invented])
+    assert code == 1
+    assert len(calls) == 2, "should have retried once"
+    assert not (repo / "index.html").exists(), "no site written"
+
+
+def test_gate_retry_hint_names_the_invented_day(monkeypatch, tmp_path):
+    invented = _gate_html('<li data-archive-date="2026-04-22">Day 0</li>')
+    _, calls, _ = _run_gate(monkeypatch, tmp_path, [invented, invented])
+    assert "2026-04-22" in calls[1]
+    assert "[validation-failure]" in calls[1]
+
+
+def test_gate_lets_a_corrected_second_attempt_through(monkeypatch, tmp_path):
+    bad = _gate_html('<li data-archive-date="2026-04-22">Day 0</li>')
+    good = _gate_html('<li class="imp-2" data-archive-date="2026-04-23">Day 1</li>')
+    code, calls, repo = _run_gate(monkeypatch, tmp_path, [bad, good])
+    assert code == 0
+    assert len(calls) == 2
+    assert (repo / "index.html").exists()
+
+
+def test_gate_ships_soft_claims_and_records_them(monkeypatch, tmp_path):
+    """A wrong importance marker is real, but not worth a day of no site."""
+    soft = _gate_html('<li class="imp-5" data-archive-date="2026-04-23">Day 1</li>')
+    code, calls, repo = _run_gate(monkeypatch, tmp_path, [soft])
+    assert code == 0
+    assert len(calls) == 1, "soft findings must not trigger a retry"
+    assert (repo / "index.html").exists()
+
+    line = json.loads((repo / "stats.jsonl").read_text().strip().splitlines()[-1])
+    assert line["committed"] is True
+    assert any("importance" in w for w in line["archive_warnings"])
+
+
+def test_gate_records_no_warnings_for_a_truthful_page(monkeypatch, tmp_path):
+    good = _gate_html(
+        '<li class="imp-2" data-archive-date="2026-04-23">Day 1</li>'
+        '<li class="imp-2" data-archive-date="2026-04-24">Day 2</li>'
+        '<li class="imp-3" data-archive-date="2026-04-25">Day 3</li>'
+    )
+    code, _, repo = _run_gate(monkeypatch, tmp_path, [good])
+    assert code == 0
+    line = json.loads((repo / "stats.jsonl").read_text().strip().splitlines()[-1])
+    assert line["archive_warnings"] == []
+
+
+def test_gate_verifies_the_finalized_page_not_the_raw_output(monkeypatch, tmp_path):
+    """Links are canonicalized before the gate sees them, so a link Georgia
+    wrote as /2026-04-23 must not be reported as broken."""
+    html = _gate_html('<a href="/2026-04-23">Day 1</a>')
+    code, calls, repo = _run_gate(monkeypatch, tmp_path, [html])
+    assert code == 0
+    assert 'href="/archive/2026-04-23.html"' in (repo / "index.html").read_text()
+
+
+def test_gate_failure_in_the_checker_never_costs_a_day(monkeypatch, tmp_path):
+    """A bug in verification must not become a new way for the site to go dark."""
+    def boom(*a, **k):
+        raise RuntimeError("checker exploded")
+
+    monkeypatch.setattr(run_module, "verify_archive_claims", boom)
+    good = _gate_html('<li data-archive-date="2026-04-23">Day 1</li>')
+    code, calls, repo = _run_gate(monkeypatch, tmp_path, [good])
+    assert code == 0
+    assert (repo / "index.html").exists()
+    line = json.loads((repo / "stats.jsonl").read_text().strip().splitlines()[-1])
+    assert any("did not run" in w for w in line["archive_warnings"])
+
+
+def test_written_page_has_exactly_one_injected_footer(monkeypatch, tmp_path):
+    """finalize_html runs once — the gate must not cause a second injection."""
+    good = _gate_html('<li data-archive-date="2026-04-23">Day 1</li>')
+    _, _, repo = _run_gate(monkeypatch, tmp_path, [good])
+    assert (repo / "index.html").read_text().count("today's prompt") == 1

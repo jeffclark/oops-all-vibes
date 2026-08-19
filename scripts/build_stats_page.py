@@ -14,6 +14,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 WINDOW = 30
 FAILURE_PREVIEW_CHARS = 50
+WARNING_PREVIEW_CHARS = 60
 
 
 def _read_entries(stats_file: Path) -> list[dict]:
@@ -39,15 +40,18 @@ def _summarize(window: list[dict]) -> dict:
             "first_try_success_pct": 0.0,
             "overall_commit_pct": 0.0,
             "avg_duration_s": 0.0,
+            "runs_with_warnings": 0,
         }
     first_try_wins = sum(1 for e in window if e.get("attempts") == 1 and e.get("committed"))
     commits = sum(1 for e in window if e.get("committed"))
     total_duration_ms = sum(e.get("duration_ms", 0) for e in window)
+    warned = sum(1 for e in window if e.get("archive_warnings"))
     return {
         "runs_total": total,
         "first_try_success_pct": round(first_try_wins / total * 100, 1),
         "overall_commit_pct": round(commits / total * 100, 1),
         "avg_duration_s": round(total_duration_ms / 1000 / total, 2),
+        "runs_with_warnings": warned,
     }
 
 
@@ -58,6 +62,14 @@ def _row_html(entry: dict) -> str:
     failures = " | ".join(entry.get("validation_failures") or [])
     if len(failures) > FAILURE_PREVIEW_CHARS:
         failures = failures[: FAILURE_PREVIEW_CHARS - 1] + "…"
+    warnings = entry.get("archive_warnings") or []
+    if warnings:
+        preview = " | ".join(warnings)
+        if len(preview) > WARNING_PREVIEW_CHARS:
+            preview = preview[: WARNING_PREVIEW_CHARS - 1] + "…"
+        warning_cell = f"{len(warnings)} · {escape(preview)}"
+    else:
+        warning_cell = ""
     duration_s = round(entry.get("duration_ms", 0) / 1000, 2)
     return (
         f'    <tr class="{row_class}">'
@@ -65,6 +77,7 @@ def _row_html(entry: dict) -> str:
         f"<td>{entry.get('attempts', '')}</td>"
         f"<td>{status}</td>"
         f"<td>{escape(failures)}</td>"
+        f'<td class="warn">{warning_cell}</td>'
         f"<td>{entry.get('api_errors', 0)}</td>"
         f"<td>{duration_s}</td>"
         "</tr>"
@@ -91,24 +104,32 @@ th,td{{border:1px solid #ddd;padding:.4em .6em;text-align:left;vertical-align:to
 th{{background:#f6f6f6;}}
 tr.fail{{background:#fff0f0;}}
 tr.ok{{background:#f0fff4;}}
+td.warn{{color:#8a5a00;}}
 .summary{{display:flex;gap:1em;flex-wrap:wrap;margin:1em 0;}}
 .card{{background:#f6f6f6;padding:.5em 1em;border-radius:4px;min-width:8em;}}
 .k{{color:#666;font-size:.8em;display:block;}}
 .v{{font-weight:600;font-size:1.2em;}}
 a{{color:#0366d6;}}
 footer{{margin-top:2em;font-size:.85em;color:#666;}}
+p.note{{font-size:.85em;color:#666;max-width:48em;}}
 </style></head>
 <body>
 <h1>Pipeline stats — oops-all-vibes</h1>
 <p>Rolling window: last {summary["runs_total"]} runs (max {WINDOW}).</p>
+<p class="note">"Archive warnings" are claims a shipped page made about the archive that
+weren't true — a miscounted total, a wrong day number, an importance that disagrees with
+that day's log. They're recorded rather than blocking, so the site still goes up. Claims
+that would have the site invent a day that never ran block the run instead, and show as
+a failure.</p>
 <div class="summary">
   <div class="card"><span class="k">runs</span><span class="v">{summary["runs_total"]}</span></div>
   <div class="card"><span class="k">first-try success</span><span class="v">{summary["first_try_success_pct"]}%</span></div>
   <div class="card"><span class="k">committed</span><span class="v">{summary["overall_commit_pct"]}%</span></div>
   <div class="card"><span class="k">avg duration</span><span class="v">{summary["avg_duration_s"]}s</span></div>
+  <div class="card"><span class="k">runs with false archive claims</span><span class="v">{summary["runs_with_warnings"]}</span></div>
 </div>
 <table>
-  <thead><tr><th>date</th><th>attempts</th><th>committed</th><th>failures</th><th>api errors</th><th>duration (s)</th></tr></thead>
+  <thead><tr><th>date</th><th>attempts</th><th>committed</th><th>failures</th><th>archive warnings</th><th>api errors</th><th>duration (s)</th></tr></thead>
   <tbody>
 {rows}
   </tbody>

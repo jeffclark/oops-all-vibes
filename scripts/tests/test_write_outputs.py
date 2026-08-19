@@ -112,8 +112,9 @@ def test_write_outputs_inject_tech_called_if_module_present(monkeypatch, tmp_pat
     monkeypatch.setitem(sys.modules, "scripts.inject_tech", fake_module)
 
     wo.write_outputs("2026-04-22", HTML, DIARY, PROMPT, no_commit=True, repo_root=repo)
-    assert (repo / "index.html").read_text() == injected
-    assert (repo / "archive" / "2026-04-22.html").read_text() == injected
+    written = (repo / "index.html").read_text()
+    assert written == injected + wo.FINALIZED_MARKER
+    assert (repo / "archive" / "2026-04-22.html").read_text() == written
 
 
 # ---------- build_archive_index ----------
@@ -151,3 +152,99 @@ def test_build_archive_index_empty_archive_still_writes(tmp_path):
     (tmp_path / "archive").mkdir()
     build_archive_index(tmp_path)
     assert (tmp_path / "archive" / "index.html").exists()
+
+
+# ---------- link normalization in the pipeline ----------
+
+
+LINKY_HTML = (
+    "<!DOCTYPE html><html><body>hello"
+    '<a href="/2026-04-20">root-relative</a>'
+    '<a href="/archive/2026-04-21">extensionless</a>'
+    '<a href="https://jeff.clarkle.com/archive/2026-04-20">wrong host</a>'
+    '<a class="archive-link" href="/2026-01-01">no snapshot</a>'
+    '<a href="/2026-04-22">today</a>'
+    '<a href="mailto:jeff@clarkle.com">mail</a>'
+    "</body></html>"
+)
+
+
+def _write_linky(tmp_path: Path):
+    repo = _fake_repo(tmp_path)
+    for d in ("2026-04-20", "2026-04-21"):
+        (repo / "archive" / f"{d}.html").write_text("<html></html>")
+    wo.write_outputs("2026-04-22", LINKY_HTML, DIARY, PROMPT, no_commit=True, repo_root=repo)
+    return repo
+
+
+def test_pipeline_canonicalizes_every_archive_link(tmp_path):
+    repo = _write_linky(tmp_path)
+    out = (repo / "index.html").read_text()
+    assert 'href="/archive/2026-04-20.html"' in out
+    assert 'href="/archive/2026-04-21.html"' in out
+    assert 'href="/2026-04-20"' not in out
+    assert "jeff.clarkle.com" not in out
+
+
+def test_pipeline_links_today_even_though_file_not_written_yet(tmp_path):
+    repo = _write_linky(tmp_path)
+    assert 'href="/archive/2026-04-22.html"' in (repo / "index.html").read_text()
+
+
+def test_pipeline_de_links_dates_with_no_snapshot(tmp_path):
+    repo = _write_linky(tmp_path)
+    out = (repo / "index.html").read_text()
+    assert 'href="/2026-01-01"' not in out
+    assert '<span class="archive-link">no snapshot</span>' in out
+
+
+def test_pipeline_leaves_other_links_alone(tmp_path):
+    repo = _write_linky(tmp_path)
+    assert 'href="mailto:jeff@clarkle.com"' in (repo / "index.html").read_text()
+
+
+def test_normalized_index_and_snapshot_stay_byte_identical(tmp_path):
+    repo = _write_linky(tmp_path)
+    assert (repo / "index.html").read_text() == (repo / "archive" / "2026-04-22.html").read_text()
+
+
+def test_normalizer_failure_never_costs_the_day(monkeypatch, tmp_path):
+    """run_georgia records committed=True before calling write_outputs, so a
+    raise in here would mean no site while stats claim one shipped."""
+    repo = _fake_repo(tmp_path)
+
+    def boom(html, dates):
+        raise ValueError("kaboom")
+
+    monkeypatch.setattr(wo, "normalize_links", boom)
+    wo.write_outputs("2026-04-22", LINKY_HTML, DIARY, PROMPT, no_commit=True, repo_root=repo)
+
+    out = (repo / "index.html").read_text()
+    assert "hello" in out
+    assert 'href="/2026-04-20"' in out  # raw, unrewritten — but shipped
+
+
+def test_available_dates_includes_today_and_excludes_archive_index(tmp_path):
+    repo = _fake_repo(tmp_path)
+    (repo / "archive" / "2026-04-20.html").write_text("<html></html>")
+    (repo / "archive" / "index.html").write_text("<html></html>")
+    assert wo._available_dates(repo, "2026-04-22") == {"2026-04-20", "2026-04-22"}
+
+
+def test_finalize_html_is_idempotent(tmp_path):
+    """write_outputs calls it unconditionally, so run_georgia's already-
+    finalized page must pass through untouched rather than gaining a second
+    footer. This replaced an already_finalized flag a caller could get wrong."""
+    repo = _fake_repo(tmp_path)
+    once = wo.finalize_html(HTML, "2026-04-22", repo)
+    assert wo.finalize_html(once, "2026-04-22", repo) is once
+    assert once.count("today's prompt") == 1
+
+
+def test_write_outputs_does_not_re_finalize_a_finalized_page(monkeypatch, tmp_path):
+    repo = _fake_repo(tmp_path)
+    final = wo.finalize_html(LINKY_HTML, "2026-04-22", repo)
+    wo.write_outputs("2026-04-22", final, DIARY, PROMPT, no_commit=True, repo_root=repo)
+    written = (repo / "index.html").read_text()
+    assert written == final
+    assert written.count("today's prompt") == 1
