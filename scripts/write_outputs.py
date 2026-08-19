@@ -56,6 +56,19 @@ def _maybe_inject_tech(html: str, date_str: str) -> str:
     return inject_tech(html, date_str, os.environ.get("GOATCOUNTER_CODE"))
 
 
+def finalize_html(html: str, date_str: str, repo_root: Path | None = None) -> str:
+    """Turn Georgia's raw output into the page that actually ships.
+
+    Split out of write_outputs so run_georgia can verify the finished page —
+    the one with rewritten links and the injected footer — before anything is
+    written or committed. Not idempotent: inject_tech would append a second
+    footer, so call it once.
+    """
+    root = repo_root or REPO_ROOT
+    html = _safe_normalize_links(html, _available_dates(root, date_str))
+    return _maybe_inject_tech(html, date_str)
+
+
 def write_outputs(
     date_str: str,
     html: str,
@@ -64,12 +77,14 @@ def write_outputs(
     *,
     no_commit: bool = False,
     repo_root: Path | None = None,
+    already_finalized: bool = False,
 ) -> None:
     root = repo_root or REPO_ROOT
 
-    # Rewriting + injection (after validation, before writing)
-    html = _safe_normalize_links(html, _available_dates(root, date_str))
-    html = _maybe_inject_tech(html, date_str)
+    # Rewriting + injection (after validation, before writing). run_georgia
+    # finalizes ahead of its verification gate and passes the result through.
+    if not already_finalized:
+        html = finalize_html(html, date_str, root)
 
     # Write Georgia's outputs
     (root / "index.html").write_text(html)

@@ -14,19 +14,50 @@ import time
 from datetime import date, datetime, timezone
 from pathlib import Path
 
+import frontmatter
 from anthropic import APIError
 
 from scripts.assemble_prompt import REPO_ROOT, assemble_prompt
 from scripts.call_sonnet import SonnetOutputError, call_sonnet
 from scripts.record_stats import record_stats
 from scripts.validate_output import validate_output
-from scripts.write_outputs import write_outputs
+from scripts.verify_archive_claims import (
+    Discrepancy,
+    SOFT,
+    hard_failures,
+    soft_failures,
+    verify_archive_claims,
+)
+from scripts.write_outputs import finalize_html, write_outputs
 
 
 SONNET_TAG_HINT = (
     "Your previous response didn't include the <site>...</site> or "
     "<log>...</log> tags correctly. Both are required."
 )
+
+
+def _diary_importance(diary: str) -> int | None:
+    """Today's importance, for checking what the page claims about today."""
+    try:
+        value = frontmatter.loads(diary).metadata.get("importance")
+    except Exception:  # noqa: BLE001 — validate_output already reports bad frontmatter
+        return None
+    return value if isinstance(value, int) and not isinstance(value, bool) else None
+
+
+def safe_verify(html: str, repo_root: Path, today: str, diary: str) -> list[Discrepancy]:
+    """verify_archive_claims, but a bug in the checker can't cost a day.
+
+    A failure to verify is reported as a soft finding rather than raised: the
+    gate exists to stop the site lying about its own history, not to become a
+    new way for the site to go dark.
+    """
+    try:
+        return verify_archive_claims(html, repo_root, today, _diary_importance(diary))
+    except Exception as exc:  # noqa: BLE001
+        print(f"run_georgia: archive verification failed to run: {exc}", file=sys.stderr)
+        return [Discrepancy(SOFT, f"Archive verification did not run ({exc}).")]
 
 
 def add_retry_hint(prompt: str, reasons: list[str]) -> str:
@@ -57,7 +88,10 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
         except APIError as exc:
             api_errors += 1
             print(f"run_georgia: API error on attempt {attempt}: {exc}", file=sys.stderr)
-            record_stats(today, attempts, validation_failures, api_errors, committed, start)
+            record_stats(
+                today, attempts, validation_failures, api_errors, committed, start,
+                repo_root=repo_root,
+            )
             return 1
         except SonnetOutputError as exc:
             reasons = [SONNET_TAG_HINT]
@@ -74,16 +108,71 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                 f"run_georgia: SonnetOutputError twice. Raw excerpt: {exc.raw[:500]!r}",
                 file=sys.stderr,
             )
-            record_stats(today, attempts, validation_failures, api_errors, committed, start)
+            record_stats(
+                today, attempts, validation_failures, api_errors, committed, start,
+                repo_root=repo_root,
+            )
             return 1
 
         is_valid, reasons = validate_output(html, diary, facts, today)
         if is_valid:
+            # Verify the page that will actually ship — links rewritten,
+            # footer injected — before anything is written or committed.
+            final_html = finalize_html(html, today, repo_root)
+            found = safe_verify(final_html, repo_root, today, diary)
+            hard = hard_failures(found)
+
+            if hard:
+                # The page is inventing archive days or linking to days that
+                # don't exist. That's the site lying about its own record, so
+                # it doesn't ship.
+                reasons = [d.message for d in hard]
+                validation_failures.append(reasons)
+                if attempt == 1:
+                    print(
+                        f"run_georgia: archive claims failed on attempt 1: {reasons}",
+                        file=sys.stderr,
+                    )
+                    prompt = add_retry_hint(prompt, reasons)
+                    continue
+                print(
+                    f"run_georgia: archive claims failed twice. Latest: {reasons}",
+                    file=sys.stderr,
+                )
+                record_stats(
+                today, attempts, validation_failures, api_errors, committed, start,
+                repo_root=repo_root,
+            )
+                return 1
+
+            # Soft findings — a miscount or a wrong importance marker — are
+            # recorded and shipped. Not worth a day of no site.
+            warnings = [d.message for d in soft_failures(found)]
+            for warning in warnings:
+                print(f"run_georgia: archive warning: {warning}", file=sys.stderr)
+
             # Record stats BEFORE write_outputs so this run's stats line is
             # included in write_outputs's `git add -A` commit.
             committed = True
-            record_stats(today, attempts, validation_failures, api_errors, committed, start)
-            write_outputs(today, html, diary, prompt, no_commit=no_commit)
+            record_stats(
+                today,
+                attempts,
+                validation_failures,
+                api_errors,
+                committed,
+                start,
+                repo_root=repo_root,
+                archive_warnings=warnings,
+            )
+            write_outputs(
+                today,
+                final_html,
+                diary,
+                prompt,
+                no_commit=no_commit,
+                repo_root=repo_root,
+                already_finalized=True,
+            )
             return 0
 
         validation_failures.append(reasons)
@@ -96,7 +185,10 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
             continue
 
         print(f"run_georgia: validation failed twice. Latest reasons: {reasons}", file=sys.stderr)
-        record_stats(today, attempts, validation_failures, api_errors, committed, start)
+        record_stats(
+                today, attempts, validation_failures, api_errors, committed, start,
+                repo_root=repo_root,
+            )
         return 1
 
     # Unreachable — the loop always returns.

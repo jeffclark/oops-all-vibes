@@ -361,10 +361,19 @@ def _archive_url_note(archive_dir: Path) -> str:
     span = dates[0] if len(dates) == 1 else f"{dates[0]} through {dates[-1]}"
     return (
         "When you link to a past day, the URL is `/archive/YYYY-MM-DD.html` — "
-        f"that exact shape, including the `.html`. Snapshots exist for {span} "
-        "(a couple of days in that range are missing). Any other shape, or a "
-        "date with no snapshot, gets rewritten or de-linked before the page "
-        "ships, so use the real one and it'll survive as you wrote it.\n"
+        f"that exact shape, including the `.html`. There are {len(dates)} archived "
+        f"days, {span}, and a few dates in that range are missing — days I didn't "
+        "run. Those gaps are part of the record; don't paper over them with an "
+        "entry for a day that never happened.\n"
+        "\n"
+        "   However you render the archive — grid, list, table, prose, whatever "
+        "today's design wants — put `data-archive-date=\"YYYY-MM-DD\"` on each "
+        "entry. It's invisible and constrains nothing about how it looks. It's "
+        "how the pipeline checks that what you say about a day is true: that the "
+        "day exists, that it really was day N, that its importance matches what "
+        "you wrote in that day's log. Entries for days that don't exist will stop "
+        "the site from shipping; wrong day numbers, counts and importance markers "
+        "get logged against you. Count archived days, not calendar days.\n"
     )
 
 
