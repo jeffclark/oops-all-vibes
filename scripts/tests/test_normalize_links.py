@@ -214,3 +214,30 @@ def test_de_linking_drops_link_only_attributes():
     span = BeautifulSoup(normalize_links(html, DATES), "html.parser").find("span")
     for gone in ("href", "target", "rel", "download"):
         assert not span.has_attr(gone), gone
+
+
+# ---------- shapes Georgia hadn't invented yet ----------
+
+
+def test_slash_separated_dates_are_recognized():
+    """One shipped page used /YYYY/MM/DD for its whole archive list. 26 links
+    that neither the rewriter nor the checker could see."""
+    for shape in ("/2026/08/17", "/archive/2026/08/17", "/2026/08/17/"):
+        out = normalize_links(page(f'<a href="{shape}">x</a>'), DATES)
+        assert hrefs(out) == ["/archive/2026-08-17.html"], shape
+
+
+def test_unpadded_dates_are_recognized():
+    for shape in ("/2026-8-17", "/2026/8/17", "/archive/2026-8-17.html"):
+        out = normalize_links(page(f'<a href="{shape}">x</a>'), DATES)
+        assert hrefs(out) == ["/archive/2026-08-17.html"], shape
+
+
+def test_htm_extension_is_recognized():
+    out = normalize_links(page('<a href="/archive/2026-08-17.htm">x</a>'), DATES)
+    assert hrefs(out) == ["/archive/2026-08-17.html"]
+
+
+def test_deeper_paths_are_not_mistaken_for_dates():
+    for shape in ("/2026/08/17/extra", "/26-08-17", "/2026-08", "/x/2026/08/17"):
+        assert archive_date(shape) is None, shape

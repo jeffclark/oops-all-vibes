@@ -31,7 +31,8 @@ from pathlib import Path
 import frontmatter
 from bs4 import BeautifulSoup
 
-from scripts.normalize_links import archive_date
+from scripts.check_links import resolve_internal
+from scripts.normalize_links import archive_date, internal_path
 
 HARD = "hard"
 SOFT = "soft"
@@ -209,7 +210,7 @@ def verify_archive_claims(
     soup = BeautifulSoup(html, "html.parser")
     found: list[Discrepancy] = []
 
-    _check_links(soup, truth, found)
+    _check_links(soup, truth, repo_root, today, found)
     entries = _entries(soup)
     _check_entries(entries, truth, found)
     _check_counts(soup, entries, truth, found)
@@ -218,15 +219,51 @@ def verify_archive_claims(
     return found
 
 
-def _check_links(soup, truth: ArchiveTruth, found: list[Discrepancy]) -> None:
-    """HARD: a link to a day that isn't there."""
+def _pending_paths(today: str) -> set[str]:
+    """Paths this run creates after the gate runs, so they can't be on disk yet."""
+    return {
+        "/",
+        "/index.html",
+        # build_archive_index regenerates this after the gate, and on the very
+        # first run it doesn't exist yet at all.
+        "/archive/",
+        "/archive/index.html",
+        f"/archive/{today}.html",
+        f"/log/{today}.md",
+        f"/prompts/{today}.md",
+    }
+
+
+def _check_links(
+    soup, truth: ArchiveTruth, repo_root: Path, today: str, found: list[Discrepancy]
+) -> None:
+    """HARD: a link to a day that isn't there. SOFT: any other dead internal link."""
+    pending = _pending_paths(today)
+    # The page ships to / and to /archive/<today>.html, so resolve relative
+    # links from the root copy — the canonical one.
+    page = repo_root / "index.html"
+    reported: set[str] = set()
+
     for tag in soup.find_all("a", href=True):
-        date_str = archive_date(tag["href"])
-        if date_str is not None and date_str not in truth.dates:
+        href = tag["href"]
+        date_str = archive_date(href)
+        if date_str is not None:
+            if date_str not in truth.dates:
+                found.append(Discrepancy(
+                    HARD,
+                    f"You linked to {date_str}, but there's no archived site for that "
+                    f"day. Only link days that exist.",
+                ))
+            continue
+
+        path = internal_path(href)
+        if path is None or path in pending or href in reported:
+            continue
+        if resolve_internal(path, page, repo_root) is None:
+            reported.add(href)
             found.append(Discrepancy(
-                HARD,
-                f"You linked to {date_str}, but there's no archived site for that "
-                f"day. Only link days that exist.",
+                SOFT,
+                f"You linked to {href}, but there's no page at that path.",
             ))
 
 

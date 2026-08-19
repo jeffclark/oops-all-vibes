@@ -26,11 +26,16 @@ SITE_HOSTS = frozenset({"clarkle.com", "www.clarkle.com", "jeff.clarkle.com"})
 
 _ORIGIN_RE = re.compile(r"^(?:https?:)?//([^/]+)", re.IGNORECASE)
 
-# The date-shaped paths Georgia has actually emitted, plus the canonical one.
-# Anchored end-to-end so /log/<date>.md and /prompts/<date>.md — the links
-# inject_tech adds — cannot match.
+# Every date-shaped path Georgia has emitted, and then some. She invents a
+# new URL shape most days — one page shipped its whole archive list as
+# /YYYY/MM/DD — so this matches the date liberally rather than enumerating
+# the forms seen so far: either separator, optional zero-padding, optional
+# archive/ prefix, optional .htm(l). Still anchored end-to-end, so the
+# /log/<date>.md and /prompts/<date>.md links inject_tech adds cannot match.
 _PATH_RE = re.compile(
-    r"^(?:\./)?(?:/)?(?:archive/)?(\d{4}-\d{2}-\d{2})(?:\.html)?/?$",
+    r"^(?:\./)?/?(?:archive/)?"
+    r"(\d{4})[-/](\d{1,2})[-/](\d{1,2})"
+    r"(?:\.html?)?/?$",
     re.IGNORECASE,
 )
 
@@ -40,23 +45,18 @@ def canonical_href(date_str: str) -> str:
     return f"/archive/{date_str}.html"
 
 
-def archive_date(href: str) -> str | None:
-    """Return the date an href is trying to reach, or None if it isn't one.
+def internal_path(href: str) -> str | None:
+    """The path an href points at within this site, or None if it leaves it.
 
     Handles absolute links to our own hosts, protocol-relative links, and
-    root- or document-relative paths. Fragments are ignored for matching and
-    re-attached by the caller. Returns None for external hosts, mailto:,
-    bare fragments, and every non-date path.
+    root- or document-relative paths. Returns None for external hosts, other
+    schemes (mailto:, tel:, javascript:), and bare fragments or queries,
+    which never address a file.
     """
     href = href.strip()
-    if not href:
+    if not href or href.startswith(("#", "?")):
         return None
 
-    # Bare fragment or query — never an archive link.
-    if href.startswith(("#", "?")):
-        return None
-
-    # Reject any scheme we don't serve (mailto:, tel:, javascript:, ftp:).
     scheme = re.match(r"^([a-z][a-z0-9+.-]*):", href, re.IGNORECASE)
     if scheme and scheme.group(1).lower() not in ("http", "https"):
         return None
@@ -67,10 +67,27 @@ def archive_date(href: str) -> str | None:
         if host not in SITE_HOSTS:
             return None
         href = href[origin.end():] or "/"
+    elif scheme:
+        # An http(s) scheme with no //authority isn't a path we serve.
+        return None
 
-    path = href.split("#", 1)[0].split("?", 1)[0]
+    return href.split("#", 1)[0].split("?", 1)[0] or "/"
+
+
+def archive_date(href: str) -> str | None:
+    """Return the date an href is trying to reach, or None if it isn't one.
+
+    Fragments are ignored for matching and re-attached by the caller.
+    """
+    path = internal_path(href)
+    if path is None:
+        return None
     match = _PATH_RE.match(path)
-    return match.group(1) if match else None
+    if not match:
+        return None
+    year, month, day = match.groups()
+    # Zero-pad so /2026-8-7 and /2026/08/07 land on the same snapshot.
+    return f"{year}-{int(month):02d}-{int(day):02d}"
 
 
 # Attributes that only make sense on a link. Everything else survives the

@@ -182,7 +182,37 @@ def test_dates_outside_the_archive_range_are_ignored(tmp_path):
 
 
 def test_non_archive_links_are_ignored(tmp_path):
-    body = '<a href="/log/2026-04-25.md">log</a><a href="mailto:jeff@clarkle.com">x</a>'
+    """A /log/ link is date-shaped but is not an archive link, so it must
+    never be reported as a missing snapshot."""
+    body = (
+        '<a href="/log/2026-04-23.md">log</a>'
+        '<a href="mailto:jeff@clarkle.com">x</a>'
+        '<a href="https://www.linkedin.com/in/serialcreative">in</a>'
+    )
+    assert check(tmp_path, body) == []
+
+
+def test_dead_internal_link_is_soft_not_hard(tmp_path):
+    """A link to a page that doesn't exist is real breakage, but it isn't the
+    site lying about its archive, so it ships with a warning."""
+    found = check(tmp_path, '<a href="/about">About</a>')
+    assert hard_failures(found) == []
+    assert "/about" in messages(soft_failures(found))
+
+
+def test_dead_internal_link_reported_once_per_href(tmp_path):
+    body = '<a href="/about">a</a><a href="/about">b</a>'
+    assert len([d for d in check(tmp_path, body) if "/about" in d.message]) == 1
+
+
+def test_links_to_files_this_run_creates_are_not_reported(tmp_path):
+    """The injected footer points at today's log and prompt, and the archive
+    index is rebuilt — none of which exist on disk when the gate runs."""
+    body = (
+        f'<a href="/log/{TODAY}.md">log</a>'
+        f'<a href="/prompts/{TODAY}.md">prompt</a>'
+        '<a href="/archive/">archive</a>'
+    )
     assert check(tmp_path, body) == []
 
 

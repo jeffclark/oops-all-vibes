@@ -245,3 +245,57 @@ def test_older_lines_without_the_key_still_render(tmp_path):
     html = (tmp_path / "stats.html").read_text()
     assert '<td class="warn"></td>' in html
     assert "2026-04-22" in html
+
+
+# ---------- check_links resolves every internal link, not just dates ----------
+
+
+def test_check_links_catches_a_dead_non_date_link(tmp_path):
+    from scripts.check_links import broken_links
+
+    (tmp_path / "archive").mkdir()
+    (tmp_path / "archive" / "2026-04-23.html").write_text("<html></html>")
+    (tmp_path / "index.html").write_text('<a href="/about">about</a>')
+    problems = broken_links(tmp_path)
+    assert [p[1] for p in problems] == ["/about"]
+
+
+def test_check_links_resolves_directories_and_relative_paths(tmp_path):
+    from scripts.check_links import broken_links
+
+    (tmp_path / "archive").mkdir()
+    (tmp_path / "archive" / "index.html").write_text("<html></html>")
+    (tmp_path / "archive" / "notes.html").write_text("<html></html>")
+    (tmp_path / "archive" / "2026-04-23.html").write_text(
+        '<a href="./notes.html">rel</a><a href="notes.html">bare rel</a>'
+        '<a href="/archive/">idx</a>'
+    )
+    (tmp_path / "stats.html").write_text("<html></html>")
+    (tmp_path / "index.html").write_text(
+        '<a href="/archive">no slash</a><a href="/stats.html">s</a>'
+        '<a href="mailto:x@y.z">m</a><a href="https://example.com/nope">e</a>'
+    )
+    assert broken_links(tmp_path) == []
+
+
+def test_check_links_rejects_paths_escaping_the_site(tmp_path):
+    from scripts.check_links import broken_links
+
+    (tmp_path / "archive").mkdir()
+    (tmp_path / "index.html").write_text('<a href="/../../etc/passwd">x</a>')
+    assert len(broken_links(tmp_path)) == 1
+
+
+def test_check_links_still_demands_canonical_form_for_date_links(tmp_path):
+    """A relative date link resolves, but two URL shapes is the ambiguity the
+    canonical rule exists to prevent."""
+    from scripts.check_links import broken_links
+
+    (tmp_path / "archive").mkdir()
+    (tmp_path / "archive" / "2026-04-23.html").write_text(
+        '<a href="./2026-04-23.html">self</a>'
+    )
+    (tmp_path / "index.html").write_text("<html></html>")
+    problems = broken_links(tmp_path)
+    assert len(problems) == 1
+    assert "not canonical" in problems[0][2]

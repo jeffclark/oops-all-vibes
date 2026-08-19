@@ -112,8 +112,9 @@ def test_write_outputs_inject_tech_called_if_module_present(monkeypatch, tmp_pat
     monkeypatch.setitem(sys.modules, "scripts.inject_tech", fake_module)
 
     wo.write_outputs("2026-04-22", HTML, DIARY, PROMPT, no_commit=True, repo_root=repo)
-    assert (repo / "index.html").read_text() == injected
-    assert (repo / "archive" / "2026-04-22.html").read_text() == injected
+    written = (repo / "index.html").read_text()
+    assert written == injected + wo.FINALIZED_MARKER
+    assert (repo / "archive" / "2026-04-22.html").read_text() == written
 
 
 # ---------- build_archive_index ----------
@@ -228,3 +229,22 @@ def test_available_dates_includes_today_and_excludes_archive_index(tmp_path):
     (repo / "archive" / "2026-04-20.html").write_text("<html></html>")
     (repo / "archive" / "index.html").write_text("<html></html>")
     assert wo._available_dates(repo, "2026-04-22") == {"2026-04-20", "2026-04-22"}
+
+
+def test_finalize_html_is_idempotent(tmp_path):
+    """write_outputs calls it unconditionally, so run_georgia's already-
+    finalized page must pass through untouched rather than gaining a second
+    footer. This replaced an already_finalized flag a caller could get wrong."""
+    repo = _fake_repo(tmp_path)
+    once = wo.finalize_html(HTML, "2026-04-22", repo)
+    assert wo.finalize_html(once, "2026-04-22", repo) is once
+    assert once.count("today's prompt") == 1
+
+
+def test_write_outputs_does_not_re_finalize_a_finalized_page(monkeypatch, tmp_path):
+    repo = _fake_repo(tmp_path)
+    final = wo.finalize_html(LINKY_HTML, "2026-04-22", repo)
+    wo.write_outputs("2026-04-22", final, DIARY, PROMPT, no_commit=True, repo_root=repo)
+    written = (repo / "index.html").read_text()
+    assert written == final
+    assert written.count("today's prompt") == 1

@@ -165,13 +165,7 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                 archive_warnings=warnings,
             )
             write_outputs(
-                today,
-                final_html,
-                diary,
-                prompt,
-                no_commit=no_commit,
-                repo_root=repo_root,
-                already_finalized=True,
+                today, final_html, diary, prompt, no_commit=no_commit, repo_root=repo_root
             )
             return 0
 
