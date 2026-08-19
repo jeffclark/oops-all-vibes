@@ -322,7 +322,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     dates = select_dates(REPO_ROOT, args.days, args.dates)
-    output_dir = args.output
+    # expanduser so a quoted "~/tmp/model-ab" works, not just a shell-expanded one
+    output_dir = args.output.expanduser()
 
     jobs: list[tuple[str, Arm]] = []
     for date in dates:
