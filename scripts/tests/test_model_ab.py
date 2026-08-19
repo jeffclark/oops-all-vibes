@@ -154,3 +154,54 @@ def test_viewer_renders_both_outcomes(tmp_path):
     html = (tmp_path / "index.html").read_text()
     assert 'src="2026-08-19/sonnet.html"' in html
     assert "missing &lt;site&gt;" in html  # escaped, not injected
+
+
+# ---------- validation gate ----------
+
+REAL_HTML = (REPO_ROOT / "archive" / "2026-08-18.html").read_text()
+REAL_DIARY = (REPO_ROOT / "log" / "2026-08-18.md").read_text()
+REAL_FACTS = __import__("json").loads((REPO_ROOT / "facts.json").read_text())
+
+
+def test_real_shipped_output_passes_the_gate():
+    """A page that actually shipped must validate, or the gate is wired up wrong."""
+    client = _mock_client([_block("text", f"<site>{REAL_HTML}</site><log>{REAL_DIARY}</log>")])
+    result, _, _ = run_arm(SONNET, "2026-08-18", "prompt", client, REAL_FACTS)
+    assert result.ok
+    assert result.valid, result.validation_failures
+    assert result.validation_failures == []
+
+
+def test_parsed_but_undersized_page_is_flagged_invalid():
+    client = _mock_client(_good_blocks())
+    result, html, _ = run_arm(SONNET, "2026-08-18", "prompt", client, REAL_FACTS)
+    assert result.ok  # tags parsed fine
+    assert not result.valid  # but it would have triggered a retry
+    assert any("too small" in f for f in result.validation_failures)
+
+
+def test_missing_inviolable_fact_is_flagged():
+    stripped = REAL_HTML.replace(REAL_FACTS["email"], "redacted@example.com")
+    client = _mock_client([_block("text", f"<site>{stripped}</site><log>{REAL_DIARY}</log>")])
+    result, _, _ = run_arm(SONNET, "2026-08-18", "prompt", client, REAL_FACTS)
+    assert result.ok
+    assert not result.valid
+    assert any("email" in f for f in result.validation_failures)
+
+
+def test_viewer_shows_validation_outcome(tmp_path):
+    (tmp_path / "2026-08-18").mkdir(parents=True)
+    (tmp_path / "2026-08-18" / "sonnet.html").write_text("<p>site</p>")
+    (tmp_path / "2026-08-18" / "opus.html").write_text("<p>site</p>")
+    results = [
+        Result(date="2026-08-18", arm="sonnet", model=SONNET.model, ok=True, valid=True),
+        Result(
+            date="2026-08-18", arm="opus", model=OPUS.model, ok=True, valid=False,
+            validation_failures=["Your HTML is too small (12 bytes)."],
+        ),
+    ]
+    build_viewer(results, ["2026-08-18"], tmp_path)
+    html = (tmp_path / "index.html").read_text()
+    assert "passes validation" in html
+    assert "would have triggered a retry" in html
+    assert "too small (12 bytes)" in html

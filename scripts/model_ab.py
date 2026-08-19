@@ -2,7 +2,13 @@
 
 Reads real prompts from prompts/<date>.md and calls each model arm once per
 date, writing the parsed <site> HTML and <log> diary to model-ab/<date>/ plus
-a side-by-side viewer at model-ab/index.html.
+a side-by-side viewer at model-ab/index.html. Each arm's output is then put
+through validate_output — the same gate that decides a retry in the real run —
+so the comparison covers "would this have shipped", not just how it looks.
+
+verify_archive_claims is deliberately NOT run: it checks the page against the
+archive currently on disk, which has moved on since these prompts were written,
+so a replayed page would be judged against dates it couldn't have known about.
 
 This is a review tool, not part of the daily pipeline. It never writes to
 index.html, archive/, log/, or stats.jsonl, and run_georgia.py doesn't import
@@ -30,6 +36,7 @@ from anthropic import Anthropic
 # them here: if the A/B parsed output differently from the real run, the
 # comparison would be measuring the parser instead of the models.
 from scripts.call_sonnet import _LOG_RE, _SITE_RE
+from scripts.validate_output import validate_output
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -96,6 +103,8 @@ class Result:
     html_bytes: int = 0
     diary_bytes: int = 0
     cost_usd: float = 0.0
+    valid: bool = False
+    validation_failures: list[str] = field(default_factory=list)
     skipped: bool = False
 
 
@@ -116,7 +125,13 @@ def select_dates(repo_root: Path, days: int, explicit: str | None) -> list[str]:
     return available[-days:]
 
 
-def run_arm(arm: Arm, date: str, prompt: str, client: Anthropic) -> tuple[Result, str, str]:
+def run_arm(
+    arm: Arm,
+    date: str,
+    prompt: str,
+    client: Anthropic,
+    facts: dict | None = None,
+) -> tuple[Result, str, str]:
     """Call one arm once. Returns (result, html, diary); html/diary empty on failure."""
     result = Result(date=date, arm=arm.name, model=arm.model)
     start = time.monotonic()
@@ -164,6 +179,11 @@ def run_arm(arm: Arm, date: str, prompt: str, client: Anthropic) -> tuple[Result
     result.ok = True
     result.html_bytes = len(html.encode())
     result.diary_bytes = len(diary.encode())
+
+    # The same gate run_georgia.py uses to decide whether a day ships or retries.
+    result.valid, result.validation_failures = validate_output(
+        html, diary, facts or {}, date
+    )
     return result, html, diary
 
 
@@ -193,6 +213,13 @@ def build_viewer(results: list[Result], dates: list[str], output_dir: Path) -> N
                     f"${r.cost_usd:.2f} &middot; {r.duration_s:.0f}s &middot; "
                     f'<a href="{date}/{arm.name}.html" target="_blank">full page &#8599;</a> &middot; '
                     f'<a href="{date}/{arm.name}.diary.md" target="_blank">diary</a></p>'
+                    + (
+                        '<p class="valid">passes validation</p>'
+                        if r.valid
+                        else '<p class="invalid"><strong>would have triggered a retry:</strong><br>'
+                        + "<br>".join(escape(f) for f in r.validation_failures)
+                        + "</p>"
+                    )
                 )
             else:
                 reason = escape(r.error) if r and r.error else "not run"
@@ -212,6 +239,7 @@ def build_viewer(results: list[Result], dates: list[str], output_dir: Path) -> N
                 f"<td>{r.input_tokens:,}</td><td>{r.output_tokens:,}</td>"
                 f"<td>${r.cost_usd:.2f}</td><td>{r.duration_s:.0f}s</td>"
                 f"<td>{r.html_bytes:,}</td><td>{escape(r.stop_reason)}</td>"
+                f"<td>{'pass' if r.valid else 'FAIL' if r.ok else '&mdash;'}</td>"
                 f"<td>{status}</td></tr>"
             )
 
@@ -220,9 +248,11 @@ def build_viewer(results: list[Result], dates: list[str], output_dir: Path) -> N
         arm_results = [r for r in results if r.arm == arm.name]
         cost = sum(r.cost_usd for r in arm_results)
         ok = sum(1 for r in arm_results if r.ok)
+        shipped = sum(1 for r in arm_results if r.valid)
         totals.append(
             f"<li><strong>{arm.name}</strong> ({arm.model}): "
-            f"${cost:.2f} across {len(arm_results)} run(s), {ok} usable &mdash; {arm.note}</li>"
+            f"${cost:.2f} across {len(arm_results)} run(s), {ok} parsed, "
+            f"{shipped} would have shipped &mdash; {arm.note}</li>"
         )
 
     html = f"""<!doctype html>
@@ -245,6 +275,8 @@ def build_viewer(results: list[Result], dates: list[str], output_dir: Path) -> N
   iframe {{ width: 100%; height: 820px; border: 1px solid #999; background: #fff; }}
   .meta {{ font-size: .8rem; color: #666; margin: .4rem 0 0; }}
   .failed {{ border: 1px dashed #b00; padding: 2rem; color: #b00; text-align: center; }}
+  .valid {{ font-size: .8rem; color: #060; margin: .3rem 0 0; }}
+  .invalid {{ font-size: .8rem; color: #b00; margin: .3rem 0 0; }}
   table {{ border-collapse: collapse; width: 100%; font-size: .85rem; }}
   th, td {{ border: 1px solid #ccc; padding: .35rem .6rem; text-align: left; }}
   th {{ background: rgba(128,128,128,.15); }}
@@ -264,8 +296,11 @@ opened this over <code>file://</code>; Chrome blocks nested local frames. Serve 
 (<code>python3 -m http.server</code>) or use the &ldquo;full page&rdquo; links.</p>
 {"".join(sections)}
 <h2>Numbers</h2>
+<p class="lede">&ldquo;Validation&rdquo; is <code>validate_output</code>, the same gate that decides a
+retry in the real run. <code>verify_archive_claims</code> is not run here &mdash; it judges a page
+against the archive as it stands today, which these replayed prompts predate.</p>
 <table>
-<tr><th>date</th><th>arm</th><th>input tok</th><th>output tok</th><th>cost</th><th>time</th><th>html bytes</th><th>stop reason</th><th>status</th></tr>
+<tr><th>date</th><th>arm</th><th>input tok</th><th>output tok</th><th>cost</th><th>time</th><th>html bytes</th><th>stop reason</th><th>validation</th><th>status</th></tr>
 {"".join(rows)}
 </table>
 </body>
@@ -321,14 +356,20 @@ def main(argv: list[str] | None = None) -> int:
 
     client = Anthropic()
     prompts = {d: (REPO_ROOT / "prompts" / f"{d}.md").read_text() for d in dates}
+    facts = json.loads((REPO_ROOT / "facts.json").read_text())
 
     def execute(job: tuple[str, Arm]) -> Result:
         date, arm = job
         print(f"model_ab: calling {arm.model} for {date}...", flush=True)
-        result, html, diary = run_arm(arm, date, prompts[date], client)
+        result, html, diary = run_arm(arm, date, prompts[date], client, facts)
         if html or diary:
             write_arm_output(output_dir / date, arm.name, html, diary)
-        status = "ok" if result.ok else f"FAILED — {result.error}"
+        if not result.ok:
+            status = f"FAILED — {result.error}"
+        elif not result.valid:
+            status = f"parsed but INVALID — {'; '.join(result.validation_failures)}"
+        else:
+            status = "ok"
         print(
             f"model_ab: {date}/{arm.name} {status} "
             f"({result.output_tokens:,} out, ${result.cost_usd:.2f}, {result.duration_s:.0f}s)",
@@ -364,8 +405,15 @@ def main(argv: list[str] | None = None) -> int:
     build_viewer(results, dates, output_dir)
 
     failures = [r for r in results if not r.ok]
+    invalid = [r for r in results if r.ok and not r.valid]
     total = sum(r.cost_usd for r in results)
-    print(f"\nmodel_ab: done. ${total:.2f} spent, {len(failures)} failure(s).")
+    print(f"\nmodel_ab: done. ${total:.2f} spent, {len(failures)} failure(s), "
+          f"{len(invalid)} parsed-but-invalid.")
+    for arm in ARMS:
+        arm_results = [r for r in results if r.arm == arm.name and not r.skipped]
+        if arm_results:
+            passed = sum(1 for r in arm_results if r.valid)
+            print(f"model_ab:   {arm.name}: {passed}/{len(arm_results)} would have shipped")
     print(f"\nmodel_ab: review with —")
     print(f"    cd {output_dir} && python3 -m http.server 8000")
     print("    open http://localhost:8000/")
