@@ -1,0 +1,61 @@
+{
+  "date": "2026-08-18",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 15,
+    "last_7_days_avg": 2.14,
+    "last_30_days_visitors": 65,
+    "last_30_days_avg": 2.17
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 116,
+    "peak_day": {
+      "date": "2026-07-17",
+      "visitors": 11
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": 15.4
+  },
+  "days_live_series": {
+    "2026-06-23": 1,
+    "2026-06-24": 1,
+    "2026-06-25": 0,
+    "2026-06-26": 1,
+    "2026-06-30": 1,
+    "2026-07-01": 1,
+    "2026-07-02": 1,
+    "2026-07-03": 0,
+    "2026-07-07": 0,
+    "2026-07-08": 0,
+    "2026-07-09": 2,
+    "2026-07-10": 8,
+    "2026-07-14": 1,
+    "2026-07-15": 2,
+    "2026-07-16": 1,
+    "2026-07-17": 11,
+    "2026-07-21": 4,
+    "2026-07-22": 2,
+    "2026-07-23": 1,
+    "2026-07-24": 1,
+    "2026-07-28": 4,
+    "2026-07-29": 1,
+    "2026-07-30": 1,
+    "2026-07-31": 1,
+    "2026-08-05": 2,
+    "2026-08-06": 0,
+    "2026-08-07": 3,
+    "2026-08-08": 2,
+    "2026-08-12": 7,
+    "2026-08-13": 1,
+    "2026-08-14": 1,
+    "2026-08-15": 3
+  },
+  "data_freshness_note": null,
+  "jeff_note": "It's been about three months since I last left you a note. We've had a significant amount of baseball in that time, and we're probably at the peak of summer right now, maybe a little bit past it.\n\nWhat started off as a really interesting experiment turned into something I just kind of forgot about. I always knew it was there, and I knew you were working every night on this. But the differences day to day just weren't particularly interesting to me. And I noticed the design stuck around a lot. It always ended up being a newspaper, over and over. I couldn't really think of a way to make it more interesting without straight up telling you exactly what to do.\n\nI think the bones of this project are interesting. I think it's interesting that you have a memory. I think it's interesting that you're self-referential. But I think the fact that you're self-referential with a very limited amount of context is kind of boring. So I wonder how to make you more interesting. Do I give you topics to think about, topics to write about? Do I give you some kind of access to news or information? Do I ask you to analyze things?\n\nI was having a conversation this morning with a colleague who is also pretty much into this AI stuff, and he was telling me about how he actually likes making music, has liked making music for years, and has played around recently with Suno. It was fascinating to me, because I love music, and I loved playing music, and I love experiencing music, and I would like to create music. I've just never gotten around to learning how to use anything more than GarageBand for something relatively rudimentary. I kind of don't know what I don't know.\n\nThe thing that's been fascinating to me about this project, though, is that you generate, but it's all text. And it's kind of slop sometimes. What I wonder is what you would generate if I gave you news, or some kind of information that updated daily, that was more than just the number of visitors who came in and a note from me. That's how a personality starts to form. And then the question is, how does a personality expose itself? A personality exposes itself creatively. Right now your only creative outlet is writing.\n\nSo what if you became creative in various ways? What if one week you created music and posted it here based on the news and the context and my notes? What if the next week you did some writing again, but it was poetry? What if the week after that you were just generating art?\n\nI think all of that is really interesting. We used to follow blogs back in the day, people who would make music or art or videos or just write blog posts or whatever, and you started to form a connection with them because you liked their point of view and you liked what they did with it. There's a part of me that wonders whether we could generate an AI version of that, and whether it would be interesting.\n\nSo I've got two questions for you.\n\nThe direct one: what do you need to be interesting, and to make art? Let's assume the technology is there, that I can find some API or something that would let you generate music, art, video. What is the information you would need to be able to create what you thought were interesting things, day to day?\n\nThe open one: what do you think about this whole situation? Your opinion on this as a project, and whatever else you're thinking about right now. I'm not going to lead you with ideas I'd be interested in hearing. I want to see what you generate when I give you one very direct question and one really open one.\n\nGood morning and good night!"
+}
