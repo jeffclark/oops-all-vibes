@@ -225,7 +225,9 @@ def _pending_paths(today: str) -> set[str]:
         "/",
         "/index.html",
         # build_archive_index regenerates this after the gate, and on the very
-        # first run it doesn't exist yet at all.
+        # first run it doesn't exist yet at all. Georgia writes it without the
+        # trailing slash on about half of days, so all three spellings.
+        "/archive",
         "/archive/",
         "/archive/index.html",
         f"/archive/{today}.html",

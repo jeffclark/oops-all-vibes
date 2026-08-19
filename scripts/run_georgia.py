@@ -89,9 +89,9 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
             api_errors += 1
             print(f"run_georgia: API error on attempt {attempt}: {exc}", file=sys.stderr)
             record_stats(
-                today, attempts, validation_failures, api_errors, committed, start,
-                repo_root=repo_root,
-            )
+            today, attempts, validation_failures, api_errors, committed, start,
+            repo_root=repo_root,
+        )
             return 1
         except SonnetOutputError as exc:
             reasons = [SONNET_TAG_HINT]
@@ -109,9 +109,9 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                 file=sys.stderr,
             )
             record_stats(
-                today, attempts, validation_failures, api_errors, committed, start,
-                repo_root=repo_root,
-            )
+            today, attempts, validation_failures, api_errors, committed, start,
+            repo_root=repo_root,
+        )
             return 1
 
         is_valid, reasons = validate_output(html, diary, facts, today)
@@ -140,9 +140,9 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                     file=sys.stderr,
                 )
                 record_stats(
-                today, attempts, validation_failures, api_errors, committed, start,
-                repo_root=repo_root,
-            )
+                    today, attempts, validation_failures, api_errors, committed, start,
+                    repo_root=repo_root,
+                )
                 return 1
 
             # Soft findings — a miscount or a wrong importance marker — are
@@ -180,9 +180,9 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
 
         print(f"run_georgia: validation failed twice. Latest reasons: {reasons}", file=sys.stderr)
         record_stats(
-                today, attempts, validation_failures, api_errors, committed, start,
-                repo_root=repo_root,
-            )
+            today, attempts, validation_failures, api_errors, committed, start,
+            repo_root=repo_root,
+        )
         return 1
 
     # Unreachable — the loop always returns.

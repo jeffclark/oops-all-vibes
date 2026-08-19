@@ -251,3 +251,12 @@ def test_page_with_no_archive_content_stays_silent(tmp_path):
     trigger has to be a named day, not the word itself."""
     body = '<p>Some writing.</p><footer><a href="/archive/">archive</a></footer>'
     assert check(tmp_path, body) == []
+
+
+def test_archive_index_exempt_in_every_spelling(tmp_path):
+    """Georgia links /archive without the trailing slash on ~44% of days, and
+    build_archive_index only writes that file after the gate has run."""
+    repo = _repo(tmp_path)
+    for href in ("/archive", "/archive/", "/archive/index.html"):
+        body = page(f'<a href="{href}">archive</a>')
+        assert verify_archive_claims(body, repo, TODAY) == [], href
