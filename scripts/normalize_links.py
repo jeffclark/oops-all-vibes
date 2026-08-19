@@ -73,16 +73,26 @@ def archive_date(href: str) -> str | None:
     return match.group(1) if match else None
 
 
+# Attributes that only make sense on a link. Everything else survives the
+# swap to a span — a whitelist here silently ate data-archive-date, which is
+# what verify_archive_claims blocks on, so de-linking an invented day also
+# destroyed the evidence that the day was invented.
+_LINK_ONLY_ATTRS = frozenset(
+    {"href", "target", "rel", "download", "ping", "hreflang", "type", "referrerpolicy"}
+)
+
+
 def _to_span(soup: BeautifulSoup, tag) -> None:
-    """Replace a dead link with a span, preserving its look.
+    """Replace a dead link with a span, preserving everything but the link.
 
     Not unwrap(): these anchors carry class and inline style (including
-    display:block) that the surrounding design depends on.
+    display:block) that the surrounding design depends on, plus ids that
+    in-page anchors may point at.
     """
     span = soup.new_tag("span")
-    for attr in ("class", "style", "title"):
-        if tag.has_attr(attr):
-            span[attr] = tag[attr]
+    for attr, value in tag.attrs.items():
+        if attr.lower() not in _LINK_ONLY_ATTRS:
+            span[attr] = value
     span.extend(tag.contents)
     tag.replace_with(span)
 

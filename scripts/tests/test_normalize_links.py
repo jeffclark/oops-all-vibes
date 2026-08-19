@@ -189,3 +189,28 @@ def test_repair_is_a_fixed_point():
         text = page.read_text()
         assert normalize_links(text, available) == text, page.name
     assert repair  # imported and callable
+
+
+def test_de_linking_keeps_the_evidence_that_a_day_was_invented():
+    """normalize_links runs immediately before the gate that blocks on
+    invented days. Dropping data-archive-date here would launder an invented
+    day into a plain span and defeat the block entirely."""
+    html = page('<a data-archive-date="2026-06-18" href="/2026-06-18">gap</a>')
+    out = normalize_links(html, DATES)
+    soup = BeautifulSoup(out, "html.parser")
+    assert soup.find("a") is None
+    assert soup.find("span")["data-archive-date"] == "2026-06-18"
+
+
+def test_de_linking_keeps_id_and_aria_attributes():
+    html = page('<a id="day-57" aria-label="June 18" href="/2026-06-18">gap</a>')
+    span = BeautifulSoup(normalize_links(html, DATES), "html.parser").find("span")
+    assert span["id"] == "day-57"
+    assert span["aria-label"] == "June 18"
+
+
+def test_de_linking_drops_link_only_attributes():
+    html = page('<a href="/2026-06-18" target="_blank" rel="noopener" download>gap</a>')
+    span = BeautifulSoup(normalize_links(html, DATES), "html.parser").find("span")
+    for gone in ("href", "target", "rel", "download"):
+        assert not span.has_attr(gone), gone

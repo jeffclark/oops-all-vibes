@@ -202,3 +202,22 @@ def test_no_archive_on_the_page_reports_nothing(tmp_path):
 def test_tagged_page_gets_no_coverage_warning(tmp_path):
     found = check(tmp_path, '<li data-archive-date="2026-04-23">Day 1</li>')
     assert "data-archive-date" not in messages(found)
+
+
+def test_archive_rendered_as_bare_prose_does_not_pass_in_silence(tmp_path):
+    """No links, no tags, no element naming itself archive. Before this the
+    page named three archive days and got zero checks and zero warnings."""
+    found = check(tmp_path, "<p>Day 1 — April 23. Day 2 — April 24. Day 3 — April 25.</p>")
+    assert "data-archive-date" in messages(soft_failures(found))
+
+
+def test_prose_archive_still_reports_the_invented_day(tmp_path):
+    found = check(tmp_path, "<p>Day 3 — April 25 was a good one.</p>")
+    assert "data-archive-date" in messages(soft_failures(found))
+
+
+def test_page_with_no_archive_content_stays_silent(tmp_path):
+    """inject_tech puts the word 'archive' in every page's footer, so the
+    trigger has to be a named day, not the word itself."""
+    body = '<p>Some writing.</p><footer><a href="/archive/">archive</a></footer>'
+    assert check(tmp_path, body) == []

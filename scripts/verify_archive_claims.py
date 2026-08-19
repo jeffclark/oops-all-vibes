@@ -214,7 +214,7 @@ def verify_archive_claims(
     _check_entries(entries, truth, found)
     _check_counts(soup, entries, truth, found)
     _check_text_dates(soup, truth, found)
-    _check_coverage(soup, entries, found)
+    _check_coverage(soup, truth, entries, found)
     return found
 
 
@@ -300,45 +300,72 @@ def _check_counts(soup, entries, truth: ArchiveTruth, found: list[Discrepancy]) 
                 ))
 
 
+def _scan_text(element) -> str:
+    """An element's words, including any tooltips inside it."""
+    return " ".join([
+        element.get_text(" ", strip=True),
+        *(el.get("title") or "" for el in element.find_all(title=True)),
+    ])
+
+
+def _mentioned_days(text: str, truth: ArchiveTruth) -> list[tuple[str, str]]:
+    """(date, how it was written) for every day the text names, ISO or prose.
+
+    Bounded to the archive's own date range: a date outside it is talking
+    about something other than which days this site has run.
+    """
+    first, last = truth.dates[0], truth.dates[-1]
+    seen: set[str] = set()
+    out: list[tuple[str, str]] = []
+
+    def add(date_str: str, written_as: str) -> None:
+        if date_str and first <= date_str <= last and date_str not in seen:
+            seen.add(date_str)
+            out.append((date_str, written_as))
+
+    for match in _ISO_RE.finditer(text):
+        add(match.group(1), match.group(1))
+    for match in _MONTH_DAY_RE.finditer(text):
+        add(
+            _resolve_month_day(match.group(1), int(match.group(2)), truth) or "",
+            f'"{match.group(0)}"',
+        )
+    return out
+
+
 def _check_text_dates(soup, truth: ArchiveTruth, found: list[Discrepancy]) -> None:
     """SOFT: dates written out in the archive's own text that never happened."""
     reported: set[str] = set()
-
-    def report(date_str: str, written_as: str) -> None:
-        if date_str in truth.dates or date_str in reported:
-            return
-        reported.add(date_str)
-        found.append(Discrepancy(
-            SOFT,
-            f"Your archive section mentions {written_as} as an archive day, but "
-            f"there's no archived site for {date_str}.",
-        ))
-
-    first, last = truth.dates[0], truth.dates[-1]
     for region in _archive_regions(soup):
-        text = " ".join([
-            region.get_text(" ", strip=True),
-            *(el.get("title") or "" for el in region.find_all(title=True)),
-        ])
-        for match in _ISO_RE.finditer(text):
-            iso = match.group(1)
-            if first <= iso <= last:
-                report(iso, iso)
-        for match in _MONTH_DAY_RE.finditer(text):
-            resolved = _resolve_month_day(match.group(1), int(match.group(2)), truth)
-            if resolved and first <= resolved <= last:
-                report(resolved, f'"{match.group(0)}"')
+        for date_str, written_as in _mentioned_days(_scan_text(region), truth):
+            if date_str in truth.dates or date_str in reported:
+                continue
+            reported.add(date_str)
+            found.append(Discrepancy(
+                SOFT,
+                f"Your archive section mentions {written_as} as an archive day, but "
+                f"there's no archived site for {date_str}.",
+            ))
 
 
-def _check_coverage(soup, entries, found: list[Discrepancy]) -> None:
-    """SOFT: the page has an archive but tagged none of it, so most checks
-    above couldn't run. Silence here would read as a pass."""
+def _check_coverage(soup, truth: ArchiveTruth, entries, found: list[Discrepancy]) -> None:
+    """SOFT: the page talks about archive days but tagged none of them.
+
+    Without this a page that renders its archive as plain prose — no links,
+    no tags, no element naming itself archive — passes every check in
+    silence, which reads as "verified" when nothing was verified.
+
+    Naming a day is the trigger, rather than the word "archive": inject_tech
+    puts that word in the footer of every page, so keying on it would make
+    this fire on pages with no archive content at all.
+    """
     if entries:
         return
     has_archive_links = any(
         archive_date(a["href"]) is not None for a in soup.find_all("a", href=True)
     )
-    if has_archive_links or _archive_regions(soup):
+    names_a_day = bool(_mentioned_days(_scan_text(soup), truth))
+    if has_archive_links or names_a_day or _archive_regions(soup):
         found.append(Discrepancy(
             SOFT,
             f"None of your archive entries carry {ENTRY_ATTR}=\"YYYY-MM-DD\", so the "
