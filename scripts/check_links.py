@@ -4,10 +4,12 @@ The regression guard for normalize_links. Date links get the stricter test —
 they must be in canonical form, not merely resolvable — because one URL shape
 is what keeps them checkable. Everything else just has to exist.
 
-Resolution is a plain identity mapping from URL path to file. .nojekyll means
-nothing rewrites paths server-side, and we deliberately don't credit the
-extensionless fallback (/foo serving foo.html): counting on behavior we can't
-verify from here is how a checker ends up green while the site 404s.
+Resolution is a plain identity mapping from URL path to file, which is what
+the live site does: /log/<date>.md serves that file's bytes even though Jekyll
+is in the loop and the file opens with YAML front matter. We deliberately
+don't credit the extensionless fallback (/foo serving foo.html) — counting on
+behavior we haven't confirmed is how a checker ends up green while the site
+404s.
 """
 from __future__ import annotations
 
