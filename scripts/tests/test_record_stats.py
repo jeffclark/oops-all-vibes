@@ -180,3 +180,68 @@ def test_stats_html_is_concise(tmp_path):
     build_stats_page(repo_root=tmp_path)
     lines = (tmp_path / "stats.html").read_text().splitlines()
     assert len(lines) <= 150
+
+
+# ---------- archive warnings column ----------
+
+
+def _write_stats(tmp_path, entries):
+    (tmp_path / "stats.jsonl").write_text("".join(json.dumps(e) + "\n" for e in entries))
+
+
+BASE_ENTRY = {
+    "date": "2026-04-22", "attempts": 1, "validation_failures": [],
+    "api_errors": 0, "committed": True, "duration_ms": 1000,
+}
+
+
+def test_warnings_column_shows_count_and_preview(tmp_path):
+    _write_stats(tmp_path, [{**BASE_ENTRY, "archive_warnings": ["Day 3 is wrong", "count off"]}])
+    build_stats_page(repo_root=tmp_path)
+    html = (tmp_path / "stats.html").read_text()
+    assert "<th>archive warnings</th>" in html
+    assert "2 · Day 3 is wrong | count off" in html
+
+
+def test_warnings_cell_empty_when_page_told_the_truth(tmp_path):
+    _write_stats(tmp_path, [{**BASE_ENTRY, "archive_warnings": []}])
+    build_stats_page(repo_root=tmp_path)
+    assert '<td class="warn"></td>' in (tmp_path / "stats.html").read_text()
+
+
+def test_long_warning_list_is_truncated_to_one_line(tmp_path):
+    _write_stats(tmp_path, [{**BASE_ENTRY, "archive_warnings": [f"warning number {i}" for i in range(74)]}])
+    build_stats_page(repo_root=tmp_path)
+    html = (tmp_path / "stats.html").read_text()
+    assert "74 · " in html
+    assert "…" in html
+    assert "warning number 73" not in html
+
+
+def test_warning_text_is_escaped(tmp_path):
+    _write_stats(tmp_path, [{**BASE_ENTRY, "archive_warnings": ['<script>alert("x")</script>']}])
+    build_stats_page(repo_root=tmp_path)
+    html = (tmp_path / "stats.html").read_text()
+    assert "<script>" not in html
+    assert "&lt;script&gt;" in html
+
+
+def test_summary_counts_runs_that_shipped_something_untrue(tmp_path):
+    _write_stats(tmp_path, [
+        {**BASE_ENTRY, "date": "2026-04-20", "archive_warnings": ["a"]},
+        {**BASE_ENTRY, "date": "2026-04-21", "archive_warnings": []},
+        {**BASE_ENTRY, "date": "2026-04-22", "archive_warnings": ["b", "c"]},
+    ])
+    build_stats_page(repo_root=tmp_path)
+    html = (tmp_path / "stats.html").read_text()
+    assert "runs with false archive claims" in html
+    assert '<span class="v">2</span>' in html
+
+
+def test_older_lines_without_the_key_still_render(tmp_path):
+    """Every line written before this feature lacks archive_warnings."""
+    _write_stats(tmp_path, [BASE_ENTRY])
+    build_stats_page(repo_root=tmp_path)
+    html = (tmp_path / "stats.html").read_text()
+    assert '<td class="warn"></td>' in html
+    assert "2026-04-22" in html
