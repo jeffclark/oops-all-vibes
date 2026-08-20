@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -41,6 +42,24 @@ def latest_archived_date(repo_root: Path) -> str | None:
     return dates[-1] if dates else None
 
 
+def analytics_is_configured(repo_root: Path) -> bool:
+    """True unless this repo ships an analytics tag we'd be about to drop.
+
+    inject_tech reads GOATCOUNTER_CODE from the environment. Locally that is
+    usually unset (it's a GitHub Actions variable), so finalize_html quietly
+    produces a page with no tracking. Shipping that looks fine and records
+    nothing, which is the exact failure this tool exists to prevent.
+    """
+    if os.environ.get("GOATCOUNTER_CODE"):
+        return True
+    shipped = sorted(
+        p for p in (repo_root / "archive").glob("*.html") if p.name != "index.html"
+    )
+    if not shipped:
+        return True  # nothing to compare against; assume analytics aren't in use
+    return "goatcounter" not in shipped[-1].read_text().lower()
+
+
 def republish(
     date_str: str,
     arm: str,
@@ -48,9 +67,12 @@ def republish(
     ab_dir: Path,
     *,
     write: bool = False,
+    html_path: Path | None = None,
+    diary_path: Path | None = None,
+    allow_no_analytics: bool = False,
 ) -> int:
-    html_path = ab_dir / date_str / f"{arm}.html"
-    diary_path = ab_dir / date_str / f"{arm}.diary.md"
+    html_path = html_path or ab_dir / date_str / f"{arm}.html"
+    diary_path = diary_path or ab_dir / date_str / f"{arm}.diary.md"
     prompt_path = repo_root / "prompts" / f"{date_str}.md"
 
     for path in (html_path, diary_path, prompt_path):
@@ -67,6 +89,18 @@ def republish(
     if meta_date != date_str:
         print(
             f"republish: diary frontmatter says date {meta_date!r}, expected {date_str!r}",
+            file=sys.stderr,
+        )
+        return 1
+
+    if not allow_no_analytics and not analytics_is_configured(repo_root):
+        print(
+            "republish: GOATCOUNTER_CODE is not set, but the last shipped page carries\n"
+            "  an analytics tag. Publishing now would drop it and the page would record\n"
+            "  no traffic. Re-run with the code set, e.g.:\n"
+            "      GOATCOUNTER_CODE=clarkle python -m scripts.republish_from_ab ...\n"
+            "  (the code is not a secret — it appears in every shipped page)\n"
+            "  Pass --allow-no-analytics to publish without it anyway.",
             file=sys.stderr,
         )
         return 1
@@ -130,9 +164,22 @@ def main(argv: list[str] | None = None) -> int:
                         help="model_ab output directory")
     parser.add_argument("--write", action="store_true",
                         help="actually write the files (default is a dry run)")
+    parser.add_argument("--html", type=Path,
+                        help="page to publish, instead of <ab-dir>/<date>/<arm>.html")
+    parser.add_argument("--diary", type=Path,
+                        help="diary to publish, instead of <ab-dir>/<date>/<arm>.diary.md")
+    parser.add_argument("--allow-no-analytics", action="store_true",
+                        help="publish even though GOATCOUNTER_CODE is unset")
     args = parser.parse_args(argv)
     return republish(
-        args.date, args.arm, REPO_ROOT, args.ab_dir.expanduser(), write=args.write
+        args.date,
+        args.arm,
+        REPO_ROOT,
+        args.ab_dir.expanduser(),
+        write=args.write,
+        html_path=args.html.expanduser() if args.html else None,
+        diary_path=args.diary.expanduser() if args.diary else None,
+        allow_no_analytics=args.allow_no_analytics,
     )
 
 

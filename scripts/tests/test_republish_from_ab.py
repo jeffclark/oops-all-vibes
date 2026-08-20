@@ -101,3 +101,46 @@ def test_latest_archived_date_ignores_the_index(repo):
     (repo / "archive" / "index.html").write_text("<html>archive index</html>")
     (repo / "archive" / "2026-08-19.html").write_text("<html>newer</html>")
     assert latest_archived_date(repo) == "2026-08-19"
+
+
+# ---------- analytics guard and file overrides ----------
+
+from scripts.republish_from_ab import analytics_is_configured  # noqa: E402
+
+
+def test_refuses_when_analytics_would_be_dropped(repo, monkeypatch):
+    """finalize_html silently omits the tracking tag when the env var is unset."""
+    monkeypatch.delenv("GOATCOUNTER_CODE", raising=False)
+    (repo / "archive" / f"{DATE}.html").write_text(
+        '<html><script data-goatcounter="https://x.goatcounter.com/count"></script></html>'
+    )
+    assert republish(DATE, "opus", repo, repo / "model-ab", write=True) == 1
+    assert "goatcounter" in (repo / "archive" / f"{DATE}.html").read_text()
+
+
+def test_allows_when_code_is_set(repo, monkeypatch):
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+    (repo / "archive" / f"{DATE}.html").write_text(
+        '<html><script data-goatcounter="https://x.goatcounter.com/count"></script></html>'
+    )
+    assert analytics_is_configured(repo)
+    assert republish(DATE, "opus", repo, repo / "model-ab", write=True) == 0
+
+
+def test_no_guard_when_site_never_used_analytics(repo, monkeypatch):
+    monkeypatch.delenv("GOATCOUNTER_CODE", raising=False)
+    assert analytics_is_configured(repo)  # shipped page has no tag to lose
+
+
+def test_explicit_paths_override_the_ab_dir(repo, monkeypatch):
+    monkeypatch.setenv("GOATCOUNTER_CODE", "clarkle")
+    elsewhere = repo / "somewhere-else"
+    elsewhere.mkdir()
+    (elsewhere / "page.html").write_text(REAL_HTML)
+    (elsewhere / "d.md").write_text(REAL_DIARY)
+    rc = republish(
+        DATE, "opus", repo, repo / "model-ab", write=True,
+        html_path=elsewhere / "page.html", diary_path=elsewhere / "d.md",
+    )
+    assert rc == 0
+    assert (repo / "log" / f"{DATE}.md").read_text() == REAL_DIARY
