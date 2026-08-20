@@ -2,7 +2,7 @@
 #
 # Required configuration (set manually in the repo before the first cron fires):
 #   Secrets (repo settings → Secrets and variables → Actions → Secrets):
-#     - ANTHROPIC_API_KEY        — Sonnet API key
+#     - ANTHROPIC_API_KEY        — Anthropic API key (must have Claude Opus 5 access)
 #     - GOATCOUNTER_API_KEY      — GoatCounter API token
 #   Variables (repo settings → Secrets and variables → Actions → Variables):
 #     - GOATCOUNTER_CODE         — GoatCounter site code (non-secret; appears in the tracking script)
@@ -15,6 +15,11 @@ on:
   schedule:
     - cron: '0 7 * * *'  # ≈3am EST / 2am EDT — acceptable drift
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run — exercise the whole pipeline but write nothing back. Leaves the live site alone."
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -38,12 +43,34 @@ jobs:
         run: python -m scripts.fetch_feedback
         continue-on-error: true
 
+      # A manual dispatch defaults to a dry run: real runner, real secrets, real
+      # API call, but --no-commit returns before both the commit and the push, so
+      # nothing reaches the repo. The scheduled run is never a dry run.
       - name: Run Georgia
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GOATCOUNTER_CODE: ${{ vars.GOATCOUNTER_CODE }}
           GEORGIA_PUSH: "true"
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
         run: |
           git config user.name "Georgia"
           git config user.email "georgia@clarkle.com"
-          python -m scripts.run_georgia
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "::notice::Dry run — nothing will be committed or pushed."
+            python -m scripts.run_georgia --no-commit
+          else
+            python -m scripts.run_georgia
+          fi
+
+      # On a dry run the generated site only exists on the runner, so hand it
+      # back as an artifact instead of throwing it away.
+      - name: Upload dry-run output
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: georgia-dry-run
+          path: |
+            index.html
+            log/
+            prompts/
+          retention-days: 7
