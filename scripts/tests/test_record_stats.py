@@ -299,3 +299,21 @@ def test_check_links_still_demands_canonical_form_for_date_links(tmp_path):
     problems = broken_links(tmp_path)
     assert len(problems) == 1
     assert "not canonical" in problems[0][2]
+
+
+def test_token_counts_are_recorded(tmp_path):
+    record_stats(
+        "2026-08-21", 1, [], 0, True, time.monotonic(),
+        repo_root=tmp_path, input_tokens=63_000, output_tokens=30_673,
+    )
+    line = json.loads((tmp_path / "stats.jsonl").read_text().splitlines()[-1])
+    assert line["input_tokens"] == 63_000
+    assert line["output_tokens"] == 30_673
+
+
+def test_token_counts_default_to_zero_on_a_failed_run(tmp_path):
+    """A run that never got a response records 0, not a missing key."""
+    record_stats("2026-08-21", 2, [["bad"]], 1, False, time.monotonic(), repo_root=tmp_path)
+    line = json.loads((tmp_path / "stats.jsonl").read_text().splitlines()[-1])
+    assert line["input_tokens"] == 0
+    assert line["output_tokens"] == 0

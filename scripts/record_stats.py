@@ -4,12 +4,19 @@ record_stats is called from run_georgia on every exit path (success AND
 failure). Line schema:
     {"date": str, "attempts": int, "validation_failures": [str, ...],
      "api_errors": int, "committed": bool, "duration_ms": int,
-     "archive_warnings": [str, ...]}
+     "archive_warnings": [str, ...], "input_tokens": int,
+     "output_tokens": int}
 
 archive_warnings holds soft findings from verify_archive_claims — claims the
 page makes about the archive that aren't true but weren't worth costing a
 day of site over. Older lines predate the key; readers must tolerate it
 being absent.
+
+input_tokens/output_tokens describe the response that shipped, so a run that
+retried spent more than the line records. output_tokens is the one to watch:
+it includes adaptive thinking and it is what MAX_TOKENS caps, so it shows the
+headroom shrinking as the prompt grows. 0 means no response shipped — a
+failed run — not a free one. Older lines predate both keys.
 """
 from __future__ import annotations
 
@@ -33,6 +40,8 @@ def record_stats(
     *,
     repo_root: Path | None = None,
     archive_warnings: list[str] | None = None,
+    input_tokens: int = 0,
+    output_tokens: int = 0,
 ) -> None:
     root = repo_root or REPO_ROOT
     duration_ms = int((time.monotonic() - start_time) * 1000)
@@ -45,6 +54,8 @@ def record_stats(
         "committed": committed,
         "duration_ms": duration_ms,
         "archive_warnings": archive_warnings or [],
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
     }
     stats_file = root / "stats.jsonl"
     stats_file.parent.mkdir(parents=True, exist_ok=True)

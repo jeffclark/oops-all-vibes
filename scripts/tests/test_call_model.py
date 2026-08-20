@@ -32,12 +32,16 @@ def _mock_client(
     stop_reason: str = "end_turn",
     blocks: list[MagicMock] | None = None,
     category: str | None = None,
+    input_tokens: int = 60_000,
+    output_tokens: int = 14_000,
 ) -> MagicMock:
     """Mock whose beta.messages.stream yields a final message with text blocks."""
     message = MagicMock()
     message.content = blocks if blocks is not None else [_block("text", response_text)]
     message.stop_reason = stop_reason
     message.stop_details.category = category
+    message.usage.input_tokens = input_tokens
+    message.usage.output_tokens = output_tokens
     client = MagicMock()
     client.beta.messages.stream.return_value.__enter__.return_value.get_final_message.return_value = message
     return client
@@ -45,9 +49,9 @@ def _mock_client(
 
 def test_returns_tuple_when_both_tags_present():
     client = _mock_client("<site><html>hi</html></site>\n<log>---\ndate: x\n---\nbody</log>")
-    html, diary = call_model("prompt", client=client)
-    assert html == "<html>hi</html>"
-    assert diary.startswith("---")
+    result = call_model("prompt", client=client)
+    assert result.html == "<html>hi</html>"
+    assert result.diary.startswith("---")
 
 
 def test_sends_opus_5_config_with_fallbacks():
@@ -82,9 +86,9 @@ def test_thinking_blocks_never_reach_the_tag_parser():
         _block("thinking", ""),
         _block("text", "<site><html>hi</html></site><log>diary</log>"),
     ]
-    html, diary = call_model("prompt", client=_mock_client("", blocks=blocks))
-    assert html == "<html>hi</html>"
-    assert diary == "diary"
+    result = call_model("prompt", client=_mock_client("", blocks=blocks))
+    assert result.html == "<html>hi</html>"
+    assert result.diary == "diary"
 
 
 def test_refusal_raises_rather_than_parsing_empty_output():
@@ -149,3 +153,10 @@ def test_mid_stream_error_propagates():
     client.beta.messages.stream.return_value.__enter__.return_value.get_final_message.side_effect = RuntimeError("mid-stream boom")
     with pytest.raises(RuntimeError, match="mid-stream boom"):
         call_model("prompt", client=client)
+
+
+def test_returns_the_token_counts_from_usage():
+    client = _mock_client("<site>html</site><log>diary</log>")
+    result = call_model("prompt", client=client)
+    assert result.input_tokens == 60_000
+    assert result.output_tokens == 14_000

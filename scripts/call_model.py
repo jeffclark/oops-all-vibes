@@ -8,6 +8,7 @@ API errors propagate — retry/fail-open logic lives in run_georgia.py.
 from __future__ import annotations
 
 import re
+from typing import NamedTuple
 
 from anthropic import Anthropic
 
@@ -45,6 +46,20 @@ _SITE_RE = re.compile(r"<site>(.*?)</site>", re.DOTALL)
 _LOG_RE = re.compile(r"<log>(.*?)</log>", re.DOTALL)
 
 
+class ModelResult(NamedTuple):
+    """Georgia's two outputs plus what the call cost in tokens.
+
+    output_tokens includes adaptive thinking, which is billed but never
+    returned, and it is what MAX_TOKENS caps — so it is the number to watch
+    as the prompt grows.
+    """
+
+    html: str
+    diary: str
+    input_tokens: int
+    output_tokens: int
+
+
 class ModelOutputError(Exception):
     """Raised when the response lacks the required tags or either tag is empty."""
 
@@ -53,8 +68,8 @@ class ModelOutputError(Exception):
         self.raw = raw
 
 
-def call_model(prompt: str, client: Anthropic | None = None) -> tuple[str, str]:
-    """Call the model with `prompt`, return (html, diary).
+def call_model(prompt: str, client: Anthropic | None = None) -> ModelResult:
+    """Call the model with `prompt`, return a ModelResult.
 
     Reads ANTHROPIC_API_KEY from env when `client` is not provided.
     Raises ModelOutputError if either <site> or <log> is missing or empty, or
@@ -101,4 +116,9 @@ def call_model(prompt: str, client: Anthropic | None = None) -> tuple[str, str]:
             raw=raw,
         )
 
-    return site_text, log_text
+    return ModelResult(
+        html=site_text,
+        diary=log_text,
+        input_tokens=message.usage.input_tokens,
+        output_tokens=message.usage.output_tokens,
+    )

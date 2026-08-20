@@ -19,6 +19,14 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
 import scripts.run_georgia as run_module  # noqa: E402
+from scripts.call_model import ModelResult  # noqa: E402
+
+
+def _result(html: str, diary: str, output_tokens: int = 12_000) -> ModelResult:
+    """What a successful call_model returns, for mocks that only care about text."""
+    return ModelResult(
+        html=html, diary=diary, input_tokens=48_000, output_tokens=output_tokens
+    )
 
 
 FACTS = {
@@ -74,7 +82,7 @@ def _make_api_error() -> APIError:
 
 def test_first_try_success_commits_and_returns_zero(monkeypatch, tmp_path):
     sink = _patch_common(monkeypatch, tmp_path)
-    monkeypatch.setattr(run_module, "call_model", lambda prompt: (_valid_html(), _valid_diary()))
+    monkeypatch.setattr(run_module, "call_model", lambda prompt: _result(_valid_html(), _valid_diary()))
 
     rc = run_module.run(TODAY, FACTS, tmp_path)
     assert rc == 0
@@ -93,7 +101,7 @@ def test_validation_fails_twice_no_commit_returns_one(monkeypatch, tmp_path):
     sink = _patch_common(monkeypatch, tmp_path)
     # HTML missing the email both times
     bad_html = _valid_html().replace("jeff@clarkle.com", "x@x.com")
-    monkeypatch.setattr(run_module, "call_model", lambda prompt: (bad_html, _valid_diary()))
+    monkeypatch.setattr(run_module, "call_model", lambda prompt: _result(bad_html, _valid_diary()))
 
     rc = run_module.run(TODAY, FACTS, tmp_path)
     assert rc == 1
@@ -133,7 +141,7 @@ def test_sonnet_output_error_then_success(monkeypatch, tmp_path):
         prompts_received.append(prompt)
         if len(prompts_received) == 1:
             raise ModelOutputError("missing <site>", raw="garbled")
-        return _valid_html(), _valid_diary()
+        return _result(_valid_html(), _valid_diary())
 
     monkeypatch.setattr(run_module, "call_model", fake_call)
 
@@ -162,8 +170,8 @@ def test_diary_fail_then_success(monkeypatch, tmp_path):
         prompts_received.append(prompt)
         attempts["n"] += 1
         if attempts["n"] == 1:
-            return _valid_html(), bad_diary
-        return _valid_html(), _valid_diary()
+            return _result(_valid_html(), bad_diary)
+        return _result(_valid_html(), _valid_diary())
 
     monkeypatch.setattr(run_module, "call_model", fake_call)
 
@@ -191,10 +199,10 @@ def test_record_stats_always_called(monkeypatch, tmp_path, outcome_setup):
     from scripts.call_model import ModelOutputError
 
     if outcome_setup == "success_first_try":
-        monkeypatch.setattr(run_module, "call_model", lambda p: (_valid_html(), _valid_diary()))
+        monkeypatch.setattr(run_module, "call_model", lambda p: _result(_valid_html(), _valid_diary()))
     elif outcome_setup == "validation_twice":
         bad_html = _valid_html().replace("Autoscope", "Autonotscope")
-        monkeypatch.setattr(run_module, "call_model", lambda p: (bad_html, _valid_diary()))
+        monkeypatch.setattr(run_module, "call_model", lambda p: _result(bad_html, _valid_diary()))
     elif outcome_setup == "api_error":
         monkeypatch.setattr(run_module, "call_model", MagicMock(side_effect=_make_api_error()))
 
@@ -261,7 +269,7 @@ def _run_gate(monkeypatch, tmp_path, pages):
 
     def fake_call(prompt):
         calls.append(prompt)
-        return queue.pop(0), GATE_DIARY
+        return _result(queue.pop(0), GATE_DIARY)
 
     monkeypatch.setattr(run_module, "call_model", fake_call)
     # The gate is what's under test, not prompt assembly.
@@ -350,3 +358,46 @@ def test_written_page_has_exactly_one_injected_footer(monkeypatch, tmp_path):
     good = _gate_html('<li data-archive-date="2026-04-23">Day 1</li>')
     _, _, repo = _run_gate(monkeypatch, tmp_path, [good])
     assert (repo / "index.html").read_text().count("today's prompt") == 1
+
+
+# ---------- token counts reach the stats line ----------
+
+def test_shipped_response_tokens_are_recorded(monkeypatch, tmp_path):
+    sink = _patch_common(monkeypatch, tmp_path)
+    monkeypatch.setattr(
+        run_module, "call_model",
+        lambda prompt: _result(_valid_html(), _valid_diary(), output_tokens=30_673),
+    )
+    assert run_module.run(TODAY, FACTS, tmp_path) == 0
+    _args, kwargs = sink[0]
+    assert kwargs["output_tokens"] == 30_673
+    assert kwargs["input_tokens"] == 48_000
+
+
+def test_retry_records_the_response_that_shipped(monkeypatch, tmp_path):
+    """Attempt 1's tokens were spent, but attempt 2's are what max_tokens held."""
+    sink = _patch_common(monkeypatch, tmp_path)
+    bad_html = "<html><body>too short</body></html>"
+    seen = {"n": 0}
+
+    def fake_call(prompt):
+        seen["n"] += 1
+        if seen["n"] == 1:
+            return _result(bad_html, _valid_diary(), output_tokens=9_000)
+        return _result(_valid_html(), _valid_diary(), output_tokens=25_500)
+
+    monkeypatch.setattr(run_module, "call_model", fake_call)
+    assert run_module.run(TODAY, FACTS, tmp_path) == 0
+    _args, kwargs = sink[0]
+    assert kwargs["output_tokens"] == 25_500
+
+
+def test_failed_run_records_no_tokens(monkeypatch, tmp_path):
+    """No response shipped, so the line falls back to record_stats' 0 default."""
+    sink = _patch_common(monkeypatch, tmp_path)
+    monkeypatch.setattr(
+        run_module, "call_model", MagicMock(side_effect=_make_api_error())
+    )
+    assert run_module.run(TODAY, FACTS, tmp_path) == 1
+    _args, kwargs = sink[0]
+    assert kwargs.get("output_tokens", 0) == 0

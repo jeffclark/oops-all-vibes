@@ -78,13 +78,20 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
     validation_failures: list[list[str]] = []
     api_errors = 0
     committed = False
+    # Tokens for the response that shipped. A run that retried spent more than
+    # this; the shipped figure is what MAX_TOKENS actually had to accommodate.
+    input_tokens = 0
+    output_tokens = 0
 
     prompt = assemble_prompt(date.fromisoformat(today), repo_root=repo_root)
 
     for attempt in (1, 2):
         attempts = attempt
         try:
-            html, diary = call_model(prompt)
+            result = call_model(prompt)
+            html, diary = result.html, result.diary
+            input_tokens = result.input_tokens
+            output_tokens = result.output_tokens
         except APIError as exc:
             api_errors += 1
             print(f"run_georgia: API error on attempt {attempt}: {exc}", file=sys.stderr)
@@ -163,6 +170,8 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                 start,
                 repo_root=repo_root,
                 archive_warnings=warnings,
+                input_tokens=input_tokens,
+                output_tokens=output_tokens,
             )
             write_outputs(
                 today, final_html, diary, prompt, no_commit=no_commit, repo_root=repo_root

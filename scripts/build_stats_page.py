@@ -10,6 +10,8 @@ import json
 from html import escape
 from pathlib import Path
 
+from scripts.call_model import MAX_TOKENS
+
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 WINDOW = 30
@@ -41,17 +43,24 @@ def _summarize(window: list[dict]) -> dict:
             "overall_commit_pct": 0.0,
             "avg_duration_s": 0.0,
             "runs_with_warnings": 0,
+            "peak_output_tokens": 0,
+            "peak_output_pct": 0.0,
         }
     first_try_wins = sum(1 for e in window if e.get("attempts") == 1 and e.get("committed"))
     commits = sum(1 for e in window if e.get("committed"))
     total_duration_ms = sum(e.get("duration_ms", 0) for e in window)
     warned = sum(1 for e in window if e.get("archive_warnings"))
+    # Peak, not average: max_tokens is a ceiling, so the worst day is the one
+    # that decides whether the next prompt growth truncates a page.
+    peak_output = max((e.get("output_tokens", 0) for e in window), default=0)
     return {
         "runs_total": total,
         "first_try_success_pct": round(first_try_wins / total * 100, 1),
         "overall_commit_pct": round(commits / total * 100, 1),
         "avg_duration_s": round(total_duration_ms / 1000 / total, 2),
         "runs_with_warnings": warned,
+        "peak_output_tokens": peak_output,
+        "peak_output_pct": round(peak_output / MAX_TOKENS * 100, 1),
     }
 
 
@@ -71,6 +80,9 @@ def _row_html(entry: dict) -> str:
     else:
         warning_cell = ""
     duration_s = round(entry.get("duration_ms", 0) / 1000, 2)
+    out_tokens = entry.get("output_tokens", 0)
+    # 0 means no response shipped, or a line written before the key existed.
+    token_cell = f"{out_tokens:,}" if out_tokens else ""
     return (
         f'    <tr class="{row_class}">'
         f"<td>{escape(str(entry.get('date', '')))}</td>"
@@ -80,6 +92,7 @@ def _row_html(entry: dict) -> str:
         f'<td class="warn">{warning_cell}</td>'
         f"<td>{entry.get('api_errors', 0)}</td>"
         f"<td>{duration_s}</td>"
+        f"<td>{token_cell}</td>"
         "</tr>"
     )
 
@@ -91,6 +104,18 @@ def build_stats_page(repo_root: Path | None = None) -> None:
     summary = _summarize(window)
 
     rows = "\n".join(_row_html(e) for e in reversed(window))
+
+    # Every line predating the token fields reports 0. Showing "0 / 0.0% of the
+    # ceiling" would read as a measured zero rather than as no data yet, so the
+    # headroom cards only appear once a run has actually recorded a count.
+    headroom_cards = ""
+    if summary["peak_output_tokens"]:
+        headroom_cards = (
+            f'  <div class="card"><span class="k">peak output tokens</span>'
+            f'<span class="v">{summary["peak_output_tokens"]:,}</span></div>\n'
+            f'  <div class="card"><span class="k">of the {MAX_TOKENS:,} ceiling</span>'
+            f'<span class="v">{summary["peak_output_pct"]}%</span></div>'
+        )
 
     html = f"""<!DOCTYPE html>
 <html lang="en"><head>
@@ -121,15 +146,21 @@ weren't true — a miscounted total, a wrong day number, an importance that disa
 that day's log. They're recorded rather than blocking, so the site still goes up. Claims
 that would have the site invent a day that never ran block the run instead, and show as
 a failure.</p>
+<p class="note">"Output tokens" counts what the model generated, including the reasoning
+it does not return. It shares the {MAX_TOKENS:,}-token ceiling with the page itself, so
+the peak figure is the headroom: as the prompt grows the pages grow with it, and a run
+that reaches the ceiling gets cut off mid-page and has to retry. Blank means no response
+shipped that day.</p>
 <div class="summary">
   <div class="card"><span class="k">runs</span><span class="v">{summary["runs_total"]}</span></div>
   <div class="card"><span class="k">first-try success</span><span class="v">{summary["first_try_success_pct"]}%</span></div>
   <div class="card"><span class="k">committed</span><span class="v">{summary["overall_commit_pct"]}%</span></div>
   <div class="card"><span class="k">avg duration</span><span class="v">{summary["avg_duration_s"]}s</span></div>
   <div class="card"><span class="k">runs with false archive claims</span><span class="v">{summary["runs_with_warnings"]}</span></div>
+{headroom_cards}
 </div>
 <table>
-  <thead><tr><th>date</th><th>attempts</th><th>committed</th><th>failures</th><th>archive warnings</th><th>api errors</th><th>duration (s)</th></tr></thead>
+  <thead><tr><th>date</th><th>attempts</th><th>committed</th><th>failures</th><th>archive warnings</th><th>api errors</th><th>duration (s)</th><th>output tokens</th></tr></thead>
   <tbody>
 {rows}
   </tbody>
