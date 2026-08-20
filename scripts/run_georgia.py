@@ -1,6 +1,6 @@
 """Daily pipeline orchestrator.
 
-Assembles Georgia's prompt, calls Sonnet, validates output, retries once on
+Assembles Georgia's prompt, calls the model, validates output, retries once on
 validation or missing-tag failure, and records pipeline stats on every exit
 path. Exits 0 on success (files written + committed); 1 on failure (no commit
 — yesterday's site stays live).
@@ -18,7 +18,7 @@ import frontmatter
 from anthropic import APIError
 
 from scripts.assemble_prompt import REPO_ROOT, assemble_prompt
-from scripts.call_sonnet import SonnetOutputError, call_sonnet
+from scripts.call_model import ModelOutputError, call_model
 from scripts.record_stats import record_stats
 from scripts.validate_output import validate_output
 from scripts.verify_archive_claims import (
@@ -31,7 +31,7 @@ from scripts.verify_archive_claims import (
 from scripts.write_outputs import finalize_html, write_outputs
 
 
-SONNET_TAG_HINT = (
+MODEL_TAG_HINT = (
     "Your previous response didn't include the <site>...</site> or "
     "<log>...</log> tags correctly. Both are required."
 )
@@ -84,7 +84,7 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
     for attempt in (1, 2):
         attempts = attempt
         try:
-            html, diary = call_sonnet(prompt)
+            html, diary = call_model(prompt)
         except APIError as exc:
             api_errors += 1
             print(f"run_georgia: API error on attempt {attempt}: {exc}", file=sys.stderr)
@@ -93,19 +93,19 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
             repo_root=repo_root,
         )
             return 1
-        except SonnetOutputError as exc:
-            reasons = [SONNET_TAG_HINT]
+        except ModelOutputError as exc:
+            reasons = [MODEL_TAG_HINT]
             validation_failures.append(reasons)
             if attempt == 1:
                 print(
-                    f"run_georgia: SonnetOutputError on attempt 1; retrying with hint. "
+                    f"run_georgia: ModelOutputError on attempt 1; retrying with hint. "
                     f"Raw excerpt: {exc.raw[:200]!r}",
                     file=sys.stderr,
                 )
                 prompt = add_retry_hint(prompt, reasons)
                 continue
             print(
-                f"run_georgia: SonnetOutputError twice. Raw excerpt: {exc.raw[:500]!r}",
+                f"run_georgia: ModelOutputError twice. Raw excerpt: {exc.raw[:500]!r}",
                 file=sys.stderr,
             )
             record_stats(

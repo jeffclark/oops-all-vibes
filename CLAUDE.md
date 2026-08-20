@@ -1,12 +1,12 @@
 # oops-all-vibes
 
-clarkle.com daily-regenerating AI-authored website. Georgia (Claude Sonnet 4.6) rebuilds the site from scratch every 24 hours via a GitHub Actions cron. Everything public — repo, prompts, archive, diary, stats.
+clarkle.com daily-regenerating AI-authored website. Georgia (Claude Opus 5) rebuilds the site from scratch every 24 hours via a GitHub Actions cron. Everything public — repo, prompts, archive, diary, stats.
 
 ## Source of truth
 
 - **stories.md** — engineering stories in dependency order. Start at story_001 and work through. The AC checkboxes are the done bar.
 - **prd.md** — product context. Read once for background; don't iterate on it mid-build.
-- **georgia-soul.md** — Georgia's voice and worldview. Currently at the Cowork OS root; story_002 moves it into this folder as part of setup.
+- **georgia-soul.md** — Georgia's voice and worldview. Lives in this folder (story_002 moved it here).
 
 ## How to work here
 

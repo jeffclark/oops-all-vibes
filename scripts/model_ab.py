@@ -35,7 +35,7 @@ from anthropic import Anthropic
 # Deliberately reusing production's compiled patterns rather than re-writing
 # them here: if the A/B parsed output differently from the real run, the
 # comparison would be measuring the parser instead of the models.
-from scripts.call_sonnet import _LOG_RE, _SITE_RE
+from scripts.call_model import _LOG_RE, _SITE_RE
 from scripts.validate_output import validate_output
 
 
@@ -55,15 +55,16 @@ class Arm:
     note: str
 
 
-# The sonnet arm mirrors scripts/call_sonnet.py exactly — same model, same
-# max_tokens, no thinking parameter — so it stands in for what ships today.
+# These two arms are the before and after of the Opus 5 migration. The sonnet
+# arm is the pre-migration production config (Sonnet 4.6 at 24000 max_tokens,
+# no thinking parameter); the opus arm is what production runs now.
 #
-# The opus arm also omits `thinking`, but on Claude Opus 5 that means adaptive
-# thinking runs by default (on Sonnet 4.6 it means no thinking at all). That
-# difference is the point of the test, so it's left alone rather than
-# configured away. Thinking shares the max_tokens budget with the response,
-# and Opus tokenizes the same text to roughly 1.3x as many tokens, so 24000
-# would truncate Georgia mid-HTML — hence 64000 here.
+# Neither passes `thinking`. On Sonnet 4.6 that means no thinking at all; on
+# Opus 5 it means adaptive thinking runs by default. That difference is the
+# point of the comparison, so it's left alone rather than configured away.
+# Thinking shares the max_tokens budget with the response text, and Opus
+# tokenizes the same text to roughly 1.3x as many tokens, which is why the
+# opus arm needs 64000 where the sonnet arm needed 24000.
 ARMS = (
     Arm(
         name="sonnet",
@@ -381,23 +382,44 @@ def main(argv: list[str] | None = None) -> int:
     with ThreadPoolExecutor(max_workers=max(1, args.workers)) as pool:
         results = list(pool.map(execute, jobs))
 
-    # Fold in any arms skipped this run so the viewer still shows their output.
+    # Fold in any arms skipped this run so the viewer still shows their output,
+    # reusing the numbers the earlier run already recorded for them.
+    previous: dict[tuple[str, str], dict] = {}
+    prior_path = output_dir / "results.json"
+    if prior_path.exists():
+        try:
+            previous = {
+                (r["date"], r["arm"]): r for r in json.loads(prior_path.read_text())
+            }
+        except (ValueError, KeyError, TypeError):
+            pass  # a corrupt prior file just means no numbers to carry forward
+
     for date in dates:
         for arm in ARMS:
             if any(r.date == date and r.arm == arm.name for r in results):
                 continue
             page = output_dir / date / f"{arm.name}.html"
-            if page.exists():
-                results.append(
-                    Result(
-                        date=date,
-                        arm=arm.name,
-                        model=arm.model,
-                        ok=True,
-                        skipped=True,
-                        html_bytes=page.stat().st_size,
-                    )
+            if not page.exists():
+                continue
+            # Carry the earlier run's verdict forward. Defaulting `valid` to
+            # False here would report a skipped-but-fine day as a failure.
+            prior = previous.get((date, arm.name), {})
+            results.append(
+                Result(
+                    date=date,
+                    arm=arm.name,
+                    model=arm.model,
+                    ok=True,
+                    skipped=True,
+                    html_bytes=page.stat().st_size,
+                    valid=prior.get("valid", True),
+                    validation_failures=prior.get("validation_failures", []),
+                    input_tokens=prior.get("input_tokens", 0),
+                    output_tokens=prior.get("output_tokens", 0),
+                    cost_usd=prior.get("cost_usd", 0.0),
+                    stop_reason=prior.get("stop_reason", ""),
                 )
+            )
 
     results.sort(key=lambda r: (r.date, r.arm))
     (output_dir / "results.json").write_text(

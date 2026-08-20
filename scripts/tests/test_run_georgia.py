@@ -1,6 +1,6 @@
 """Tests for scripts/run_georgia.py.
 
-The orchestrator's dependencies (call_sonnet, write_outputs, record_stats) are
+The orchestrator's dependencies (call_model, write_outputs, record_stats) are
 patched per-test so we can exercise each branch of the retry logic without
 hitting the real API or touching disk.
 """
@@ -74,7 +74,7 @@ def _make_api_error() -> APIError:
 
 def test_first_try_success_commits_and_returns_zero(monkeypatch, tmp_path):
     sink = _patch_common(monkeypatch, tmp_path)
-    monkeypatch.setattr(run_module, "call_sonnet", lambda prompt: (_valid_html(), _valid_diary()))
+    monkeypatch.setattr(run_module, "call_model", lambda prompt: (_valid_html(), _valid_diary()))
 
     rc = run_module.run(TODAY, FACTS, tmp_path)
     assert rc == 0
@@ -93,7 +93,7 @@ def test_validation_fails_twice_no_commit_returns_one(monkeypatch, tmp_path):
     sink = _patch_common(monkeypatch, tmp_path)
     # HTML missing the email both times
     bad_html = _valid_html().replace("jeff@clarkle.com", "x@x.com")
-    monkeypatch.setattr(run_module, "call_sonnet", lambda prompt: (bad_html, _valid_diary()))
+    monkeypatch.setattr(run_module, "call_model", lambda prompt: (bad_html, _valid_diary()))
 
     rc = run_module.run(TODAY, FACTS, tmp_path)
     assert rc == 1
@@ -109,7 +109,7 @@ def test_validation_fails_twice_no_commit_returns_one(monkeypatch, tmp_path):
 def test_api_error_no_retry_returns_one(monkeypatch, tmp_path):
     sink = _patch_common(monkeypatch, tmp_path)
     call_mock = MagicMock(side_effect=_make_api_error())
-    monkeypatch.setattr(run_module, "call_sonnet", call_mock)
+    monkeypatch.setattr(run_module, "call_model", call_mock)
 
     rc = run_module.run(TODAY, FACTS, tmp_path)
     assert rc == 1
@@ -120,22 +120,22 @@ def test_api_error_no_retry_returns_one(monkeypatch, tmp_path):
     assert args[4] is False  # not committed
 
 
-# ---------- SonnetOutputError, then success ----------
+# ---------- ModelOutputError, then success ----------
 
 
 def test_sonnet_output_error_then_success(monkeypatch, tmp_path):
     sink = _patch_common(monkeypatch, tmp_path)
-    from scripts.call_sonnet import SonnetOutputError
+    from scripts.call_model import ModelOutputError
 
     prompts_received = []
 
     def fake_call(prompt):
         prompts_received.append(prompt)
         if len(prompts_received) == 1:
-            raise SonnetOutputError("missing <site>", raw="garbled")
+            raise ModelOutputError("missing <site>", raw="garbled")
         return _valid_html(), _valid_diary()
 
-    monkeypatch.setattr(run_module, "call_sonnet", fake_call)
+    monkeypatch.setattr(run_module, "call_model", fake_call)
 
     rc = run_module.run(TODAY, FACTS, tmp_path)
     assert rc == 0
@@ -165,7 +165,7 @@ def test_diary_fail_then_success(monkeypatch, tmp_path):
             return _valid_html(), bad_diary
         return _valid_html(), _valid_diary()
 
-    monkeypatch.setattr(run_module, "call_sonnet", fake_call)
+    monkeypatch.setattr(run_module, "call_model", fake_call)
 
     rc = run_module.run(TODAY, FACTS, tmp_path)
     assert rc == 0
@@ -188,15 +188,15 @@ def test_diary_fail_then_success(monkeypatch, tmp_path):
 )
 def test_record_stats_always_called(monkeypatch, tmp_path, outcome_setup):
     sink = _patch_common(monkeypatch, tmp_path)
-    from scripts.call_sonnet import SonnetOutputError
+    from scripts.call_model import ModelOutputError
 
     if outcome_setup == "success_first_try":
-        monkeypatch.setattr(run_module, "call_sonnet", lambda p: (_valid_html(), _valid_diary()))
+        monkeypatch.setattr(run_module, "call_model", lambda p: (_valid_html(), _valid_diary()))
     elif outcome_setup == "validation_twice":
         bad_html = _valid_html().replace("Autoscope", "Autonotscope")
-        monkeypatch.setattr(run_module, "call_sonnet", lambda p: (bad_html, _valid_diary()))
+        monkeypatch.setattr(run_module, "call_model", lambda p: (bad_html, _valid_diary()))
     elif outcome_setup == "api_error":
-        monkeypatch.setattr(run_module, "call_sonnet", MagicMock(side_effect=_make_api_error()))
+        monkeypatch.setattr(run_module, "call_model", MagicMock(side_effect=_make_api_error()))
 
     run_module.run(TODAY, FACTS, tmp_path)
     assert len(sink) == 1  # record_stats fired exactly once
@@ -254,7 +254,7 @@ def _gate_facts():
 
 
 def _run_gate(monkeypatch, tmp_path, pages):
-    """Run the pipeline over a queue of Sonnet responses. Returns (code, calls)."""
+    """Run the pipeline over a queue of model responses. Returns (code, calls)."""
     repo = _gate_repo(tmp_path)
     queue = list(pages)
     calls = []
@@ -263,7 +263,7 @@ def _run_gate(monkeypatch, tmp_path, pages):
         calls.append(prompt)
         return queue.pop(0), GATE_DIARY
 
-    monkeypatch.setattr(run_module, "call_sonnet", fake_call)
+    monkeypatch.setattr(run_module, "call_model", fake_call)
     # The gate is what's under test, not prompt assembly.
     monkeypatch.setattr(run_module, "assemble_prompt", lambda *a, **k: "PROMPT")
     # no_commit=True, so git is never invoked.

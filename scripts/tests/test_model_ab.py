@@ -73,12 +73,17 @@ def test_arms_send_their_own_model_and_max_tokens():
         assert "thinking" not in kwargs
 
 
-def test_sonnet_arm_matches_production_config():
-    """If call_sonnet.py changes, this arm has drifted and the A/B is invalid."""
-    from scripts.call_sonnet import MAX_TOKENS, MODEL
+def test_one_arm_mirrors_production_config():
+    """One arm must match what production actually runs, or the A/B is comparing
+    against something that no longer ships. Asserting on whichever arm matches
+    keeps this honest across model migrations instead of pinning to Sonnet."""
+    from scripts.call_model import MAX_TOKENS, MODEL
 
-    assert SONNET.model == MODEL
-    assert SONNET.max_tokens == MAX_TOKENS
+    mirrors = [a for a in ARMS if a.model == MODEL and a.max_tokens == MAX_TOKENS]
+    assert mirrors, (
+        f"no arm matches production ({MODEL} at {MAX_TOKENS} max_tokens); "
+        f"arms are {[(a.model, a.max_tokens) for a in ARMS]}"
+    )
 
 
 def test_cost_uses_per_arm_rates():
