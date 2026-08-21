@@ -162,3 +162,31 @@ def test_fetch_all_flags_unknown_source_key(monkeypatch):
 def test_every_default_roster_key_has_a_source():
     for key in fdi.DEFAULT_ROSTER:
         assert key in fdi.SOURCES, f"{key} is on the roster with no fetcher"
+
+
+# --------------------------------------------------------------------------
+# Contact details must not reach the prompt or the public page
+# --------------------------------------------------------------------------
+def test_closure_note_scrubs_worker_email():
+    raw = ("Case Closed. Closed date : Wed Aug 19 04:20:21 EDT 2026 Noted "
+           "I did email constituent regarding this issue. j.worker@example.invalid")
+    out = fdi._strip_closure_stamp(raw)
+    assert "@" not in out
+    assert "[email]" in out
+    assert "I did email constituent" in out
+
+
+def test_closure_note_scrubs_phone_numbers():
+    out = fdi._strip_closure_stamp("Closed. Call 617-555-0123 for details")
+    assert "617" not in out
+    assert "[phone]" in out
+
+
+def test_fsa_rejects_records_located_only_in_the_united_states():
+    """Every record carries 'united states'; alone it locates nothing."""
+    generic = {"title": "Lawrence S. Knappen", "date": "1940-01-01",
+               "location": ["united states"], "image_url": ["a#h=789&w=1024"]}
+    assert fdi._fsa_usable(generic) is False
+
+    located = dict(generic, location=["united states", "tulsa", "oklahoma"])
+    assert fdi._fsa_usable(located) is True

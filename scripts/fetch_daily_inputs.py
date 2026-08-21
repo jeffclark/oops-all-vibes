@@ -17,6 +17,7 @@ wants.
 from __future__ import annotations
 
 import argparse
+import html as html_lib
 import json
 import random
 import re
@@ -52,6 +53,8 @@ def _warn(msg: str) -> None:
 # ==========================================================================
 FSA_COLLECTION = "https://www.loc.gov/collections/fsa-owi-black-and-white-negatives/"
 FSA_MIN_IMAGE_WIDTH = 640
+# Every record is tagged "united states"; on its own it locates nothing.
+FSA_GENERIC_PLACES = {"united states", "usa", "america"}
 FSA_SAMPLE_PAGES = 500
 
 
@@ -69,9 +72,10 @@ def _biggest_image(image_urls: list[str] | None) -> tuple[str | None, int]:
 def _fsa_usable(item: dict) -> bool:
     """A record with enough substance for Georgia to say something about."""
     _, w = _biggest_image(item.get("image_url"))
+    places = [str(x).strip().lower() for x in (item.get("location") or [])]
     return bool(
         w >= FSA_MIN_IMAGE_WIDTH
-        and item.get("location")
+        and [x for x in places if x not in FSA_GENERIC_PLACES]
         and item.get("date")
         and (item.get("title") or "").strip()
     )
@@ -149,12 +153,19 @@ _STAMP = re.compile(
     re.I,
 )
 _STATUS = re.compile(r"^\s*(?:Case\s+)?(?:Closed|Resolved|Noted|Invalid|Duplicate)\s*", re.I)
+# Workers sometimes paste their own address or a constituent's phone number into
+# the note. The note goes into a public prompt and onto a public page; the
+# contact details are not the interesting part of it.
+_EMAIL = re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b")
+_PHONE = re.compile(r"\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b")
 
 
 def _strip_closure_stamp(text: str) -> str:
     text = _STAMP.sub("", text)
     text = _STATUS.sub("", text)
-    return text.strip()
+    text = _EMAIL.sub("[email]", text)
+    text = _PHONE.sub("[phone]", text)
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def _clean_case_title(title: str | None) -> str:
@@ -239,7 +250,7 @@ def fetch_civic(session: requests.Session, rng: random.Random, day: date) -> dic
             continue
         resolved.append({
             "case": _clean_case_title(row.get("case_title")),
-            "neighborhood": row.get("neighborhood") or "unspecified",
+            "neighborhood": html_lib.unescape(row.get("neighborhood") or "unspecified"),
             "note": text[:300],
         })
         if len(resolved) == 3:
@@ -303,17 +314,20 @@ def fetch_surplus(session: requests.Session, rng: random.Random) -> dict:
         raise ValueError(f"no listings on page {page}")
 
     name, url = rng.choice(listings)
-    detail = {"name": name, "url": url}
+    detail = {"name": html_lib.unescape(name), "url": url}
     try:
         dr = session.get(url, timeout=REQUEST_TIMEOUT_S, headers=headers, allow_redirects=True)
         dr.raise_for_status()
         for block in _ld_blocks(dr.text):
             if isinstance(block, dict) and block.get("@type") == "Product":
                 offers = block.get("offers") or {}
-                desc = re.sub(r"\s+", " ", block.get("description") or "").strip()
+                desc = html_lib.unescape(
+                    re.sub(r"\s+", " ", block.get("description") or "")
+                ).strip()
+                seller = (offers.get("seller") or {}).get("name")
                 detail.update({
                     "description": desc[:600],
-                    "seller": (offers.get("seller") or {}).get("name"),
+                    "seller": html_lib.unescape(seller) if seller else None,
                     "price": offers.get("price"),
                     "currency": offers.get("priceCurrency"),
                 })
