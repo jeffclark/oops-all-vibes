@@ -1,18 +1,21 @@
 """Probe the candidate daily-input sources and report what Georgia would actually see.
 
-This is a diagnostic, not part of the daily pipeline. Round 2: the first run
-established which hosts answer at all. This one asks the harder question —
-what is actually *in* the response, and can we parse it without a browser.
+Diagnostic only — not part of the daily pipeline.
 
-Every probe is individually defensive. Where a source has no sanctioned feed,
-the probe checks robots.txt first. We are not building a scraper that fights
-a site.
+Round 3. Round 2 scored 3/5, but two of those passes were hollow: the NYT
+"pass" only proved an embedded JSON blob exists, and the hockey "pass" matched
+EliteProspects' site-wide navigation rather than any Oklahoma State game. This
+round tests the things that would actually break at 3am:
 
-Successful probes dump a `sample` excerpt so the real parser can be written
-against evidence rather than guesses.
+  - FSA: is the image full-size, and is the metadata complete enough to use?
+  - Municibid: what IS the listing URL shape, since /Listing/Details/ isn't it?
+  - Corrections: no NYT feed exists. Does the Guardian's open API carry the
+    corrections column instead?
+  - Hockey: both known sources are SPAs. Is there any server-rendered route?
+  - Patent: ODP bulk pages are SPAs too. Is any file listing reachable?
 
     python3 scripts/probe_inputs.py            # human report
-    python3 scripts/probe_inputs.py --json     # machine-readable
+    python3 scripts/probe_inputs.py --only fsa # iterate on one
 """
 from __future__ import annotations
 
@@ -22,6 +25,7 @@ import random
 import re
 import sys
 import time
+from collections import Counter
 from dataclasses import dataclass, field, asdict
 from datetime import date, datetime, timedelta, timezone
 from typing import Any, Callable
@@ -29,9 +33,9 @@ from urllib.parse import urljoin, urlparse
 
 import requests
 
-TIMEOUT_S = 90  # loc.gov deep queries are genuinely slow; 30s was too tight
+TIMEOUT_S = 90
 UA = "clarkle.com daily-input probe (jeff@clarkle.com)"
-SAMPLE_CHARS = 600
+SAMPLE_CHARS = 700
 
 
 @dataclass
@@ -51,7 +55,7 @@ def _get(session: requests.Session, url: str, **kw) -> tuple[requests.Response |
     try:
         r = session.get(url, timeout=kw.pop("timeout", TIMEOUT_S), **kw)
         return r, int((time.time() - start) * 1000), ""
-    except Exception as exc:  # noqa: BLE001 — a probe must never raise
+    except Exception as exc:  # noqa: BLE001
         return None, int((time.time() - start) * 1000), f"{type(exc).__name__}: {exc}"
 
 
@@ -77,10 +81,8 @@ def _text(html: str) -> str:
 def _robots_summary(session: requests.Session, url: str) -> str:
     host = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
     r, _, err = _get(session, f"{host}/robots.txt", timeout=20)
-    if r is None:
-        return f"robots.txt unreachable ({err})"
-    if r.status_code != 200:
-        return f"robots.txt HTTP {r.status_code}"
+    if r is None or r.status_code != 200:
+        return f"robots.txt {err or f'HTTP {r.status_code}'}"
     lines, in_star = [], False
     for line in r.text.splitlines():
         s = line.strip()
@@ -88,71 +90,115 @@ def _robots_summary(session: requests.Session, url: str) -> str:
             in_star = s.split(":", 1)[1].strip() == "*"
         elif in_star and s.lower().startswith(("disallow:", "allow:", "crawl-delay:")):
             lines.append(s)
-    return f"robots.txt (User-agent: *): {'; '.join(lines[:12]) or 'no rules'}"
+    return f"robots.txt (*): {'; '.join(lines[:12]) or 'no rules'}"
 
 
 # --------------------------------------------------------------------------
-# 1. FSA photograph — Library of Congress
+# 1. FSA photograph — quality, not just reachability
 #
-# Round 1 died on a 30s read timeout at sp=<random up to 500>. Deep paging is
-# the prime suspect, so time a shallow page against a deep one and find out
-# whether random sampling by offset is viable at all.
+# Round 2 returned "Boy Scouts, New York City": location null, subject [], and
+# a 150px thumbnail from the /cph/ path rather than /fsa/. Reachable is not the
+# same as usable. Measure how many records in a page are actually good.
 # --------------------------------------------------------------------------
 FSA_COLLECTION = "https://www.loc.gov/collections/fsa-owi-black-and-white-negatives/"
 
 
+def _biggest_image(image_urls: list[str]) -> tuple[str | None, int]:
+    """LoC appends #h=&w= to each variant. Pick the widest, not the last."""
+    best, best_w = None, 0
+    for u in image_urls or []:
+        m = re.search(r"#h=(\d+)&w=(\d+)", u)
+        w = int(m.group(2)) if m else 0
+        if w >= best_w:
+            best, best_w = u, w
+    return best, best_w
+
+
+def _usable(item: dict) -> tuple[bool, list[str]]:
+    """A record Georgia can actually write about."""
+    why = []
+    img, w = _biggest_image(item.get("image_url") or [])
+    if w < 640:
+        why.append(f"image only {w}px wide")
+    if not item.get("location"):
+        why.append("no location")
+    if not item.get("date"):
+        why.append("no date")
+    if not (item.get("title") or "").strip():
+        why.append("no title")
+    return (not why), why
+
+
 def probe_fsa(session: requests.Session, rng: random.Random) -> Probe:
     p = Probe(name="FSA photograph (Library of Congress)")
-    timings = {}
+    sp = rng.randint(1, 500)
+    p.url = f"{FSA_COLLECTION}?fo=json&c=25&sp={sp}&at=results,pagination"
+    r, ms, err = _get(session, p.url)
+    p.latency_ms = ms
+    if r is None:
+        p.error = err
+        return p
+    p.status = r.status_code
+    if reason := _blocked_reason(r):
+        p.error = reason
+        return p
+    try:
+        data = r.json()
+    except Exception as exc:  # noqa: BLE001
+        p.error = f"not JSON ({exc})"
+        return p
 
-    for label, sp in (("shallow sp=1", 1), ("deep sp=%d" % rng.randint(200, 500), None)):
-        sp = sp or int(label.split("=")[1])
-        url = f"{FSA_COLLECTION}?fo=json&c=25&sp={sp}&at=results,pagination"
-        r, ms, err = _get(session, url)
-        timings[label] = f"{ms}ms " + (err or f"HTTP {r.status_code}")
-        if r is None or r.status_code != 200:
-            continue
-        reason = _blocked_reason(r)
-        if reason:
-            timings[label] += f" [{reason}]"
-            continue
+    results = data.get("results") or []
+    good = [it for it in results if _usable(it)[0]]
+    rejects = Counter()
+    for it in results:
+        ok, why = _usable(it)
+        if not ok:
+            rejects.update(why[:1])
+
+    p.payload["page_size"] = len(results)
+    p.payload["usable_records"] = len(good)
+    p.payload["rejection_reasons"] = dict(rejects)
+    p.payload["collection_total"] = data.get("pagination", {}).get("of")
+
+    if good:
+        item = rng.choice(good)
+        img, w = _biggest_image(item.get("image_url"))
+        p.ok = True
+        p.payload["pick"] = {
+            "title": (item.get("title") or "")[:200],
+            "date": item.get("date"),
+            "location": item.get("location"),
+            "id": item.get("id"),
+            "image": img,
+            "image_width": w,
+            "collection_path": img.split("/pnp/")[1].split("/")[0] if img and "/pnp/" in img else None,
+        }
+    else:
+        p.error = "no usable records on this page"
+
+    # How often does Oklahoma actually come up?
+    ok_url = f"{FSA_COLLECTION}?q=oklahoma&fo=json&c=1&at=pagination"
+    rk, _, _ = _get(session, ok_url, timeout=60)
+    if rk is not None and rk.status_code == 200:
         try:
-            data = r.json()
+            n = rk.json().get("pagination", {}).get("of")
+            total = p.payload.get("collection_total") or 0
+            p.payload["oklahoma_matches"] = n
+            if n and total:
+                p.payload["oklahoma_rate"] = f"1 in {round(total / n)} (~{n / total * 100:.2f}%)"
+                p.payload["oklahoma_days_between_hits"] = round(total / n)
         except Exception:  # noqa: BLE001
-            timings[label] += " [200 but not JSON — CAPTCHA HTML]"
-            continue
-        results = data.get("results") or []
-        if not results:
-            timings[label] += " [no results — deep paging capped?]"
-            continue
-        if not p.ok:
-            item = rng.choice(results)
-            imgs = item.get("image_url") or []
-            p.ok = True
-            p.url, p.status, p.latency_ms = url, r.status_code, ms
-            p.payload = {
-                "title": item.get("title"),
-                "date": item.get("date"),
-                "location": item.get("location"),
-                "subject": (item.get("subject") or [])[:6],
-                "id": item.get("id"),
-                "image_url": imgs[-1] if imgs else None,
-                "mentions_oklahoma": "oklahoma" in json.dumps(item).lower(),
-                "collection_total": data.get("pagination", {}).get("of"),
-            }
-    p.notes.append("timings: " + json.dumps(timings))
-    p.notes.append("no API key; documented limit 20 req/min, 1-hour ban if exceeded")
-    if not p.ok:
-        p.error = "no page returned parseable results"
+            pass
     return p
 
 
 # --------------------------------------------------------------------------
-# 2. Municipal surplus auctions
+# 2. Municibid — find the actual listing URL shape
 #
-# Round 1: HTTP 200, 240KB, robots.txt permits /Browse/. The content is there;
-# my regex was garbage (it matched the copyright footer). Dump structured
-# candidates and a raw sample so a real parser can be written.
+# Round 2: 240,995 bytes, zero /Listing/Details/ anchors. The content is
+# server-rendered (the byte count is stable and large), so the selector is
+# wrong. Enumerate every href shape on the page and let the data say.
 # --------------------------------------------------------------------------
 SURPLUS_URL = "https://municibid.com/Browse/R138/Massachusetts"
 
@@ -166,175 +212,161 @@ def probe_surplus(session: requests.Session, rng: random.Random) -> Probe:
         p.error = err
         return p
     p.status = r.status_code
-    reason = _blocked_reason(r)
-    if reason:
+    if reason := _blocked_reason(r):
         p.error = reason
         return p
 
     html = r.text
-    # Listing links are the reliable anchor on this site.
-    links = re.findall(r'href="(/Listing/Details/[^"]+)"[^>]*>(.*?)</a>', html, re.S | re.I)
-    titles = [re.sub(r"\s+", " ", _text(t)).strip() for _, t in links]
-    titles = [t for t in titles if len(t) > 3]
-    bids = re.findall(r"(?:Current Bid|Bid|Price)[^$]{0,40}(\$[\d,]+(?:\.\d{2})?)", html, re.I)
-    # Sellers are what make this input interesting — which town is selling.
-    sellers = re.findall(r"(?:Town|City|Borough|Township|Village) of ([A-Z][A-Za-z\s\-]{2,30})", html)
+    hrefs = re.findall(r'href="(/[^"#?]{2,120})"', html)
+    shapes = Counter("/" + "/".join(h.strip("/").split("/")[:2]) for h in hrefs)
+    p.payload["total_hrefs"] = len(hrefs)
+    p.payload["href_shapes"] = dict(shapes.most_common(12))
 
-    p.payload = {
-        "listing_links": len(links),
-        "sample_titles": titles[:6],
-        "sample_bids": bids[:6],
-        "sample_sellers": sorted(set(s.strip() for s in sellers))[:8],
-        "html_bytes": len(r.content),
-    }
-    p.ok = bool(titles)
+    # Is the catalogue shipped as JSON inside the page instead?
+    blobs = re.findall(r'<script[^>]*type="application/(?:ld\+)?json"[^>]*>(.*?)</script>', html, re.S)
+    p.payload["json_script_blocks"] = len(blobs)
+    if blobs:
+        p.payload["json_block_sample"] = blobs[0][:SAMPLE_CHARS]
+
+    # Money and years are what listings are made of — where do they live?
+    money = re.findall(r"\$[\d,]+(?:\.\d{2})?", html)
+    p.payload["dollar_amounts_found"] = len(money)
+    p.payload["dollar_sample"] = money[:8]
+
+    # Grab the markup immediately around the first price as a parser target.
+    m = re.search(r".{400}\$[\d,]+(?:\.\d{2})?.{300}", html, re.S)
+    if m:
+        p.payload["around_first_price"] = re.sub(r"\s+", " ", m.group(0))[:SAMPLE_CHARS]
+
+    p.ok = bool(money) and any(k.startswith("/Listing") for k in shapes)
     if not p.ok:
-        p.error = "no /Listing/Details/ anchors found — check the sample"
-        m = re.search(r"(?i)(<div[^>]*(?:listing|item|card|lot)[^>]*>.{0,%d})" % SAMPLE_CHARS, html, re.S)
-        p.payload["sample"] = (m.group(1) if m else html[:SAMPLE_CHARS])[:SAMPLE_CHARS]
+        p.error = "listings not found in server HTML — check href_shapes and around_first_price"
     return p
 
 
 # --------------------------------------------------------------------------
-# 3. NYT corrections
+# 3. Corrections — the NYT has no feed; try the Guardian's open API
 #
-# Round 1: both guessed RSS paths 404'd, but the section page returned 200 and
-# 872KB with no Cloudflare wall. So: discover the real feed list instead of
-# guessing, and check the section page for the embedded JSON payload NYT ships
-# inside its HTML.
+# Round 2 settled it: 74 feeds advertised at nytimes.com/rss, none for
+# corrections, and the section page ships 872KB with only 3.4KB of visible
+# text — the list lives in __preloadedData. Scraping a paywalled publisher's
+# SPA state is not a foundation for a daily cron.
+#
+# The Guardian runs an open, documented API and publishes a standing
+# "Corrections and clarifications" column. api-key=test is their public
+# developer tier.
 # --------------------------------------------------------------------------
-NYT_RSS_INDEX = "https://www.nytimes.com/rss"
+GUARDIAN_SERIES = (
+    "https://content.guardianapis.com/theguardian/series/corrections-and-clarifications"
+    "?api-key=test&show-fields=headline,bodyText,firstPublicationDate&page-size=5&order-by=newest"
+)
 NYT_SECTION = "https://www.nytimes.com/section/corrections"
 
 
-def probe_nyt_corrections(session: requests.Session, rng: random.Random) -> Probe:
-    p = Probe(name="NYT corrections")
-
-    # a) What feeds actually exist?
-    r, ms, err = _get(session, NYT_RSS_INDEX)
-    if r is not None and r.status_code == 200:
-        feeds = sorted(set(re.findall(r'https?://[^\s"\'<>]+?\.xml', r.text)))
-        p.payload["feeds_advertised"] = len(feeds)
-        p.payload["corrections_feed"] = [f for f in feeds if "correction" in f.lower()] or None
-        p.payload["feed_sample"] = feeds[:8]
-        p.notes.append(f"{NYT_RSS_INDEX} -> HTTP 200, {len(feeds)} .xml URLs advertised")
-    else:
-        p.notes.append(f"{NYT_RSS_INDEX} -> {err or f'HTTP {r.status_code}'}")
-
-    # If a real corrections feed exists, use it.
-    for feed in (p.payload.get("corrections_feed") or []):
-        fr, fms, ferr = _get(session, feed)
-        if fr is not None and fr.status_code == 200 and "<item>" in fr.text:
-            items = re.findall(r"<item>(.*?)</item>", fr.text, re.S)[:5]
-            p.ok = True
-            p.url, p.status, p.latency_ms = feed, fr.status_code, fms
-            p.payload["items"] = [
-                {
-                    "title": (re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", i, re.S)
-                              or [None, None])[1],
-                    "pubDate": (re.search(r"<pubDate>(.*?)</pubDate>", i, re.S) or [None, None])[1],
-                }
-                for i in items
-            ]
-            return p
-
-    # b) No feed — is the section page parseable server-side?
-    r, ms, err = _get(session, NYT_SECTION)
+def probe_corrections(session: requests.Session, rng: random.Random) -> Probe:
+    p = Probe(name="Corrections column (Guardian open API)")
+    r, ms, err = _get(session, GUARDIAN_SERIES)
+    p.url, p.latency_ms = GUARDIAN_SERIES.split("?")[0], ms
     if r is None:
         p.error = err
-        return p
-    p.url, p.status, p.latency_ms = NYT_SECTION, r.status_code, ms
-    reason = _blocked_reason(r)
-    if reason:
-        p.error = reason
-        return p
+    else:
+        p.status = r.status_code
+        try:
+            body = r.json().get("response", {})
+            results = body.get("results", []) or []
+            p.payload["guardian_status"] = body.get("status")
+            p.payload["total_available"] = body.get("total")
+            p.payload["items"] = [
+                {
+                    "date": (it.get("fields", {}) or {}).get("firstPublicationDate")
+                            or it.get("webPublicationDate"),
+                    "headline": (it.get("fields", {}) or {}).get("headline") or it.get("webTitle"),
+                    "excerpt": re.sub(
+                        r"\s+", " ", ((it.get("fields", {}) or {}).get("bodyText") or "")
+                    )[:300],
+                }
+                for it in results[:3]
+            ]
+            p.ok = bool(results)
+            if not p.ok:
+                p.error = f"API answered but returned no items: {json.dumps(body)[:300]}"
+        except Exception as exc:  # noqa: BLE001
+            p.error = f"unparseable response ({exc}): {r.text[:200]}"
 
-    html = r.text
-    has_preload = "__preloadedData" in html
-    p.payload["has_embedded_json"] = has_preload
-    body = _text(html)
-    # Corrections read "An article on Tuesday about X misstated ..."
-    hits = re.findall(
-        r"((?:An article|A picture caption|An obituary|A review|Because of an editing error)"
-        r"[^.]{10,300}\.)",
-        body,
-    )
-    p.payload["correction_shaped_sentences"] = hits[:4]
-    p.payload["text_chars"] = len(body)
-    p.ok = bool(hits) or has_preload
-    if not p.ok:
-        p.payload["sample"] = body[:SAMPLE_CHARS]
-        p.error = "section page reachable but nothing corrections-shaped in the HTML"
+    # Record what the NYT route would cost, for the record.
+    nr, nms, nerr = _get(session, NYT_SECTION)
+    if nr is not None and nr.status_code == 200:
+        pre = "__preloadedData" in nr.text
+        p.notes.append(
+            f"NYT fallback: section page HTTP 200, {len(nr.content)} bytes, "
+            f"{len(_text(nr.text))} chars visible text, __preloadedData={pre} "
+            "— parseable only by mining SPA state"
+        )
     return p
 
 
 # --------------------------------------------------------------------------
-# 4. Oklahoma State hockey — ACHA Men's D2
+# 4. Oklahoma State hockey — is ANY route server-rendered?
 #
-# Round 1: okstatehockey.com returned an identical 11,493-byte shell for three
-# different routes — it's a JS SPA, dead without a headless browser. Drop it.
-# EliteProspects returned 184KB of real HTML; my date regex just didn't match
-# their format. Widen the patterns and dump a sample.
+# Round 2: EliteProspects returned 184KB but only 4,193 chars of text, and the
+# "linked teams" were Blackhawks / Red Wings / Rangers — site navigation, not
+# OSU's opponents. Both known sources are SPAs. Last look: find the real ACHA
+# URLs from their own homepage rather than guessing again.
 # --------------------------------------------------------------------------
-EP_URL = "https://www.eliteprospects.com/team/35165/oklahoma-state-univ"
-ACHA_SEARCH = "https://www.achahockey.org/"
-
-DATE_PATTERNS = [
-    r"\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}\b",
-    r"\b\d{4}-\d{2}-\d{2}\b",
-    r"\b\d{1,2}[./]\d{1,2}[./]\d{2,4}\b",
-]
+ACHA_HOME = "https://www.achahockey.org/"
+EP_SEASON = "https://www.eliteprospects.com/team/35165/oklahoma-state-univ/2025-2026"
 
 
 def probe_okstate(session: requests.Session, rng: random.Random) -> Probe:
     p = Probe(name="Oklahoma State hockey (ACHA Men's D2)")
     today = datetime.now(timezone.utc).date()
     p.payload["in_season"] = today.month >= 9 or today.month <= 3
-    if not p.payload["in_season"]:
-        p.notes.append(f"{today.isoformat()} is off-season — an empty result is expected")
 
-    r, ms, err = _get(session, EP_URL)
-    p.url, p.latency_ms = EP_URL, ms
-    if r is None:
-        p.error = err
-        return p
-    p.status = r.status_code
-    reason = _blocked_reason(r)
-    if reason:
-        p.error = reason
-        return p
+    # Discover real ACHA routes instead of guessing at /teams/<slug>.
+    r, ms, err = _get(session, ACHA_HOME)
+    if r is not None and r.status_code == 200:
+        hrefs = re.findall(r'href="([^"#]+)"', r.text)
+        interesting = sorted({
+            h for h in hrefs
+            if re.search(r"(team|schedule|standing|score|stats|roster)", h, re.I)
+        })
+        p.payload["acha_routes"] = interesting[:15]
+        p.payload["acha_text_chars"] = len(_text(r.text))
+        p.notes.append(f"{ACHA_HOME} -> HTTP 200, {len(r.content)} bytes")
+    else:
+        p.notes.append(f"{ACHA_HOME} -> {err or f'HTTP {r.status_code}'}")
 
-    html = r.text
-    body = _text(html)
-    dates = []
-    for pat in DATE_PATTERNS:
-        dates.extend(re.findall(pat, body))
-    scores = re.findall(r"\b\d{1,2}\s*[-–:]\s*\d{1,2}\b", body)
-    # EP tables carry opponent links; those tell us whether games are listed.
-    opponents = re.findall(r'/team/\d+/([a-z0-9\-]+)"', html)
-    p.payload.update({
-        "date_strings": dates[:8],
-        "score_strings": scores[:8],
-        "linked_teams": sorted(set(opponents))[:10],
-        "text_chars": len(body),
-    })
-    p.ok = bool(dates or scores)
+    # EP season-scoped page: does it carry a real game table server-side?
+    r2, ms2, err2 = _get(session, EP_SEASON)
+    if r2 is not None:
+        body = _text(r2.text)
+        p.url, p.status, p.latency_ms = EP_SEASON, r2.status_code, ms2
+        p.payload["ep_season_status"] = r2.status_code
+        p.payload["ep_html_bytes"] = len(r2.content)
+        p.payload["ep_text_chars"] = len(body)
+        # A real game table names ACHA opponents, not NHL clubs.
+        acha_words = re.findall(
+            r"\b(?:Univ|University|State|College|Cowboys|ACHA)\b", body
+        )
+        p.payload["ep_college_words"] = len(acha_words)
+        p.payload["ep_sample"] = body[:SAMPLE_CHARS]
+        p.ok = len(body) > 20000 and len(acha_words) > 10
     if not p.ok:
-        p.payload["sample"] = body[:SAMPLE_CHARS]
-        p.error = "200 but nothing date- or score-shaped; see sample"
-    p.notes.append("okstatehockey.com dropped — confirmed 11,493-byte SPA shell on all routes")
+        p.error = "no server-rendered game data found on any route"
     return p
 
 
 # --------------------------------------------------------------------------
 # 5. Patent granted (USPTO)
 #
-# Round 1: ODP returned a clean 401 (key required, as documented) and
-# bulkdata.uspto.gov failed DNS resolution. Bulk products now live under the
-# Open Data Portal at data.uspto.gov/bulkdata.
+# Round 2: data.uspto.gov/bulkdata and .../datasets/PTGRXML both returned an
+# identical 20,666 bytes with zero visible text — the same React shell. The
+# file list comes from an XHR the shell makes. Find that endpoint and see
+# whether it needs the key.
 # --------------------------------------------------------------------------
-PTGRXML = "https://data.uspto.gov/bulkdata/datasets/PTGRXML"
-BULK_INDEX = "https://data.uspto.gov/bulkdata"
+ODP_PRODUCT_API = "https://api.uspto.gov/api/v1/datasets/products/PTGRXML"
+ODP_SEARCH_API = "https://api.uspto.gov/api/v1/datasets/products/search?q=patent%20grant"
+LEGACY_BULK = "https://bulkdata.uspto.gov/"
 
 
 def _last_grant_tuesday(today: date) -> date:
@@ -349,43 +381,37 @@ def probe_patent(session: requests.Session, rng: random.Random) -> Probe:
     p.payload["most_recent_issue_day"] = tuesday.isoformat()
     p.payload["days_stale"] = (today - tuesday).days
 
-    for label, url in (("bulk index", BULK_INDEX), ("PTGRXML dataset", PTGRXML)):
-        r, ms, err = _get(session, url)
+    for label, url in (
+        ("product API", ODP_PRODUCT_API),
+        ("product search", ODP_SEARCH_API),
+        ("legacy host", LEGACY_BULK),
+    ):
+        r, ms, err = _get(session, url, timeout=45)
         if r is None:
-            p.notes.append(f"{label} {url} -> {err}")
+            p.notes.append(f"{label} -> {err}")
             continue
-        reason = _blocked_reason(r)
-        p.notes.append(
-            f"{label} {url} -> HTTP {r.status_code} ({len(r.content)} bytes, {ms}ms)"
-            + (f" [{reason}]" if reason else "")
-        )
-        if r.status_code != 200 or reason:
-            continue
-        p.url, p.status, p.latency_ms = url, r.status_code, ms
-        zips = re.findall(r'href="([^"]*ipg\d{6}[^"]*\.zip)"', r.text)
-        if zips:
-            p.ok = True
-            p.payload["latest_files"] = zips[-3:]
+        snippet = re.sub(r"\s+", " ", r.text)[:200]
+        p.notes.append(f"{label} -> HTTP {r.status_code} ({len(r.content)}B, {ms}ms) {snippet!r}")
+        if r.status_code == 200:
             try:
-                h = session.head(urljoin(url, zips[-1]), timeout=30, allow_redirects=True)
-                p.payload["latest_file_mb"] = round(
-                    int(h.headers.get("content-length", 0)) / 1_048_576, 1
-                )
-                p.payload["head_status"] = h.status_code
+                data = r.json()
+                files = json.dumps(data)
+                if "ipg" in files or "fileDownloadUri" in files:
+                    p.ok = True
+                    p.url, p.status, p.latency_ms = url, r.status_code, ms
+                    p.payload["response_keys"] = list(data)[:12]
+                    p.payload["sample"] = files[:SAMPLE_CHARS]
+                    return p
             except Exception:  # noqa: BLE001
                 pass
-            return p
-        # The ODP pages are React apps; note whether the file list is embedded.
-        p.payload.setdefault("sample", _text(r.text)[:SAMPLE_CHARS])
-    p.error = "no keyless per-patent source confirmed"
-    p.notes.append("ODP API returned a clean 401 in round 1 — key + MFA account required")
+    p.error = "no keyless file listing — an ODP API key (USPTO.gov account + MFA) is required"
     return p
 
 
 PROBES: list[tuple[str, Callable]] = [
     ("fsa", probe_fsa),
     ("surplus", probe_surplus),
-    ("nyt_corrections", probe_nyt_corrections),
+    ("corrections", probe_corrections),
     ("okstate", probe_okstate),
     ("patent", probe_patent),
 ]
@@ -394,7 +420,7 @@ PROBES: list[tuple[str, Callable]] = [
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", action="store_true")
-    ap.add_argument("--only", help="comma-separated probe keys to run")
+    ap.add_argument("--only", help="comma-separated probe keys")
     ap.add_argument("--seed", type=int, default=None)
     args = ap.parse_args(argv)
 
@@ -417,7 +443,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     now = datetime.now(timezone.utc)
-    print(f"\nDaily-input probe r2 — {now.isoformat(timespec='seconds')} ({now.strftime('%A')})\n")
+    print(f"\nDaily-input probe r3 — {now.isoformat(timespec='seconds')} ({now.strftime('%A')})\n")
     for p in results.values():
         print(f"[{'PASS' if p.ok else 'FAIL'}] {p.name}")
         if p.status is not None:
@@ -432,7 +458,7 @@ def main(argv: list[str] | None = None) -> int:
         print()
 
     passed = sum(1 for p in results.values() if p.ok)
-    print(f"{passed}/{len(results)} sources parseable without a headless browser.\n")
+    print(f"{passed}/{len(results)} sources usable as-is.\n")
     return 0
 
 
