@@ -1,12 +1,15 @@
 """Probe the candidate daily-input sources and report what Georgia would actually see.
 
 This is a diagnostic, not part of the daily pipeline. It answers one question:
-for each candidate input, can we fetch it from a datacenter IP without an API
-key, and what does today's payload look like?
+for each candidate input, can we fetch it without an API key, and what does
+today's payload look like?
 
 Every probe is individually defensive — a source that 403s, times out, or
 changes shape reports a failure and the rest keep going. That mirrors how the
 real fetchers would have to behave: a dead input is content, not an outage.
+
+Where a source has no sanctioned feed, the probe checks robots.txt first and
+reports what it says. We are not building a scraper that fights a site.
 
     python scripts/probe_inputs.py            # human report
     python scripts/probe_inputs.py --json     # machine-readable
@@ -22,6 +25,7 @@ import time
 from dataclasses import dataclass, field, asdict
 from datetime import date, datetime, timedelta, timezone
 from typing import Any, Callable
+from urllib.parse import urlparse
 
 import requests
 
@@ -65,6 +69,24 @@ def _blocked_reason(r: requests.Response) -> str:
     return ""
 
 
+def _robots_summary(session: requests.Session, url: str) -> str:
+    """Fetch robots.txt for a URL's host and summarise the wildcard agent's rules."""
+    host = f"{urlparse(url).scheme}://{urlparse(url).netloc}"
+    r, _, err = _get(session, f"{host}/robots.txt")
+    if r is None:
+        return f"robots.txt unreachable ({err})"
+    if r.status_code != 200:
+        return f"robots.txt HTTP {r.status_code}"
+    lines, in_star = [], False
+    for line in r.text.splitlines():
+        s = line.strip()
+        if s.lower().startswith("user-agent:"):
+            in_star = s.split(":", 1)[1].strip() == "*"
+        elif in_star and s.lower().startswith(("disallow:", "allow:", "crawl-delay:")):
+            lines.append(s)
+    return f"robots.txt (User-agent: *): {'; '.join(lines[:12]) or 'no rules'}"
+
+
 # --------------------------------------------------------------------------
 # 1. FSA photograph — Library of Congress JSON API
 # --------------------------------------------------------------------------
@@ -90,12 +112,12 @@ def probe_fsa(session: requests.Session, rng: random.Random) -> Probe:
     try:
         data = r.json()
     except Exception as exc:  # noqa: BLE001
-        p.error = f"not JSON ({exc}); likely an HTML interstitial"
+        p.error = f"not JSON ({exc}) — loc.gov serves CAPTCHA HTML with a 200 under load"
         return p
 
     results = data.get("results") or []
     if not results:
-        p.error = f"no results at sp={page} (deep paging may be capped)"
+        p.error = f"no results at sp={page} — deep paging may be capped"
         p.notes.append(f"pagination: {json.dumps(data.get('pagination', {}))[:300]}")
         return p
 
@@ -110,67 +132,73 @@ def probe_fsa(session: requests.Session, rng: random.Random) -> Probe:
         "location": item.get("location"),
         "id": item.get("id"),
         "image_url": image_urls[-1] if image_urls else None,
-        "image_count": len(image_urls),
     }
+    # The Oklahoma question: does this record carry a usable state signal?
+    blob = json.dumps(item).lower()
+    p.payload["mentions_oklahoma"] = "oklahoma" in blob
     p.notes.append(f"collection total: {data.get('pagination', {}).get('of', 'unknown')}")
-    p.notes.append("no API key; documented limit is 20 req/min, 1-hour ban if exceeded")
+    p.notes.append("no API key; documented limit 20 req/min, 1-hour ban if exceeded")
     return p
 
 
 # --------------------------------------------------------------------------
-# 2. Craigslist free stuff
+# 2. Municipal surplus auctions (replaces Craigslist free stuff)
 # --------------------------------------------------------------------------
-CL_CANDIDATES = [
-    "https://boston.craigslist.org/search/zip?format=rss",
-    "https://boston.craigslist.org/search/sob/zip?format=rss",  # south shore
-    "https://boston.craigslist.org/search/zip",
+SURPLUS_CANDIDATES = [
+    "https://municibid.com/Browse/R138/Massachusetts",
+    "https://municibid.com/",
+    "https://www.govdeals.com/index.cfm?fa=Main.AdvSearchResultsNew&searchPg=Advanced&kWord=&stateID=MA",
 ]
 
 
-def probe_craigslist(session: requests.Session, rng: random.Random) -> Probe:
-    p = Probe(name="Craigslist free stuff (Boston)")
+def probe_surplus(session: requests.Session, rng: random.Random) -> Probe:
+    p = Probe(name="Municipal surplus auctions (Municibid / GovDeals)")
+    p.notes.append(_robots_summary(session, "https://municibid.com/"))
     attempts = []
-    for url in CL_CANDIDATES:
+    for url in SURPLUS_CANDIDATES:
         r, ms, err = _get(session, url)
         if r is None:
             attempts.append(f"{url} -> {err}")
             continue
-        attempts.append(f"{url} -> HTTP {r.status_code} ({len(r.content)} bytes, {ms}ms)")
-        p.url, p.status, p.latency_ms = url, r.status_code, ms
         reason = _blocked_reason(r)
-        if reason:
-            attempts[-1] += f" [{reason}]"
+        attempts.append(
+            f"{url} -> HTTP {r.status_code} ({len(r.content)} bytes, {ms}ms)"
+            + (f" [{reason}]" if reason else "")
+        )
+        p.url, p.status, p.latency_ms = url, r.status_code, ms
+        if r.status_code != 200 or reason:
             continue
-        if r.status_code != 200:
-            continue
-        items = re.findall(r"<title>(.*?)</title>", r.text, re.S)
-        items = [i.strip() for i in items if i.strip()][1:]  # drop channel title
-        if items:
+        text = re.sub(r"<script.*?</script>", " ", r.text, flags=re.S | re.I)
+        text = re.sub(r"<[^>]+>", " ", text)
+        text = re.sub(r"\s+", " ", text)
+        # Surplus listings are overwhelmingly vehicles and equipment with a year.
+        lots = re.findall(r"\b(?:19|20)\d{2}\s+[A-Z][A-Za-z\-]+(?:\s+[A-Z][A-Za-z\-]+){0,3}", r.text)
+        bids = re.findall(r"\$[\d,]+(?:\.\d{2})?", text)
+        if lots:
             p.ok = True
-            p.payload = {"sample_titles": items[:5], "item_count": len(items)}
-            p.notes = attempts
+            p.payload = {"lot_shaped_strings": lots[:8], "price_strings": bids[:8]}
+            p.notes.extend(attempts)
             return p
-        attempts[-1] += " [200 but no parseable items — JS shell]"
-    p.notes = attempts
-    p.error = "no candidate URL returned usable listings"
+        attempts[-1] += " [200 but no lot-shaped text — likely JS-rendered]"
+    p.notes.extend(attempts)
+    p.error = "no listing source returned parseable lots"
     return p
 
 
 # --------------------------------------------------------------------------
-# 3. Boston Globe corrections
+# 3. NYT corrections (replaces Boston Globe corrections)
 # --------------------------------------------------------------------------
-GLOBE_CANDIDATES = [
-    "https://www.bostonglobe.com/corrections/",
-    "https://www.bostonglobe.com/metro/corrections/",
-    "https://www.bostonglobe.com/rss/feedRiverMetro",
-    "http://archive.boston.com/bostonglobe/corrections/",
+NYT_CANDIDATES = [
+    "https://rss.nytimes.com/services/xml/rss/nyt/Corrections.xml",
+    "https://www.nytimes.com/services/xml/rss/nyt/Corrections.xml",
+    "https://www.nytimes.com/section/corrections",
 ]
 
 
-def probe_globe(session: requests.Session, rng: random.Random) -> Probe:
-    p = Probe(name="Boston Globe corrections")
+def probe_nyt_corrections(session: requests.Session, rng: random.Random) -> Probe:
+    p = Probe(name="NYT corrections")
     attempts = []
-    for url in GLOBE_CANDIDATES:
+    for url in NYT_CANDIDATES:
         r, ms, err = _get(session, url, allow_redirects=True)
         if r is None:
             attempts.append(f"{url} -> {err}")
@@ -181,35 +209,55 @@ def probe_globe(session: requests.Session, rng: random.Random) -> Probe:
             + (f" [{reason}]" if reason else "")
         )
         p.url, p.status, p.latency_ms = url, r.status_code, ms
-        if r.status_code == 200 and not reason:
-            text = re.sub(r"<script.*?</script>", " ", r.text, flags=re.S | re.I)
-            text = re.sub(r"<[^>]+>", " ", text)
-            text = re.sub(r"\s+", " ", text)
-            hit = re.search(r"(correction|clarification)[^.]{0,400}\.", text, re.I)
-            p.ok = bool(hit)
-            p.payload = {"excerpt": hit.group(0)[:400] if hit else None,
-                         "text_chars": len(text)}
-            if p.ok:
-                p.notes = attempts
-                return p
-            attempts[-1] += " [200 but no corrections text found]"
+        if r.status_code != 200 or reason:
+            continue
+        items = re.findall(r"<item>(.*?)</item>", r.text, re.S)
+        if items:
+            parsed = []
+            for raw in items[:5]:
+                title = re.search(r"<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</title>", raw, re.S)
+                desc = re.search(
+                    r"<description>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?</description>", raw, re.S
+                )
+                pub = re.search(r"<pubDate>(.*?)</pubDate>", raw, re.S)
+                parsed.append({
+                    "title": title.group(1).strip() if title else None,
+                    "pubDate": pub.group(1).strip() if pub else None,
+                    "description": re.sub(r"\s+", " ", desc.group(1)).strip()[:400] if desc else None,
+                })
+            p.ok = True
+            p.payload = {"item_count": len(items), "items": parsed}
+            p.notes = attempts
+            return p
+        attempts[-1] += " [200 but no <item> elements — not an RSS feed]"
     p.notes = attempts
-    p.error = "no reachable corrections source"
+    p.error = "no reachable corrections feed"
     return p
 
 
 # --------------------------------------------------------------------------
-# 4. Oklahoma State hockey (ACHA)
+# 4. Oklahoma State hockey — ACHA Men's Division 2
+#
+# OSU has no ACHA D1 program. They play ACHA MD2 (West), joined the ACHA in
+# 2021, and reached the 2026 MD2 national championship game.
 # --------------------------------------------------------------------------
 OKST_CANDIDATES = [
+    "https://www.okstatehockey.com/schedule",
+    "https://m.okstatehockey.com/schedule/",
     "https://www.okstatehockey.com/schedule/upcoming",
-    "https://www.okstatehockey.com/events",
     "https://www.eliteprospects.com/team/35165/oklahoma-state-univ",
+    "https://www.achahockey.org/teams/oklahoma-state-university",
 ]
 
 
 def probe_okstate(session: requests.Session, rng: random.Random) -> Probe:
-    p = Probe(name="Oklahoma State hockey (ACHA)")
+    p = Probe(name="Oklahoma State hockey (ACHA Men's D2)")
+    today = datetime.now(timezone.utc).date()
+    # ACHA MD2 runs roughly late September through the March nationals.
+    in_season = today.month >= 9 or today.month <= 3
+    p.payload["in_season"] = in_season
+    if not in_season:
+        p.notes.append(f"{today.isoformat()} is off-season — expect no results either way")
     attempts = []
     for url in OKST_CANDIDATES:
         r, ms, err = _get(session, url)
@@ -227,22 +275,21 @@ def probe_okstate(session: requests.Session, rng: random.Random) -> Probe:
         text = re.sub(r"<script.*?</script>", " ", r.text, flags=re.S | re.I)
         text = re.sub(r"<[^>]+>", " ", text)
         text = re.sub(r"\s+", " ", text)
-        # Look for anything score- or date-shaped.
         scores = re.findall(r"\b\d{1,2}\s*[-–]\s*\d{1,2}\b", text)
         dates = re.findall(
             r"\b(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}\b", text
         )
         if scores or dates:
             p.ok = True
-            p.payload = {
+            p.payload.update({
                 "score_shaped_strings": scores[:8],
                 "date_shaped_strings": dates[:8],
                 "text_chars": len(text),
-            }
-            p.notes = attempts
+            })
+            p.notes.extend(attempts)
             return p
-        attempts[-1] += " [200 but no schedule/score text — likely JS-rendered]"
-    p.notes = attempts
+        attempts[-1] += " [200 but no schedule text — likely JS-rendered]"
+    p.notes.extend(attempts)
     p.error = "no reachable schedule/results source"
     return p
 
@@ -257,15 +304,17 @@ def _last_grant_tuesday(today: date) -> date:
 
 def probe_patent(session: requests.Session, rng: random.Random) -> Probe:
     p = Probe(name="Patent granted (USPTO)")
-    tuesday = _last_grant_tuesday(datetime.now(timezone.utc).date())
+    today = datetime.now(timezone.utc).date()
+    tuesday = _last_grant_tuesday(today)
     p.payload["most_recent_issue_day"] = tuesday.isoformat()
+    p.payload["days_stale"] = (today - tuesday).days
     attempts = []
 
     # a) Open Data Portal — expected to demand an API key.
     odp = "https://api.uspto.gov/api/v1/patent/applications/search?q=*&limit=1"
     r, ms, err = _get(session, odp)
     if r is None:
-        attempts.append(f"ODP {odp} -> {err}")
+        attempts.append(f"ODP -> {err}")
     else:
         attempts.append(f"ODP -> HTTP {r.status_code} ({ms}ms) {r.text[:160]!r}")
 
@@ -273,9 +322,9 @@ def probe_patent(session: requests.Session, rng: random.Random) -> Probe:
     bulk = "https://bulkdata.uspto.gov/data/patent/grant/redbook/fulltext/2026/"
     r, ms, err = _get(session, bulk)
     if r is None:
-        attempts.append(f"bulk {bulk} -> {err}")
+        attempts.append(f"bulk -> {err}")
     else:
-        attempts.append(f"bulk -> HTTP {r.status_code} ({len(r.content)} bytes, {ms}ms)")
+        attempts.append(f"bulk {bulk} -> HTTP {r.status_code} ({len(r.content)} bytes, {ms}ms)")
         p.status, p.latency_ms, p.url = r.status_code, ms, bulk
         if r.status_code == 200:
             files = re.findall(r'href="(ipg\d{6}\.zip)"', r.text)
@@ -283,7 +332,6 @@ def probe_patent(session: requests.Session, rng: random.Random) -> Probe:
                 p.ok = True
                 p.payload["latest_bulk_files"] = files[-3:]
                 p.payload["bulk_file_count"] = len(files)
-                # Size of the newest file, via a HEAD.
                 try:
                     h = session.head(bulk + files[-1], timeout=TIMEOUT_S, allow_redirects=True)
                     size = int(h.headers.get("content-length", 0))
@@ -300,8 +348,8 @@ def probe_patent(session: requests.Session, rng: random.Random) -> Probe:
 
 PROBES: list[tuple[str, Callable]] = [
     ("fsa", probe_fsa),
-    ("craigslist", probe_craigslist),
-    ("globe", probe_globe),
+    ("surplus", probe_surplus),
+    ("nyt_corrections", probe_nyt_corrections),
     ("okstate", probe_okstate),
     ("patent", probe_patent),
 ]
@@ -329,11 +377,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     now = datetime.now(timezone.utc)
-    print(f"\nDaily-input probe — {now.isoformat(timespec='seconds')}")
-    print(f"Runner day-of-week: {now.strftime('%A')}\n")
+    print(f"\nDaily-input probe — {now.isoformat(timespec='seconds')} ({now.strftime('%A')})\n")
     for key, p in results.items():
-        mark = "PASS" if p.ok else "FAIL"
-        print(f"[{mark}] {p.name}")
+        print(f"[{'PASS' if p.ok else 'FAIL'}] {p.name}")
         if p.status is not None:
             print(f"       HTTP {p.status} in {p.latency_ms}ms — {p.url}")
         if p.error:
@@ -346,7 +392,8 @@ def main(argv: list[str] | None = None) -> int:
         print()
 
     passed = sum(1 for p in results.values() if p.ok)
-    print(f"{passed}/{len(results)} sources fetchable without an API key.\n")
+    print(f"{passed}/{len(results)} sources fetchable without an API key.")
+    print("Note: run from a home IP and a PASS may not hold from a datacenter IP at 3am.\n")
     return 0
 
 
