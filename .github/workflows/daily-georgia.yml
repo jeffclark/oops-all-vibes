@@ -43,6 +43,13 @@ jobs:
         run: python -m scripts.fetch_feedback
         continue-on-error: true
 
+      # Georgia's five daily inputs. Individually defensive — a dead source is
+      # recorded as dead and the rest still land — so this should never fail the
+      # build, but continue-on-error keeps a total outage from stopping the day.
+      - name: Fetch daily inputs
+        run: python -m scripts.fetch_daily_inputs
+        continue-on-error: true
+
       # A manual dispatch defaults to a dry run: real runner, real secrets, real
       # API call, but --no-commit returns before both the commit and the push, so
       # nothing reaches the repo. The scheduled run is never a dry run.

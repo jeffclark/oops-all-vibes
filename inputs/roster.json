@@ -1,0 +1,12 @@
+{
+  "roster": [
+    "fsa",
+    "civic",
+    "surplus",
+    "hockey",
+    "register"
+  ],
+  "retire_every_builds": 30,
+  "builds_this_cycle": 1,
+  "retired": []
+}

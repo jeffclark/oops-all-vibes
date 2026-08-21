@@ -49,6 +49,16 @@ FETCHER_FAILED_FEEDBACK_SENTINEL = (
     "[/feedback]"
 )
 
+NO_INPUTS_SENTINEL = (
+    "[inputs]\n"
+    "Nothing came in from the world today. Every source went dark at once, which "
+    "is either a coincidence or the pipeline. You're on your own.\n"
+    "[/inputs]"
+)
+
+# How far back to look when telling Georgia what has changed since last time.
+INPUTS_HISTORY_DAYS = 30
+
 
 @dataclass
 class LogEntry:
@@ -263,6 +273,155 @@ def load_feedback_block(feedback_dir: Path, archive_dir: Path, yesterday: date) 
     return pick_no_feedback_sentinel(archive_dir)
 
 
+def _fmt_money(value: Any) -> str:
+    try:
+        return f"${float(value):,.2f}".replace(".00", "")
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def render_inputs_narrative(payload: dict, history: list[dict] | None = None) -> str:
+    """Turn the Layer 5 JSON into prose. History is what makes it accumulate.
+
+    A single day's reading is a fact. The same reading on day ninety, next to
+    the eighty-nine before it, is a relationship. So every source that can
+    carry a running count gets one.
+    """
+    history = history or []
+    got = payload.get("inputs") or {}
+    lines = ["[inputs]", "Five things from outside. None of them are about you.", ""]
+
+    if fsa := (got.get("fsa") or {}).get("data"):
+        where = ", ".join(fsa.get("location") or []) or "somewhere unrecorded"
+        lines.append(f"The photograph — {fsa.get('title')}")
+        lines.append(f"  {fsa.get('date')}. {where}. {fsa.get('era')}.")
+        lines.append(f"  {fsa.get('image')}")
+        seen = [h for h in history if (h.get("inputs") or {}).get("fsa")]
+        ok_days = [
+            h for h in seen
+            if ((h["inputs"]["fsa"].get("data") or {}).get("is_oklahoma"))
+        ]
+        if fsa.get("is_oklahoma"):
+            lines.append(
+                "  This one is from Oklahoma. That happens about once every 66 days — "
+                f"there are {fsa.get('collection_total'):,} negatives and 2,575 of them "
+                "touch that state."
+            )
+        elif seen:
+            lines.append(
+                f"  You have looked at {len(seen) + 1} of these. "
+                f"{len(ok_days)} were from Oklahoma."
+            )
+        lines.append("")
+
+    if civic := (got.get("civic") or {}).get("data"):
+        top = civic.get("top") or []
+        lines.append(f"Boston, {civic.get('day')} — {civic.get('total_cases'):,} calls to 311, "
+                     f"across {civic.get('distinct_types')} kinds of trouble.")
+        if top:
+            lines.append("  " + "; ".join(f"{t['case']} ({t['n']})" for t in top[:5]) + ".")
+        if singles := civic.get("only_one_of"):
+            lines.append("  Exactly one person reported each of: " + ", ".join(singles[:5]) + ".")
+        if resolved := civic.get("resolved"):
+            lines.append("  Cases that got closed, and what the worker typed into the box:")
+            for r in resolved:
+                lines.append(f"    · {r['case']}, {r['neighborhood']}: \"{r['note']}\"")
+        prior = [
+            (h["inputs"]["civic"].get("data") or {}).get("total_cases")
+            for h in history if (h.get("inputs") or {}).get("civic")
+        ]
+        prior = [p for p in prior if isinstance(p, int)]
+        if prior:
+            avg = sum(prior) / len(prior)
+            direction = "more" if civic.get("total_cases", 0) > avg else "fewer"
+            lines.append(f"  That's {direction} than usual; your running average is {avg:,.0f}.")
+        lines.append("")
+
+    if lot := (got.get("surplus") or {}).get("data"):
+        seller = lot.get("seller") or "an unnamed government"
+        price = _fmt_money(lot.get("price")) if lot.get("price") else "no bids yet"
+        lines.append(f"For sale — {lot.get('name')}. {seller}. {price}.")
+        if desc := lot.get("description"):
+            lines.append(f"  \"{desc}\"")
+        lines.append(f"  {lot.get('url')}")
+        lines.append("")
+
+    if hk := (got.get("hockey") or {}).get("data"):
+        lines.append(f"Oklahoma State hockey — {hk.get('season')}, ACHA Men's Division 2. "
+                     f"Record {hk.get('record')}.")
+        if last := hk.get("last_result"):
+            verb = "beat" if last["us"] > last["them"] else "lost to"
+            lines.append(f"  Last out they {verb} {last['opponent']} "
+                         f"{last['us']}-{last['them']} on {last['date']}.")
+        if nxt := hk.get("next_game"):
+            days = hk.get("days_until_next_game")
+            when = f"in {days} days" if isinstance(days, int) else f"on {nxt['date']}"
+            where = "at home" if nxt.get("home") else "away"
+            lines.append(f"  Next: {nxt['opponent']}, {where}, {when}.")
+        elif not hk.get("games_played"):
+            lines.append("  Nothing scheduled. The season hasn't started.")
+        lines.append("")
+
+    if fr := (got.get("register") or {}).get("data"):
+        agencies = ", ".join(fr.get("agencies") or []) or "some agency"
+        lines.append(f"The Federal Register, {fr.get('day')} — "
+                     f"{fr.get('published_that_day')} documents published. One of them:")
+        lines.append(f"  {fr.get('type')} from {agencies}: {fr.get('title')}")
+        if abstract := fr.get("abstract"):
+            lines.append(f"  {abstract}")
+        lines.append("")
+
+    if failures := payload.get("failures"):
+        lines.append("Didn't answer today: " + ", ".join(sorted(failures)) + ".")
+        lines.append("A source going quiet is its own kind of news. Say so if you want to.")
+        lines.append("")
+
+    rot = payload.get("rotation") or {}
+    if (left := rot.get("builds_until_retirement")) is not None:
+        if left <= 0:
+            lines.append("Today you have to retire one of these. Your choice which, and you "
+                         "can't keep them all. Say which one and why — that goes on the record.")
+        else:
+            lines.append(f"In {left} builds you'll have to retire one of these five and take "
+                         "on something new. Start deciding which one is boring you.")
+        if retired := rot.get("retired"):
+            lines.append("Already retired: " + ", ".join(retired) + ".")
+        lines.append("")
+
+    lines.append("Use these or don't. They're not an assignment. They're just what came in.")
+    lines.append("[/inputs]")
+    return "\n".join(lines).rstrip()
+
+
+def load_inputs_history(inputs_dir: Path, run_date: date, days: int) -> list[dict]:
+    """Prior payloads, oldest first, so counts and averages have something to count."""
+    out = []
+    for back in range(days, 0, -1):
+        p = inputs_dir / f"{(run_date - timedelta(days=back)).isoformat()}.json"
+        if not p.exists():
+            continue
+        try:
+            out.append(json.loads(p.read_text()))
+        except Exception as exc:  # noqa: BLE001
+            _warn(f"{p.name}: parse error ({exc}); skipping")
+    return out
+
+
+def load_inputs_block(inputs_dir: Path, run_date: date) -> str:
+    """Render today's inputs, or the sentinel if the fetcher wrote nothing usable."""
+    candidate = inputs_dir / f"{run_date.isoformat()}.json"
+    if candidate.exists():
+        try:
+            payload = json.loads(candidate.read_text())
+            if payload.get("inputs"):
+                history = load_inputs_history(inputs_dir, run_date, INPUTS_HISTORY_DAYS)
+                return render_inputs_narrative(payload, history)
+            _warn(f"{candidate.name}: every source failed; using sentinel")
+        except Exception as exc:  # noqa: BLE001
+            _warn(f"{candidate.name}: parse error ({exc}); using sentinel")
+    return NO_INPUTS_SENTINEL
+
+
 def build_history_block(entries: list[LogEntry], run_date: date) -> str:
     recent, older = split_entries(entries, run_date)
     if not recent and not older:
@@ -293,6 +452,7 @@ def assemble_prompt(run_date: date, repo_root: Path = REPO_ROOT) -> str:
         archive_dir=repo_root / "archive",
         yesterday=yesterday,
     )
+    inputs_block = load_inputs_block(repo_root / "inputs", run_date)
 
     today_str = run_date.isoformat()
     project_checklist = _project_checklist_line(facts)
@@ -317,6 +477,10 @@ One exception: `background` is context, not required content. It's there if you 
 ---
 
 {feedback_block}
+
+---
+
+{inputs_block}
 
 ---
 
