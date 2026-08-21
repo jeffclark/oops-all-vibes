@@ -160,12 +160,17 @@ _EMAIL = re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b")
 _PHONE = re.compile(r"\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b")
 
 
-def _strip_closure_stamp(text: str) -> str:
-    text = _STAMP.sub("", text)
-    text = _STATUS.sub("", text)
+def _redact_contacts(text: str) -> str:
+    """Any fetched free text can carry a real person's address or number."""
     text = _EMAIL.sub("[email]", text)
     text = _PHONE.sub("[phone]", text)
     return re.sub(r"\s+", " ", text).strip()
+
+
+def _strip_closure_stamp(text: str) -> str:
+    text = _STAMP.sub("", text)
+    text = _STATUS.sub("", text)
+    return _redact_contacts(text)
 
 
 def _clean_case_title(title: str | None) -> str:
@@ -321,9 +326,9 @@ def fetch_surplus(session: requests.Session, rng: random.Random) -> dict:
         for block in _ld_blocks(dr.text):
             if isinstance(block, dict) and block.get("@type") == "Product":
                 offers = block.get("offers") or {}
-                desc = html_lib.unescape(
-                    re.sub(r"\s+", " ", block.get("description") or "")
-                ).strip()
+                desc = _redact_contacts(
+                    html_lib.unescape(re.sub(r"\s+", " ", block.get("description") or ""))
+                )
                 seller = (offers.get("seller") or {}).get("name")
                 detail.update({
                     "description": desc[:600],

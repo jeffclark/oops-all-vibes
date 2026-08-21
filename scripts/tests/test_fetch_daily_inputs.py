@@ -190,3 +190,12 @@ def test_fsa_rejects_records_located_only_in_the_united_states():
 
     located = dict(generic, location=["united states", "tulsa", "oklahoma"])
     assert fdi._fsa_usable(located) is True
+
+
+def test_redact_contacts_covers_any_fetched_free_text():
+    """Surplus descriptions carry addresses too, not just 311 notes."""
+    raw = "Please email seller@example.invalid if you want a specific item, or call 610-555-0148."
+    out = fdi._redact_contacts(raw)
+    assert "@" not in out and "610" not in out
+    assert "[email]" in out and "[phone]" in out
+    assert "if you want a specific item" in out
