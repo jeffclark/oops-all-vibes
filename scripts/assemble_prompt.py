@@ -350,7 +350,13 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
         lines.append(f"Oklahoma State hockey — {hk.get('season')}, ACHA Men's Division 2. "
                      f"Record {hk.get('record')}.")
         if last := hk.get("last_result"):
-            verb = "beat" if last["us"] > last["them"] else "lost to"
+            # The fetcher counts ties, so they happen — "lost to X 3-3" is wrong.
+            if last["us"] > last["them"]:
+                verb = "beat"
+            elif last["us"] < last["them"]:
+                verb = "lost to"
+            else:
+                verb = "tied"
             lines.append(f"  Last out they {verb} {last['opponent']} "
                          f"{last['us']}-{last['them']} on {last['date']}.")
         if nxt := hk.get("next_game"):

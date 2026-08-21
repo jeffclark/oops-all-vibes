@@ -114,7 +114,7 @@ def fetch_fsa(session: requests.Session, rng: random.Random) -> dict:
     year = int(year.group(1)) if year else None
 
     return {
-        "title": (item.get("title") or "").strip(),
+        "title": _redact_contacts(item.get("title") or ""),
         "date": item.get("date"),
         "location": location,
         "subject": (item.get("subject") or [])[:8],
@@ -226,10 +226,13 @@ def fetch_civic(session: requests.Session, rng: random.Random, day: date) -> dic
         probe = day - timedelta(days=back)
         window = (f"open_dt >= '{probe.isoformat()}' "
                   f"AND open_dt < '{(probe + timedelta(days=1)).isoformat()}'")
+        # No LIMIT: the cleaned titles are counted in Python, so a truncated
+        # result would silently make total_cases the size of the slice rather
+        # than the day, and drop the one-offs — which are the interesting rows.
         counts = _ckan_sql(
             session,
             f'SELECT case_title, COUNT(*) AS n FROM "{rid}" WHERE {window} '
-            "GROUP BY case_title ORDER BY n DESC LIMIT 60",
+            "GROUP BY case_title ORDER BY n DESC",
         )
         for row in counts:
             title = _clean_case_title(row["case_title"])
@@ -319,7 +322,7 @@ def fetch_surplus(session: requests.Session, rng: random.Random) -> dict:
         raise ValueError(f"no listings on page {page}")
 
     name, url = rng.choice(listings)
-    detail = {"name": html_lib.unescape(name), "url": url}
+    detail = {"name": _redact_contacts(html_lib.unescape(name)), "url": url}
     try:
         dr = session.get(url, timeout=REQUEST_TIMEOUT_S, headers=headers, allow_redirects=True)
         dr.raise_for_status()
@@ -374,14 +377,27 @@ def _ht(session: requests.Session, view: str, **params) -> dict:
     return r.json()["SiteKit"]
 
 
+# Regular seasons are named for the span they cover — "2025-2026 Men's Divisions",
+# "2026-27 Men's Divisions". Postseason blocks are separate seasons with their own
+# ids and names: "2026 Men's Division 2 Nationals Final Four", "2026 Men's D2
+# Regionals". Those ids are issued later, so they outrank the regular season by id
+# from March onward — picking the highest id would swap the whole schedule for a
+# two-game tournament bracket every spring.
+_REGULAR_SEASON_NAME = re.compile(r"^\s*\d{4}-\d{2,4}\s")
+_POSTSEASON_WORDS = ("national", "regional", "pool play", "final four", "tournament")
+
+
 def _current_mens_season(session: requests.Session) -> tuple[str, str]:
     seasons = _ht(session, "seasons")["Seasons"]
-    mens = [s for s in seasons
-            if "women" not in s["season_name"].lower()      # "men" is a substring of "women"
-            and "men" in s["season_name"].lower()
-            and "division" in s["season_name"].lower()]
+    mens = [
+        s for s in seasons
+        if "women" not in s["season_name"].lower()      # "men" is a substring of "women"
+        and "men" in s["season_name"].lower()
+        and _REGULAR_SEASON_NAME.match(s["season_name"])
+        and not any(w in s["season_name"].lower() for w in _POSTSEASON_WORDS)
+    ]
     if not mens:
-        raise ValueError("no men's season found")
+        raise ValueError("no regular men's season found")
     newest = max(mens, key=lambda s: int(s["season_id"]))
     return newest["season_id"], newest["season_name"]
 
@@ -410,6 +426,17 @@ def fetch_hockey(session: requests.Session, rng: random.Random, today: date) -> 
     losses = sum(1 for g in played if g["us"] < g["them"])
     ties = len(played) - wins - losses
 
+    # The feed's order is not guaranteed, and a game that never got a final
+    # score stays in `upcoming` forever — so sort by date and drop anything
+    # already in the past, or "next game" ends up being one from last October.
+    def _key(row: dict) -> str:
+        return row.get("date") or ""
+
+    played.sort(key=_key)
+    upcoming = sorted(
+        (g for g in upcoming if _key(g) >= today.isoformat()), key=_key
+    )
+
     nxt = upcoming[0] if upcoming else None
     days_until = None
     if nxt and nxt.get("date"):
@@ -433,35 +460,59 @@ def fetch_hockey(session: requests.Session, rng: random.Random, today: date) -> 
 # 5. Federal Register — one document the government published yesterday
 # ==========================================================================
 FR_API = "https://www.federalregister.gov/api/v1/documents.json"
+# No weekend or federal-holiday issues; a long weekend can be four days.
+REGISTER_MAX_LOOKBACK_DAYS = 6
 
 
 def fetch_register(session: requests.Session, rng: random.Random, day: date) -> dict:
-    r = session.get(
-        FR_API,
-        params={
-            "per_page": 100,
-            "order": "newest",
-            "conditions[publication_date][is]": day.isoformat(),
-            "fields[]": ["title", "type", "abstract", "agencies",
-                         "publication_date", "html_url", "page_length"],
-        },
-        timeout=REQUEST_TIMEOUT_S,
-        headers={"User-Agent": UA},
-    )
-    r.raise_for_status()
-    body = r.json()
-    results = body.get("results") or []
+    """One document from the most recent day the Register actually published.
+
+    It doesn't publish on weekends or federal holidays — a Sunday query returns
+    a count of zero — so pinning this to yesterday would record the source as
+    dead every Sunday and Monday. Walk back to the last day with an issue.
+    """
+    body, results, last_err = None, [], None
+    for back in range(REGISTER_MAX_LOOKBACK_DAYS):
+        probe = day - timedelta(days=back)
+        try:
+            r = session.get(
+                FR_API,
+                params={
+                    "per_page": 100,
+                    "order": "newest",
+                    "conditions[publication_date][is]": probe.isoformat(),
+                    "fields[]": ["title", "type", "abstract", "agencies",
+                                 "publication_date", "html_url", "page_length"],
+                },
+                timeout=REQUEST_TIMEOUT_S,
+                headers={"User-Agent": UA},
+            )
+            # A day with no issue doesn't answer cleanly: Sundays come back with
+            # a count of zero, Saturdays with a 503. Both mean "nothing that
+            # day", so neither should end the walk back.
+            r.raise_for_status()
+            body = r.json()
+        except Exception as exc:  # noqa: BLE001
+            last_err = f"{probe}: {type(exc).__name__}"
+            continue
+        results = body.get("results") or []
+        if results:
+            day = probe
+            break
     if not results:
-        raise ValueError(f"nothing published {day}")
+        raise ValueError(
+            f"nothing published in the {REGISTER_MAX_LOOKBACK_DAYS} days to {day}"
+            + (f" (last error {last_err})" if last_err else "")
+        )
 
     doc = rng.choice(results)
     return {
         "day": day.isoformat(),
         "published_that_day": body.get("count"),
-        "title": doc.get("title"),
+        "title": _redact_contacts(doc.get("title") or ""),
         "type": doc.get("type"),
         "agencies": [a.get("name") for a in (doc.get("agencies") or [])][:3],
-        "abstract": re.sub(r"\s+", " ", doc.get("abstract") or "").strip()[:500] or None,
+        "abstract": _redact_contacts(doc.get("abstract") or "")[:500] or None,
         "pages": doc.get("page_length"),
         "url": doc.get("html_url"),
     }
@@ -560,15 +611,27 @@ def main(argv: list[str] | None = None) -> int:
 
     # Surface the retirement countdown so Georgia can see it coming.
     if not args.only:
+        every = int(state["retire_every_builds"])
+        # Build `every` is the retirement build; the next one opens a new cycle.
+        # Without the wrap the countdown sticks at zero and every build from
+        # then on tells her to retire something, forever.
         state["builds_this_cycle"] = int(state.get("builds_this_cycle", 0)) + 1
-        remaining = int(state["retire_every_builds"]) - state["builds_this_cycle"]
+        if state["builds_this_cycle"] > every:
+            state["builds_this_cycle"] = 1
+            state["cycles_completed"] = int(state.get("cycles_completed", 0)) + 1
+        remaining = every - state["builds_this_cycle"]
         payload["rotation"] = {
             "builds_this_cycle": state["builds_this_cycle"],
             "builds_until_retirement": max(0, remaining),
+            "cycles_completed": state.get("cycles_completed", 0),
             "retired": state.get("retired", []),
         }
 
-    if args.dry_run:
+    if args.dry_run or args.only:
+        # --only fetches a subset, so writing it would clobber the day's file
+        # with a partial payload and drop the rotation block.
+        if args.only and not args.dry_run:
+            _warn("--only is diagnostic; printing instead of writing")
         print(json.dumps(payload, indent=2))
         return 0
 

@@ -152,3 +152,25 @@ def test_inputs_block_reaches_the_assembled_prompt(tmp_path, monkeypatch):
     assert "[inputs]" in prompt
     assert "Lateral File Cabinet" in prompt
     assert "City of Revere" in prompt
+
+
+def test_a_tied_game_is_not_reported_as_a_loss():
+    """The fetcher counts ties, so the renderer has to handle them."""
+    p = _payload()
+    p["inputs"]["hockey"]["data"]["last_result"] = {
+        "date": "2026-11-08", "opponent": "MD2 University of Arkansas",
+        "home": True, "us": 3, "them": 3,
+    }
+    out = ap.render_inputs_narrative(p)
+    assert "tied MD2 University of Arkansas 3-3" in out
+    assert "lost to" not in out
+
+
+def test_a_win_and_a_loss_still_read_correctly():
+    for us, them, verb in ((5, 2, "beat"), (1, 4, "lost to")):
+        p = _payload()
+        p["inputs"]["hockey"]["data"]["last_result"] = {
+            "date": "2026-11-08", "opponent": "Arkansas", "home": True,
+            "us": us, "them": them,
+        }
+        assert f"they {verb} Arkansas" in ap.render_inputs_narrative(p)

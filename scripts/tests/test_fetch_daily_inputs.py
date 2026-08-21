@@ -199,3 +199,51 @@ def test_redact_contacts_covers_any_fetched_free_text():
     assert "@" not in out and "610" not in out
     assert "[email]" in out and "[phone]" in out
     assert "if you want a specific item" in out
+
+
+# --------------------------------------------------------------------------
+# Regressions found by code review
+# --------------------------------------------------------------------------
+class _FakeHT:
+    """Stands in for the HockeyTech seasons feed."""
+
+    def __init__(self, seasons):
+        self.seasons = seasons
+
+    def __call__(self, session, view, **params):
+        return {"Seasons": self.seasons}
+
+
+# Real names and ids from the live ACHA feed, including the spring tournament
+# blocks whose ids outrank the regular season.
+ACHA_SEASONS = [
+    {"season_id": "60", "season_name": "2025-2026 Men's Divisions"},
+    {"season_id": "63", "season_name": "2026 Men's D2 Regionals"},
+    {"season_id": "66", "season_name": "2026 Men's Division 2 Nationals Pool Play"},
+    {"season_id": "67", "season_name": "2026 Men's Division 2 Nationals Final Four"},
+    {"season_id": "68", "season_name": "2026 Men's Division 1 Nationals"},
+    {"season_id": "71", "season_name": "2026 Men's Division 3 National Final Four"},
+    {"season_id": "74", "season_name": "2026-27 Women's Divisions"},
+]
+
+
+def test_season_picker_ignores_postseason_blocks(monkeypatch):
+    """Tournament seasons get higher ids than the regular season every spring."""
+    monkeypatch.setattr(fdi, "_ht", _FakeHT(ACHA_SEASONS))
+    season_id, name = fdi._current_mens_season(session=None)
+    assert (season_id, name) == ("60", "2025-2026 Men's Divisions")
+
+
+def test_season_picker_prefers_the_newest_regular_season(monkeypatch):
+    monkeypatch.setattr(fdi, "_ht", _FakeHT(
+        ACHA_SEASONS + [{"season_id": "73", "season_name": "2026-27 Men's Divisions"}]
+    ))
+    assert fdi._current_mens_season(session=None)[0] == "73"
+
+
+def test_season_picker_never_returns_a_womens_season(monkeypatch):
+    monkeypatch.setattr(fdi, "_ht", _FakeHT(
+        [{"season_id": "74", "season_name": "2026-27 Women's Divisions"},
+         {"season_id": "73", "season_name": "2026-27 Men's Divisions"}]
+    ))
+    assert fdi._current_mens_season(session=None)[0] == "73"
