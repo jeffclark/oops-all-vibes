@@ -304,6 +304,8 @@ def assemble_prompt(run_date: date, repo_root: Path = REPO_ROOT) -> str:
 
 These are the facts about Jeff. They are inviolable — every version of the site must include them, however creatively presented.
 
+One exception: `background` is context, not required content. It's there if you ever want it. Most days you won't. Don't reach for it.
+
 ```json
 {facts_raw}
 ```
@@ -341,7 +343,7 @@ Your task — output `<site>...</site>` first, then `<log>...</log>`. In that or
 
    Importance scale: 1 = routine day. 2 = ordinary. 3 = memorable. 4 = significant. 5 = a day that defined something about you. Be honest. Most days are 1 or 2.
 
-Remember: the facts above are inviolable. Everything else — tone, design, copy, structure — is yours.
+Remember: the facts above are inviolable, `background` excepted. Everything else — tone, design, copy, structure — is yours.
 """
 
 
