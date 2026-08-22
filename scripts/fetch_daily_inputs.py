@@ -22,6 +22,7 @@ import json
 import random
 import re
 import sys
+import time
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -57,12 +58,18 @@ FSA_MIN_IMAGE_WIDTH = 640
 # Every record is tagged "united states"; on its own it locates nothing.
 FSA_GENERIC_PLACES = {"united states", "usa", "america"}
 FSA_PAGE_SIZE = 25
-# loc.gov hard-caps deep paging: sp beyond 4000 (100,000 items) returns HTTP 400
-# with an HTML body. Paging to 6842 to "cover the collection" just spent 42% of
-# attempts on guaranteed errors. 4000 pages is the real reachable ceiling — 58%
-# of the collection, and every draw is a live one.
+# Paging to 6842 to "cover the collection" produced a large share of errors in
+# testing. A review measured those as HTTP 400s past sp=4000 (a deep-paging cap);
+# a later probe of the same range got 429s instead, so the boundary is not
+# independently confirmed — rate limiting may account for some or all of it.
+# 4000 is a conservative ceiling either way: ~100,000 of the 171,074 negatives,
+# with no draws into the disputed range.
 FSA_MAX_PAGE = 4000
 FSA_SAMPLE_PAGES = min(FSA_MAX_PAGE, 171_074 // FSA_PAGE_SIZE)
+# The documented limit is 20 requests a minute; four back-to-back retries is how
+# a transient blip turns into an hour-long block.
+FSA_ATTEMPTS = 3
+FSA_RETRY_PAUSE_S = 4
 
 
 def _biggest_image(image_urls: list[str] | None) -> tuple[str | None, int]:
@@ -96,16 +103,28 @@ def fetch_fsa(session: requests.Session, rng: random.Random) -> dict:
     before calling the source dead.
     """
     data, usable, last_err = None, [], None
-    for _ in range(4):
+    for attempt in range(FSA_ATTEMPTS):
         page = rng.randint(1, FSA_SAMPLE_PAGES)
         try:
             url = f"{FSA_COLLECTION}?fo=json&c={FSA_PAGE_SIZE}&sp={page}&at=results,pagination"
             r = session.get(url, timeout=REQUEST_TIMEOUT_S, headers={"User-Agent": UA})
+            # loc.gov documents a one-hour block for exceeding its rate limit, and
+            # retrying into a 429 is how you earn it. Give up for today instead —
+            # a dead source is content, an hour-long ban is not.
+            if r.status_code == 429:
+                raise ValueError(f"page {page}: rate limited (429); not retrying")
             r.raise_for_status()
             # Under load loc.gov serves CAPTCHA HTML with a 200, so JSON is the real check.
             data = r.json()
+        except ValueError as exc:
+            if "rate limited" in str(exc):
+                raise
+            last_err = f"page {page}: {type(exc).__name__}"
+            time.sleep(FSA_RETRY_PAUSE_S)
+            continue
         except Exception as exc:  # noqa: BLE001
             last_err = f"page {page}: {type(exc).__name__}"
+            time.sleep(FSA_RETRY_PAUSE_S)
             continue
         usable = [it for it in (data.get("results") or []) if _fsa_usable(it)]
         if usable:
@@ -165,12 +184,22 @@ _STATUS = re.compile(r"^\s*(?:Case\s+)?(?:Closed|Resolved|Noted|Invalid|Duplicat
 # contact details are not the interesting part of it.
 _EMAIL = re.compile(r"\b[\w.+-]+@[\w-]+\.[\w.]+\b")
 _PHONE = re.compile(r"\b(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b")
+# Inspectors type the address into the closure note itself — "Rodent activity
+# found at 6 Taft". The structured location column is never selected, but the
+# note is, so the address survived a docstring that promised it wouldn't.
+_STREET = re.compile(
+    r"\b\d{1,5}[A-Za-z]?\s+(?:[A-Z][\w'.-]*\s+){0,3}"
+    r"(?:st|street|ave|avenue|rd|road|dr|drive|ln|lane|blvd|boulevard|ct|court|pl|place|"
+    r"ter|terrace|way|hwy|highway|pkwy|parkway|sq|square|cir|circle|row|path|park)\b\.?",
+    re.I,
+)
 
 
 def _redact_contacts(text: str) -> str:
     """Any fetched free text can carry a real person's address or number."""
     text = _EMAIL.sub("[email]", text)
     text = _PHONE.sub("[phone]", text)
+    text = _STREET.sub("[address]", text)
     return re.sub(r"\s+", " ", text).strip()
 
 
@@ -226,9 +255,11 @@ def _resolve_311_resource(session: requests.Session, year: int) -> str:
 def fetch_civic(session: requests.Session, rng: random.Random, day: date) -> dict:
     """Yesterday's 311 calls: the shape of the day, plus what a worker wrote back.
 
-    Street addresses are deliberately dropped. The closure notes are the point
-    and the neighborhood is plenty of texture; pinning a needle pickup or an
-    overcrowding complaint to somebody's front door is not.
+    Street addresses are deliberately dropped — both the structured location
+    column, which is never selected, and any address an inspector typed into the
+    closure note, which _redact_contacts strips. The notes are the point and the
+    neighborhood is plenty of texture; pinning a needle pickup or an overcrowding
+    complaint to somebody's front door is not.
     """
     rid = _resolve_311_resource(session, day.year)
 
@@ -584,6 +615,17 @@ def load_roster(roster_file: Path = ROSTER_FILE) -> dict:
             # real file. A roster that exists but won't parse is a hard stop.
             raise RosterError(f"roster.json exists but is unreadable: {exc}") from exc
         raise RosterError("roster.json has no usable 'roster' list")
+    # No file at all is a cold start — but only if there is no other state
+    # beside it. A roster that vanished while daily payloads remain is state
+    # loss, and rebuilding it silently would un-retire every retired source.
+    siblings = [
+        p for p in roster_file.parent.glob("*.json") if p.name != roster_file.name
+    ] if roster_file.parent.is_dir() else []
+    if siblings:
+        raise RosterError(
+            f"roster.json is missing but {len(siblings)} input payload(s) exist beside it — "
+            "refusing to rebuild a default roster over lost retirement state"
+        )
     return {
         "roster": list(DEFAULT_ROSTER),
         "retire_every_builds": RETIRE_EVERY_BUILDS,

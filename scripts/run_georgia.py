@@ -22,6 +22,7 @@ from scripts.call_model import ModelOutputError, call_model
 from scripts.fetch_daily_inputs import (
     RetirementError,
     RosterError,
+    load_roster,
     apply_retirement,
     retirement_from_diary,
 )
@@ -84,10 +85,26 @@ def _apply_declared_retirement(
     if declared is None:
         return
     if no_commit:
-        print(
-            f"run_georgia: dry run — would have retired {declared[0]!r}, roster untouched",
-            file=sys.stderr,
-        )
+        # Report what the real run would actually do, not just what she asked
+        # for — the gates (cycle due, on the roster, not the last one) reject
+        # most declarations, and a dry run that says "would have retired X"
+        # regardless is worse than saying nothing.
+        try:
+            state = load_roster(repo_root / "inputs" / "roster.json")
+            key = declared[0]
+            every = int(state.get("retire_every_builds", 0))
+            if key not in state.get("roster", []):
+                verdict = f"would be REJECTED — {key!r} is not on the roster"
+            elif len(state.get("roster", [])) <= 1:
+                verdict = "would be REJECTED — refusing to empty the roster"
+            elif int(state.get("builds_this_cycle", 0)) < every:
+                verdict = (f"would be REJECTED — no retirement due "
+                           f"(build {state.get('builds_this_cycle', 0)} of {every})")
+            else:
+                verdict = f"would retire {key!r}"
+        except RosterError as exc:
+            verdict = f"would be REJECTED — {exc}"
+        print(f"run_georgia: dry run — {verdict}; roster untouched", file=sys.stderr)
         return
     key, reason = declared
     try:

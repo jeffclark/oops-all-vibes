@@ -278,24 +278,37 @@ def load_feedback_block(feedback_dir: Path, archive_dir: Path, yesterday: date) 
 # so it must never be able to close the block or open a forged one. Neutralise the
 # layer delimiters, flatten to a single line, and cap the length so no one source can
 # dominate the prompt.
-_LAYER_TAG = re.compile(r"\[/?\s*(inputs|feedback|history|site|log)\s*\]", re.I)
+_LAYER_TAG = re.compile(
+    r"[\[<]\s*/?\s*(inputs|feedback|history|site|log)\s*[\]>]", re.I
+)
 FETCHED_FIELD_MAX = 600
 
 
 def clean_fetched(value: Any, limit: int = FETCHED_FIELD_MAX) -> str:
     """Make one fetched string safe to interpolate into the prompt."""
     text = "" if value is None else str(value)
-    text = _LAYER_TAG.sub(lambda m: m.group(0).replace("[", "(").replace("]", ")"), text)
+    # <site>/<log> matter as much as the square-bracket layers: call_model parses
+    # her output with a non-greedy r"<site>(.*?)</site>", so a fetched "</site>"
+    # she echoes would truncate the page she just built.
+    text = _LAYER_TAG.sub(
+        lambda m: (m.group(0).replace("[", "(").replace("]", ")")
+                   .replace("<", "(").replace(">", ")")),
+        text,
+    )
     text = re.sub(r"\s+", " ", text).strip()
     return text[:limit]
 
 
 
 def _fmt_money(value: Any) -> str:
+    """Format a fetched price. The fallback must be sanitised: `price` is a
+    stranger-controlled field, and bare str() put it in the prompt untouched."""
     try:
-        return f"${float(value):,.2f}".replace(".00", "")
+        text = f"{float(value):,.2f}"
     except (TypeError, ValueError):
-        return str(value)
+        return clean_fetched(value, 40)
+    # Trim only a trailing ".00", never one in the middle of a number.
+    return "$" + (text[:-3] if text.endswith(".00") else text)
 
 
 def render_inputs_narrative(payload: dict, history: list[dict] | None = None) -> str:
@@ -307,7 +320,10 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
     """
     history = history or []
     got = payload.get("inputs") or {}
-    n = len(got) or len((payload.get("rotation") or {}).get("roster") or [])
+    # Count what actually arrived. Falling back to the roster size made the
+    # all-sources-failed branch below unreachable, so the day everything died
+    # opened with "Five things from outside" and then listed none.
+    n = len(got)
     words = {1: "One thing", 2: "Two things", 3: "Three things", 4: "Four things",
              5: "Five things", 6: "Six things", 7: "Seven things"}
     lines = ["[inputs]"]
@@ -339,7 +355,7 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
         if fsa.get("is_oklahoma"):
             lines.append(
                 "  This one is from Oklahoma. That happens about once every 66 days — "
-                f"there are {fsa.get('collection_total'):,} negatives and 2,575 of them "
+                f"there are {clean_fetched(fsa.get('collection_total'), 20)} negatives and 2,575 of them "
                 "touch that state."
             )
         elif seen:
@@ -372,8 +388,14 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
         prior = [p for p in prior if isinstance(p, int)]
         if prior:
             avg = sum(prior) / len(prior)
-            direction = "more" if civic.get("total_cases", 0) > avg else "fewer"
-            lines.append(f"  That's {direction} than usual; your running average is {avg:,.0f}.")
+            today_n = civic.get("total_cases", 0)
+            if round(today_n) == round(avg):
+                lines.append(f"  That's exactly your running average, {avg:,.0f}.")
+            else:
+                direction = "more" if today_n > avg else "fewer"
+                lines.append(
+                    f"  That's {direction} than usual; your running average is {avg:,.0f}."
+                )
         lines.append("")
 
     if lot := (got.get("surplus") or {}).get("data"):
@@ -405,7 +427,8 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
                          f"{last['us']}-{last['them']} on {clean_fetched(last.get('date'), 20)}.")
         if nxt := hk.get("next_game"):
             days = hk.get("days_until_next_game")
-            when = f"in {days} days" if isinstance(days, int) else f"on {nxt['date']}"
+            when = (f"in {days} days" if isinstance(days, int)
+                    else f"on {clean_fetched(nxt.get('date'), 20)}")
             where = "at home" if nxt.get("home") else "away"
             lines.append(f"  Next: {clean_fetched(nxt.get('opponent'), 80)}, {where}, {when}.")
         elif not hk.get("games_played"):
@@ -416,7 +439,7 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
         agencies = clean_fetched(", ".join(str(a) for a in (fr.get("agencies") or [])), 200) \
                    or "some agency"
         lines.append(f"The Federal Register, {fr.get('day')} — "
-                     f"{fr.get('published_that_day')} documents published. One of them:")
+                     f"{clean_fetched(fr.get('published_that_day'), 20)} documents published. One of them:")
         lines.append(f"  {clean_fetched(fr.get('type'), 40)} from {agencies}: "
                      f"{clean_fetched(fr.get('title'), 300)}")
         if abstract := fr.get("abstract"):
@@ -466,8 +489,10 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
         elif left <= 0:
             overdue = int(rot.get("overdue_builds") or 0)
             if overdue > 1:
+                suffix = ("th" if 10 <= overdue % 100 <= 20
+                          else {1: "st", 2: "nd", 3: "rd"}.get(overdue % 10, "th"))
                 lines.append(
-                    f"This is the {overdue}th build asking you to retire one, and you still "
+                    f"This is the {overdue}{suffix} build asking you to retire one, and you still "
                     "haven't. Nothing moves until you do — you'll get this same "
                     "paragraph tomorrow, and the day after."
                 )
@@ -479,12 +504,18 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
                 f"where <key> is one of: {keys}. Then say why in the entry itself. "
                 "The key is what the pipeline reads; the reason is what the record keeps."
             )
+        elif isinstance(size_now, int) and size_now <= 1:
+            lines.append(
+                "There's one input left, so the rotation is stuck until Jeff adds sources — "
+                "retiring the last one would leave you with nothing."
+            )
         else:
             lines.append(f"In {left} builds you retire one of these and Jeff owes you "
                          "something new in its place. Start deciding which one is boring you.")
         if retired := rot.get("retired"):
             gone = ", ".join(
-                f"{r.get('key')} ({r.get('date')})" if isinstance(r, dict) else str(r)
+                f"{clean_fetched(r.get('key'), 40)} ({clean_fetched(r.get('date'), 20)})"
+                if isinstance(r, dict) else clean_fetched(r, 60)
                 for r in retired
             )
             lines.append(f"  Already retired, by you: {gone}.")

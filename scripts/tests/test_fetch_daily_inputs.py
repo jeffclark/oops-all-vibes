@@ -398,3 +398,64 @@ def test_311_resource_id_must_look_like_a_uuid(monkeypatch):
 
     got = fdi._resolve_311_resource(_Session(), 2026)
     assert got == fdi.CKAN_311_FALLBACK_RESOURCE
+
+
+# --------------------------------------------------------------------------
+# Round-2 adversarial audit regressions
+# --------------------------------------------------------------------------
+@pytest.mark.parametrize("raw,gone", [
+    ("Rodent activity found at 6 Taft St", "6 Taft St"),
+    ("Inspected 1234 Blue Hill Avenue and found nothing", "1234 Blue Hill Avenue"),
+    ("Abated at 41 Ruggles Street", "41 Ruggles Street"),
+])
+def test_closure_notes_drop_street_addresses(raw, gone):
+    """The docstring promised addresses were dropped; only the structured column was."""
+    out = fdi._redact_contacts(raw)
+    assert gone not in out
+    assert "[address]" in out
+
+
+@pytest.mark.parametrize("keep", [
+    "Abatement issued",
+    "Searched area and no syringes were recovered.RA",
+    "Case closed 3 units inspected",
+    "Needle recovered. JT",
+])
+def test_address_redaction_leaves_ordinary_notes_alone(keep):
+    assert fdi._redact_contacts(keep) == keep
+
+
+def test_missing_roster_beside_existing_payloads_is_a_hard_stop(tmp_path):
+    """A roster that vanished while payloads remain is state loss, not a cold start."""
+    (tmp_path / "2026-08-21.json").write_text("{}")
+    with pytest.raises(fdi.RosterError, match="refusing to rebuild"):
+        fdi.load_roster(tmp_path / "roster.json")
+
+
+def test_a_genuine_cold_start_still_works(tmp_path):
+    state = fdi.load_roster(tmp_path / "roster.json")
+    assert state["roster"] == fdi.DEFAULT_ROSTER
+    assert state["builds_this_cycle"] == 0
+
+
+def test_fsa_does_not_retry_into_a_rate_limit():
+    """loc.gov documents a one-hour block for exceeding its rate limit."""
+    calls = []
+
+    class _R:
+        status_code = 429
+        text = ""
+        headers = {}
+
+        def raise_for_status(self): raise AssertionError("should not be reached")
+
+        def json(self): raise AssertionError("should not be reached")
+
+    class _S:
+        def get(self, url, **kw):
+            calls.append(url)
+            return _R()
+
+    with pytest.raises(ValueError, match="rate limited"):
+        fdi.fetch_fsa(_S(), __import__("random").Random(0))
+    assert len(calls) == 1, f"retried into a 429 {len(calls)} times"
