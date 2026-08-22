@@ -21,6 +21,7 @@ from scripts.assemble_prompt import REPO_ROOT, assemble_prompt
 from scripts.call_model import ModelOutputError, call_model
 from scripts.fetch_daily_inputs import (
     RetirementError,
+    RosterError,
     apply_retirement,
     retirement_from_diary,
 )
@@ -93,7 +94,7 @@ def _apply_declared_retirement(
         state = apply_retirement(
             key, reason, date.fromisoformat(today), repo_root / "inputs" / "roster.json"
         )
-    except RetirementError as exc:
+    except (RetirementError, RosterError) as exc:
         print(f"run_georgia: retirement rejected — {exc}", file=sys.stderr)
         return
     print(

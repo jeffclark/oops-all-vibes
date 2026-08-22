@@ -26,6 +26,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+import frontmatter
 import requests
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -56,10 +57,12 @@ FSA_MIN_IMAGE_WIDTH = 640
 # Every record is tagged "united states"; on its own it locates nothing.
 FSA_GENERIC_PLACES = {"united states", "usa", "america"}
 FSA_PAGE_SIZE = 25
-# 171,074 negatives at 25 to a page. Sampling the first 500 pages reached 7.3%
-# of the collection and made "one photograph from the FSA/OWI negatives" a lie
-# about 93% of it, so page across the whole thing.
-FSA_SAMPLE_PAGES = 171_074 // FSA_PAGE_SIZE
+# loc.gov hard-caps deep paging: sp beyond 4000 (100,000 items) returns HTTP 400
+# with an HTML body. Paging to 6842 to "cover the collection" just spent 42% of
+# attempts on guaranteed errors. 4000 pages is the real reachable ceiling — 58%
+# of the collection, and every draw is a live one.
+FSA_MAX_PAGE = 4000
+FSA_SAMPLE_PAGES = min(FSA_MAX_PAGE, 171_074 // FSA_PAGE_SIZE)
 
 
 def _biggest_image(image_urls: list[str] | None) -> tuple[str | None, int]:
@@ -355,6 +358,11 @@ def fetch_surplus(session: requests.Session, rng: random.Random) -> dict:
         # The listing title alone is still worth having.
         _warn(f"surplus detail fetch failed ({exc}); keeping the title")
         detail["detail_error"] = str(exc)[:120]
+    if "description" not in detail and "detail_error" not in detail:
+        # A removed listing answers 200 with a generic page and no Product
+        # block. Without this the payload silently loses seller and price and
+        # the renderer reports "no bids yet" as though that were observed.
+        detail["detail_error"] = "no Product block on the detail page (listing removed?)"
 
     detail["listings_on_page"] = len(listings)
     return detail
@@ -520,6 +528,7 @@ def fetch_register(session: requests.Session, rng: random.Random, day: date) -> 
     return {
         "day": day.isoformat(),
         "published_that_day": body.get("count"),
+        "sampled_from": len(results),
         "title": _redact_contacts(doc.get("title") or ""),
         "type": doc.get("type"),
         "agencies": [a.get("name") for a in (doc.get("agencies") or [])][:3],
@@ -570,13 +579,21 @@ def load_roster(roster_file: Path = ROSTER_FILE) -> dict:
                 data.setdefault("retired", [])
                 return data
         except Exception as exc:  # noqa: BLE001
-            _warn(f"roster.json unreadable ({exc}); using defaults")
+            # Falling back to defaults here would un-retire every source and
+            # erase the record — and main() would then persist that over the
+            # real file. A roster that exists but won't parse is a hard stop.
+            raise RosterError(f"roster.json exists but is unreadable: {exc}") from exc
+        raise RosterError("roster.json has no usable 'roster' list")
     return {
         "roster": list(DEFAULT_ROSTER),
         "retire_every_builds": RETIRE_EVERY_BUILDS,
         "builds_this_cycle": 0,
         "retired": [],
     }
+
+
+class RosterError(Exception):
+    """roster.json exists but cannot be trusted. Never silently replace it."""
 
 
 class RetirementError(Exception):
@@ -604,6 +621,14 @@ def apply_retirement(
         )
     if len(state["roster"]) <= 1:
         raise RetirementError("refusing to empty the roster")
+    # A retirement is only legal on a build that demanded one. Without this, any
+    # `retiring:` line on any day retires a source — including one Georgia was
+    # talked into by text a stranger put in an auction description.
+    every = int(state.get("retire_every_builds", RETIRE_EVERY_BUILDS))
+    if int(state.get("builds_this_cycle", 0)) < every:
+        raise RetirementError(
+            f"no retirement due — build {state.get('builds_this_cycle', 0)} of {every}"
+        )
     # The workflow can be re-dispatched, and a second run generates a second
     # diary naming a second source. One retirement per day, no more.
     if state.get("last_retirement_date") == on.isoformat():
@@ -628,20 +653,31 @@ def apply_retirement(
 
 
 def retirement_from_diary(diary: str) -> tuple[str, str] | None:
-    """Read `retiring: <key>` out of the log entry's YAML frontmatter.
+    """Read a top-level `retiring: <key>` from the log entry's YAML frontmatter.
 
-    The diary already carries frontmatter that the pipeline parses on the way
-    back in, so the declaration rides along with it rather than needing a third
-    output tag. Returns (key, reason) or None if she didn't declare one.
+    Parsed as YAML, not pattern-matched. A regex over the raw frontmatter text
+    fires on `retiring:` at any indentation — a key nested under another mapping,
+    or a line of ordinary prose inside a block scalar (`summary: |`). Georgia
+    writing "I keep retiring: hockey in my head" would have retired hockey.
+
+    Returns (key, reason) or None if she didn't declare one.
     """
-    m = re.match(r"\s*---\s*\n(.*?)\n---\s*\n?(.*)", diary or "", re.S)
-    if not m:
+    try:
+        post = frontmatter.loads(diary or "")
+    except Exception as exc:  # noqa: BLE001 — malformed frontmatter is not a decision
+        _warn(f"diary frontmatter unparseable ({exc}); no retirement read")
         return None
-    front, body = m.group(1), m.group(2)
-    key = re.search(r"^\s*retiring\s*:\s*[\"']?([a-z0-9_]+)[\"']?\s*$", front, re.M | re.I)
-    if not key:
+    raw = post.metadata.get("retiring")
+    if raw is None:
         return None
-    return key.group(1).strip(), body.strip()
+    if not isinstance(raw, str):
+        _warn(f"retiring: must be a plain string, got {type(raw).__name__}; ignoring")
+        return None
+    key = raw.strip().strip("\"'").strip()
+    if not re.fullmatch(r"[a-z0-9_]{1,32}", key, re.I):
+        _warn(f"retiring: {raw!r} is not a source key; ignoring")
+        return None
+    return key.lower(), post.content.strip()
 
 
 def fetch_all(run_date: date, roster: list[str], seed: int | None = None) -> dict:
@@ -680,7 +716,14 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     run_date = date.fromisoformat(args.date) if args.date else datetime.now(timezone.utc).date()
-    state = load_roster()
+    try:
+        state = load_roster()
+    except RosterError as exc:
+        # Loud and non-destructive. The workflow's continue-on-error lets the
+        # site still build; Georgia gets the sentinel. What must never happen is
+        # this quietly overwriting a roster that records real retirements.
+        _warn(f"{exc} — refusing to overwrite it. Fix roster.json by hand.")
+        return 1
     roster = args.only.split(",") if args.only else state["roster"]
 
     payload = fetch_all(run_date, roster, seed=args.seed)

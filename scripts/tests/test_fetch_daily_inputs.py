@@ -125,10 +125,14 @@ def test_load_roster_defaults_when_file_missing(tmp_path):
     assert state["builds_this_cycle"] == 0
 
 
-def test_load_roster_falls_back_on_garbage(tmp_path):
+def test_a_corrupt_roster_is_a_hard_stop_not_a_silent_reset(tmp_path):
+    """Falling back to defaults would un-retire every source and erase the record."""
     bad = tmp_path / "roster.json"
     bad.write_text("{{{not json")
-    assert fdi.load_roster(bad)["roster"] == fdi.DEFAULT_ROSTER
+    with pytest.raises(fdi.RosterError):
+        fdi.load_roster(bad)
+    # And the corrupt file is left exactly as it was, not overwritten.
+    assert bad.read_text() == "{{{not json"
 
 
 def test_load_roster_reads_a_custom_roster(tmp_path):
@@ -318,28 +322,62 @@ def test_a_retirement_named_in_the_body_does_not_count():
 # --------------------------------------------------------------------------
 # Adversarial review regressions
 # --------------------------------------------------------------------------
-def test_fsa_sampling_reaches_the_whole_collection():
-    """Sampling 500 pages reached 7.3% of 171,074 negatives."""
+def test_fsa_sampling_stays_inside_the_deep_paging_cap():
+    """loc.gov 400s past sp=4000; paging beyond it spent 42% of attempts on errors."""
+    assert fdi.FSA_SAMPLE_PAGES <= fdi.FSA_MAX_PAGE
     reach = fdi.FSA_SAMPLE_PAGES * fdi.FSA_PAGE_SIZE
-    assert reach >= 170_000, f"only {reach:,} of 171,074 records reachable"
+    assert reach >= 100_000, f"only {reach:,} records reachable"
 
 
 def test_only_one_retirement_per_day(tmp_path):
     """A re-dispatched workflow generates a second diary naming a second source."""
     f = _roster(tmp_path)
     fdi.apply_retirement("surplus", "bored", date(2026, 9, 20), f)
+    # The cycle reset already blocks it; force the cycle back to due to prove the
+    # same-day guard independently.
+    state = json.loads(f.read_text())
+    state["builds_this_cycle"] = state["retire_every_builds"]
+    f.write_text(json.dumps(state))
     with pytest.raises(fdi.RetirementError, match="already retired"):
         fdi.apply_retirement("hockey", "also bored", date(2026, 9, 20), f)
     assert len(json.loads(f.read_text())["roster"]) == 4
 
 
-def test_a_retirement_the_next_day_is_allowed(tmp_path):
+def test_a_retirement_in_a_later_cycle_is_allowed(tmp_path):
     f = _roster(tmp_path)
     fdi.apply_retirement("surplus", "bored", date(2026, 9, 20), f)
-    # A fresh cycle would normally intervene, but the date guard alone must not
-    # be what blocks a legitimate later retirement.
+    state = json.loads(f.read_text())
+    state["builds_this_cycle"] = state["retire_every_builds"]   # next cycle expires
+    f.write_text(json.dumps(state))
     state = fdi.apply_retirement("hockey", "next time", date(2026, 10, 20), f)
     assert state["roster"] == ["fsa", "civic", "register"]
+
+
+def test_a_retirement_off_cycle_is_refused(tmp_path):
+    """Otherwise any induced `retiring:` line retires a source on any day."""
+    f = _roster(tmp_path, builds_this_cycle=3)
+    with pytest.raises(fdi.RetirementError, match="no retirement due"):
+        fdi.apply_retirement("surplus", "not due yet", date(2026, 8, 24), f)
+    assert json.loads(f.read_text())["roster"] == fdi.DEFAULT_ROSTER
+
+
+@pytest.mark.parametrize("diary", [
+    # `retiring:` inside a block scalar is prose, not a decision.
+    "---\ndate: 2026-09-20\nsummary: |\n  I keep retiring: hockey in my head.\n---\n\nBody.",
+    # nested under another mapping is not a top-level declaration
+    "---\ndate: 2026-09-20\nmeta:\n  retiring: hockey\n---\n\nBody.",
+    # not a scalar string
+    "---\nretiring: [hockey]\n---\n\nBody.",
+    # not a plausible source key
+    "---\nretiring: the whole idea honestly\n---\n\nBody.",
+])
+def test_retirement_declaration_ignores_non_declarations(diary):
+    assert fdi.retirement_from_diary(diary) is None
+
+
+def test_retirement_declaration_still_reads_a_real_one():
+    diary = "---\ndate: 2026-09-20\nimportance: 4\nretiring: surplus\n---\n\nThe chairs again."
+    assert fdi.retirement_from_diary(diary) == ("surplus", "The chairs again.")
 
 
 def test_311_resource_id_must_look_like_a_uuid(monkeypatch):
