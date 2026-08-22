@@ -55,7 +55,11 @@ FSA_COLLECTION = "https://www.loc.gov/collections/fsa-owi-black-and-white-negati
 FSA_MIN_IMAGE_WIDTH = 640
 # Every record is tagged "united states"; on its own it locates nothing.
 FSA_GENERIC_PLACES = {"united states", "usa", "america"}
-FSA_SAMPLE_PAGES = 500
+FSA_PAGE_SIZE = 25
+# 171,074 negatives at 25 to a page. Sampling the first 500 pages reached 7.3%
+# of the collection and made "one photograph from the FSA/OWI negatives" a lie
+# about 93% of it, so page across the whole thing.
+FSA_SAMPLE_PAGES = 171_074 // FSA_PAGE_SIZE
 
 
 def _biggest_image(image_urls: list[str] | None) -> tuple[str | None, int]:
@@ -92,7 +96,7 @@ def fetch_fsa(session: requests.Session, rng: random.Random) -> dict:
     for _ in range(4):
         page = rng.randint(1, FSA_SAMPLE_PAGES)
         try:
-            url = f"{FSA_COLLECTION}?fo=json&c=25&sp={page}&at=results,pagination"
+            url = f"{FSA_COLLECTION}?fo=json&c={FSA_PAGE_SIZE}&sp={page}&at=results,pagination"
             r = session.get(url, timeout=REQUEST_TIMEOUT_S, headers={"User-Agent": UA})
             r.raise_for_status()
             # Under load loc.gov serves CAPTCHA HTML with a 200, so JSON is the real check.
@@ -191,6 +195,9 @@ def _ckan_sql(session: requests.Session, sql: str) -> list[dict]:
     return body["result"]["records"]
 
 
+_UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", re.I)
+
+
 def _resolve_311_resource(session: requests.Session, year: int) -> str:
     """Find this year's 311 CSV resource id; the dataset rolls over annually."""
     try:
@@ -203,7 +210,11 @@ def _resolve_311_resource(session: requests.Session, year: int) -> str:
         r.raise_for_status()
         for res in r.json()["result"]["resources"]:
             if res.get("format", "").upper() == "CSV" and str(year) in (res.get("name") or ""):
-                return res["id"]
+                # The id is interpolated into a SQL identifier, and it arrives
+                # from a remote API — so it has to look like a UUID first.
+                if _UUID_RE.match(str(res.get("id", ""))):
+                    return res["id"]
+                _warn(f"311 resource id {res.get('id')!r} is not a UUID; ignoring")
     except Exception as exc:  # noqa: BLE001
         _warn(f"311 resource lookup failed ({exc}); using pinned id")
     return CKAN_311_FALLBACK_RESOURCE
@@ -593,6 +604,12 @@ def apply_retirement(
         )
     if len(state["roster"]) <= 1:
         raise RetirementError("refusing to empty the roster")
+    # The workflow can be re-dispatched, and a second run generates a second
+    # diary naming a second source. One retirement per day, no more.
+    if state.get("last_retirement_date") == on.isoformat():
+        raise RetirementError(
+            f"already retired {state['retired'][-1]['key']!r} on {on.isoformat()}"
+        )
 
     state["roster"] = [k for k in state["roster"] if k != key]
     state.setdefault("retired", []).append({
@@ -600,6 +617,7 @@ def apply_retirement(
         "date": on.isoformat(),
         "reason": re.sub(r"\s+", " ", reason or "").strip()[:500] or None,
     })
+    state["last_retirement_date"] = on.isoformat()
     state["builds_this_cycle"] = 0
     state["overdue_builds"] = 0
     state["cycles_completed"] = int(state.get("cycles_completed", 0)) + 1
@@ -687,6 +705,7 @@ def main(argv: list[str] | None = None) -> int:
             "builds_until_retirement": max(0, every - state["builds_this_cycle"]),
             "overdue_builds": state["overdue_builds"],
             "cycles_completed": state.get("cycles_completed", 0),
+            "roster": list(roster),
             "roster_size": len(roster),
             "full_roster_size": int(state.get("full_roster_size", len(DEFAULT_ROSTER))),
             "retired": state.get("retired", []),

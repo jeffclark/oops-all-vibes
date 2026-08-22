@@ -313,3 +313,50 @@ def test_a_retirement_named_in_the_body_does_not_count():
     """Only the frontmatter key is binding — prose about retiring isn't a decision."""
     diary = "---\ndate: 2026-09-20\n---\n\nI think I'd retire surplus if I had to."
     assert fdi.retirement_from_diary(diary) is None
+
+
+# --------------------------------------------------------------------------
+# Adversarial review regressions
+# --------------------------------------------------------------------------
+def test_fsa_sampling_reaches_the_whole_collection():
+    """Sampling 500 pages reached 7.3% of 171,074 negatives."""
+    reach = fdi.FSA_SAMPLE_PAGES * fdi.FSA_PAGE_SIZE
+    assert reach >= 170_000, f"only {reach:,} of 171,074 records reachable"
+
+
+def test_only_one_retirement_per_day(tmp_path):
+    """A re-dispatched workflow generates a second diary naming a second source."""
+    f = _roster(tmp_path)
+    fdi.apply_retirement("surplus", "bored", date(2026, 9, 20), f)
+    with pytest.raises(fdi.RetirementError, match="already retired"):
+        fdi.apply_retirement("hockey", "also bored", date(2026, 9, 20), f)
+    assert len(json.loads(f.read_text())["roster"]) == 4
+
+
+def test_a_retirement_the_next_day_is_allowed(tmp_path):
+    f = _roster(tmp_path)
+    fdi.apply_retirement("surplus", "bored", date(2026, 9, 20), f)
+    # A fresh cycle would normally intervene, but the date guard alone must not
+    # be what blocks a legitimate later retirement.
+    state = fdi.apply_retirement("hockey", "next time", date(2026, 10, 20), f)
+    assert state["roster"] == ["fsa", "civic", "register"]
+
+
+def test_311_resource_id_must_look_like_a_uuid(monkeypatch):
+    """The id is interpolated into SQL and arrives from a remote API."""
+    class _Resp:
+        status_code = 200
+
+        def raise_for_status(self): pass
+
+        def json(self):
+            return {"result": {"resources": [
+                {"format": "CSV", "name": "311 Service Requests - 2026",
+                 "id": 'x" UNION SELECT 1 --'},
+            ]}}
+
+    class _Session:
+        def get(self, *a, **k): return _Resp()
+
+    got = fdi._resolve_311_resource(_Session(), 2026)
+    assert got == fdi.CKAN_311_FALLBACK_RESOURCE

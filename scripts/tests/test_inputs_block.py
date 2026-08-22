@@ -205,3 +205,30 @@ def test_a_win_and_a_loss_still_read_correctly():
             "us": us, "them": them,
         }
         assert f"they {verb} Arkansas" in ap.render_inputs_narrative(p)
+
+
+def test_a_source_jeff_adds_later_still_reaches_her():
+    """The rotation deal is that Jeff adds fetchers; a new one must not vanish."""
+    p = _payload()
+    p["inputs"]["buoy"] = {"label": "NOAA buoy 44013, Boston Harbor",
+                           "data": {"water_temp_c": 21.6, "wave_height_m": 0.6,
+                                    "reported_at": "2026-08-21T03:30Z"}}
+    out = ap.render_inputs_narrative(p)
+    assert "NOAA buoy 44013" in out
+    assert "21.6" in out
+    assert "wave_height_m" in out
+
+
+def test_retirement_offers_sources_that_failed_to_fetch():
+    """The source that keeps breaking is the one she'd most want gone."""
+    p = _payload(
+        failures={"hockey": "Timeout", "surplus": "403"},
+        rotation={"builds_this_cycle": 30, "builds_until_retirement": 0,
+                  "overdue_builds": 1, "roster": ["fsa", "civic", "surplus",
+                                                  "hockey", "register"],
+                  "roster_size": 5, "full_roster_size": 5, "retired": []},
+    )
+    p["inputs"] = {k: v for k, v in p["inputs"].items() if k in ("fsa", "civic")}
+    line = [l for l in ap.render_inputs_narrative(p).splitlines() if "retiring: <key>" in l][0]
+    for key in ("fsa", "civic", "surplus", "hockey", "register"):
+        assert key in line, f"{key} is on the roster but not offered"

@@ -377,6 +377,25 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
             lines.append(f"  {abstract}")
         lines.append("")
 
+    # Any source without a bespoke block above still has to reach her. Jeff's
+    # half of the rotation deal is adding new fetchers, and a new fetcher whose
+    # data is silently dropped on the floor would make that deal a lie.
+    rendered = {"fsa", "civic", "surplus", "hockey", "register"}
+    for key, entry in (got or {}).items():
+        if key in rendered:
+            continue
+        data = entry.get("data") or {}
+        lines.append(f"{entry.get('label') or key} —")
+        for field, value in list(data.items())[:12]:
+            if value in (None, "", [], {}):
+                continue
+            if isinstance(value, (list, tuple)):
+                value = ", ".join(str(v) for v in value[:6])
+            elif isinstance(value, dict):
+                value = json.dumps(value)[:200]
+            lines.append(f"  {field}: {str(value)[:300]}")
+        lines.append("")
+
     if failures := payload.get("failures"):
         lines.append("Didn't answer today: " + ", ".join(sorted(failures)) + ".")
         lines.append("A source going quiet is its own kind of news. Say so if you want to.")
@@ -384,7 +403,13 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
 
     rot = payload.get("rotation") or {}
     if (left := rot.get("builds_until_retirement")) is not None:
-        keys = ", ".join(sorted((payload.get("inputs") or {}))) or "the ones above"
+        # Offer the whole roster, not just what fetched cleanly today. A source
+        # that keeps failing is the one she is most likely to want gone, and it
+        # would be absent from a list built from successful fetches.
+        keys = ", ".join(sorted(
+            rot.get("roster")
+            or list(payload.get("inputs") or {}) + list(payload.get("failures") or {})
+        )) or "the ones above"
         if left <= 0:
             overdue = int(rot.get("overdue_builds") or 0)
             if overdue > 1:

@@ -66,15 +66,27 @@ def safe_verify(html: str, repo_root: Path, today: str, diary: str) -> list[Disc
 
 
 
-def _apply_declared_retirement(diary: str, today: str, repo_root: Path) -> None:
+def _apply_declared_retirement(
+    diary: str, today: str, repo_root: Path, *, no_commit: bool = False
+) -> None:
     """Retire whatever Georgia named in her log frontmatter.
 
     Never fatal. A malformed or impossible choice leaves the roster alone, which
     means the countdown stays expired and she gets asked again tomorrow — the
     demand doesn't quietly disappear because the parse failed.
+
+    A dry run must not touch it. Retirement is permanent and nothing else in the
+    pipeline can undo it, so a --no-commit smoke test that quietly dropped a
+    source would be the worst kind of surprise.
     """
     declared = retirement_from_diary(diary)
     if declared is None:
+        return
+    if no_commit:
+        print(
+            f"run_georgia: dry run — would have retired {declared[0]!r}, roster untouched",
+            file=sys.stderr,
+        )
         return
     key, reason = declared
     try:
@@ -192,7 +204,7 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
             # Georgia's retirement is binding: if she named one, the source
             # comes off the roster now. Done before write_outputs so the
             # updated roster rides the same `git add -A` commit.
-            _apply_declared_retirement(diary, today, repo_root)
+            _apply_declared_retirement(diary, today, repo_root, no_commit=no_commit)
 
             # Record stats BEFORE write_outputs so this run's stats line is
             # included in write_outputs's `git add -A` commit.
