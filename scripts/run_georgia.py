@@ -19,6 +19,11 @@ from anthropic import APIError
 
 from scripts.assemble_prompt import REPO_ROOT, assemble_prompt
 from scripts.call_model import ModelOutputError, call_model
+from scripts.fetch_daily_inputs import (
+    RetirementError,
+    apply_retirement,
+    retirement_from_diary,
+)
 from scripts.record_stats import record_stats
 from scripts.validate_output import validate_output
 from scripts.verify_archive_claims import (
@@ -58,6 +63,32 @@ def safe_verify(html: str, repo_root: Path, today: str, diary: str) -> list[Disc
     except Exception as exc:  # noqa: BLE001
         print(f"run_georgia: archive verification failed to run: {exc}", file=sys.stderr)
         return [Discrepancy(SOFT, f"Archive verification did not run ({exc}).")]
+
+
+
+def _apply_declared_retirement(diary: str, today: str, repo_root: Path) -> None:
+    """Retire whatever Georgia named in her log frontmatter.
+
+    Never fatal. A malformed or impossible choice leaves the roster alone, which
+    means the countdown stays expired and she gets asked again tomorrow — the
+    demand doesn't quietly disappear because the parse failed.
+    """
+    declared = retirement_from_diary(diary)
+    if declared is None:
+        return
+    key, reason = declared
+    try:
+        state = apply_retirement(
+            key, reason, date.fromisoformat(today), repo_root / "inputs" / "roster.json"
+        )
+    except RetirementError as exc:
+        print(f"run_georgia: retirement rejected — {exc}", file=sys.stderr)
+        return
+    print(
+        f"run_georgia: Georgia retired '{key}'. Roster is now "
+        f"{state['roster']} — a replacement fetcher is owed.",
+        file=sys.stderr,
+    )
 
 
 def add_retry_hint(prompt: str, reasons: list[str]) -> str:
@@ -157,6 +188,11 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
             warnings = [d.message for d in soft_failures(found)]
             for warning in warnings:
                 print(f"run_georgia: archive warning: {warning}", file=sys.stderr)
+
+            # Georgia's retirement is binding: if she named one, the source
+            # comes off the roster now. Done before write_outputs so the
+            # updated roster rides the same `git add -A` commit.
+            _apply_declared_retirement(diary, today, repo_root)
 
             # Record stats BEFORE write_outputs so this run's stats line is
             # included in write_outputs's `git add -A` commit.

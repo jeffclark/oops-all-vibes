@@ -29,7 +29,13 @@ sources, every day, carried forward with their own history.
 - `assemble_prompt.py` renders it as the `[inputs]` block, with counts and averages drawn
   from the last 30 days so the numbers mean something.
 - `inputs/roster.json` holds the roster and the retirement countdown. Every 30 builds Georgia
-  must retire one input and take on something new. She can't abstain, and she sees it coming.
+  retires one input. This is binding: she names it with `retiring: <key>` in her log
+  frontmatter, `run_georgia` applies it, and the source is gone — the roster shrinks and her
+  reason goes on the record. The cycle does not roll over on its own, so if she doesn't
+  choose, the demand stands and escalates until she does.
+- The other half of that deal is Jeff's: when the roster is short, a new fetcher is owed. The
+  fetcher logs a warning every build until one lands, and Georgia is told she's down to four
+  and who owes her. Neither side gets to quietly let this stall.
 - To swap a source: add a fetcher to `SOURCES` and edit the roster. That's the whole change.
 
 ## The split

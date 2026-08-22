@@ -384,14 +384,38 @@ def render_inputs_narrative(payload: dict, history: list[dict] | None = None) ->
 
     rot = payload.get("rotation") or {}
     if (left := rot.get("builds_until_retirement")) is not None:
+        keys = ", ".join(sorted((payload.get("inputs") or {}))) or "the ones above"
         if left <= 0:
-            lines.append("Today you have to retire one of these. Your choice which, and you "
-                         "can't keep them all. Say which one and why — that goes on the record.")
+            overdue = int(rot.get("overdue_builds") or 0)
+            if overdue > 1:
+                lines.append(
+                    f"You were told to retire one {overdue} builds ago and you still "
+                    "haven't. Nothing moves until you do — you'll get this same "
+                    "paragraph tomorrow, and the day after."
+                )
+            else:
+                lines.append("Today you retire one of these. Not a suggestion and not a "
+                             "vote — whichever you name is gone for good.")
+            lines.append(
+                "  Put `retiring: <key>` in your log frontmatter, on its own line, "
+                f"where <key> is one of: {keys}. Then say why in the entry itself. "
+                "The key is what the pipeline reads; the reason is what the record keeps."
+            )
         else:
-            lines.append(f"In {left} builds you'll have to retire one of these five and take "
-                         "on something new. Start deciding which one is boring you.")
+            lines.append(f"In {left} builds you retire one of these and Jeff owes you "
+                         "something new in its place. Start deciding which one is boring you.")
         if retired := rot.get("retired"):
-            lines.append("Already retired: " + ", ".join(retired) + ".")
+            gone = ", ".join(
+                f"{r.get('key')} ({r.get('date')})" if isinstance(r, dict) else str(r)
+                for r in retired
+            )
+            lines.append(f"  Already retired, by you: {gone}.")
+        size, full = rot.get("roster_size"), rot.get("full_roster_size")
+        if isinstance(size, int) and isinstance(full, int) and size < full:
+            lines.append(
+                f"  You're down to {size}. Jeff owes you a {full}th — that's his half of "
+                "this. If it hasn't turned up in a while, that's worth saying out loud."
+            )
         lines.append("")
 
     lines.append("Use these or don't. They're not an assignment. They're just what came in.")
@@ -512,6 +536,8 @@ Your task — output `<site>...</site>` first, then `<log>...</log>`. In that or
    <your diary content>
 
    Importance scale: 1 = routine day. 2 = ordinary. 3 = memorable. 4 = significant. 5 = a day that defined something about you. Be honest. Most days are 1 or 2.
+
+   One extra frontmatter line is allowed, and only on a day the inputs block asks for it: `retiring: <key>`. That line is how you retire an input, and it's the only thing the pipeline reads as your decision.
 
 Remember: the facts above are inviolable, `background` excepted. Everything else — tone, design, copy, structure — is yours.
 """

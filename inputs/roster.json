@@ -8,5 +8,7 @@
   ],
   "retire_every_builds": 30,
   "builds_this_cycle": 0,
-  "retired": []
+  "retired": [],
+  "overdue_builds": 0,
+  "full_roster_size": 5
 }

@@ -247,3 +247,69 @@ def test_season_picker_never_returns_a_womens_season(monkeypatch):
          {"season_id": "73", "season_name": "2026-27 Men's Divisions"}]
     ))
     assert fdi._current_mens_season(session=None)[0] == "73"
+
+
+# --------------------------------------------------------------------------
+# Retirement is binding: she chooses, the source is gone
+# --------------------------------------------------------------------------
+def _roster(tmp_path: Path, **over) -> Path:
+    f = tmp_path / "roster.json"
+    state = {"roster": list(fdi.DEFAULT_ROSTER), "retire_every_builds": 30,
+             "builds_this_cycle": 30, "overdue_builds": 3, "retired": [],
+             "full_roster_size": 5}
+    state.update(over)
+    f.write_text(json.dumps(state))
+    return f
+
+
+def test_retirement_removes_the_source_and_records_the_reason(tmp_path):
+    f = _roster(tmp_path)
+    state = fdi.apply_retirement("surplus", "  It repeats.\n Every week the same chairs. ",
+                                 date(2026, 9, 20), f)
+    assert "surplus" not in state["roster"]
+    assert len(state["roster"]) == 4
+    assert state["retired"] == [{
+        "key": "surplus", "date": "2026-09-20",
+        "reason": "It repeats. Every week the same chairs.",
+    }]
+    # Written through, not just returned.
+    assert json.loads(f.read_text())["roster"] == state["roster"]
+
+
+def test_retirement_opens_a_new_cycle(tmp_path):
+    f = _roster(tmp_path)
+    state = fdi.apply_retirement("hockey", "done", date(2026, 9, 20), f)
+    assert state["builds_this_cycle"] == 0
+    assert state["overdue_builds"] == 0
+    assert state["cycles_completed"] == 1
+
+
+def test_retirement_rejects_a_source_not_on_the_roster(tmp_path):
+    f = _roster(tmp_path)
+    with pytest.raises(fdi.RetirementError, match="not on the roster"):
+        fdi.apply_retirement("weather", "never existed", date(2026, 9, 20), f)
+    assert json.loads(f.read_text())["roster"] == fdi.DEFAULT_ROSTER
+
+
+def test_retirement_will_not_empty_the_roster(tmp_path):
+    f = _roster(tmp_path, roster=["fsa"])
+    with pytest.raises(fdi.RetirementError, match="empty the roster"):
+        fdi.apply_retirement("fsa", "all of it", date(2026, 9, 20), f)
+
+
+@pytest.mark.parametrize("diary,expected", [
+    ("---\ndate: 2026-09-20\nimportance: 4\nretiring: surplus\n---\n\nThe chairs again.",
+     ("surplus", "The chairs again.")),
+    ('---\nretiring: "hockey"\n---\nBody.', ("hockey", "Body.")),
+    ("---\ndate: 2026-09-20\nimportance: 2\n---\n\nOrdinary day.", None),
+    ("no frontmatter at all", None),
+    ("", None),
+])
+def test_retirement_declaration_is_read_from_the_log_frontmatter(diary, expected):
+    assert fdi.retirement_from_diary(diary) == expected
+
+
+def test_a_retirement_named_in_the_body_does_not_count():
+    """Only the frontmatter key is binding — prose about retiring isn't a decision."""
+    diary = "---\ndate: 2026-09-20\n---\n\nI think I'd retire surplus if I had to."
+    assert fdi.retirement_from_diary(diary) is None

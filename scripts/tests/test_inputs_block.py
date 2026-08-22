@@ -104,10 +104,41 @@ def test_narrative_surfaces_failures_as_content():
 
 
 def test_narrative_demands_a_retirement_when_the_cycle_is_up():
-    p = _payload(rotation={"builds_this_cycle": 30, "builds_until_retirement": 0, "retired": []})
+    p = _payload(rotation={"builds_this_cycle": 30, "builds_until_retirement": 0,
+                           "overdue_builds": 1, "retired": []})
     out = ap.render_inputs_narrative(p)
-    assert "retire one of these" in out
-    assert "can't keep them all" in out
+    assert "Today you retire one of these" in out
+    assert "gone for good" in out
+    # She has to be told the exact machine-readable form, and the valid keys.
+    assert "retiring: <key>" in out
+    for key in ("fsa", "civic", "surplus", "hockey", "register"):
+        assert key in out
+
+
+def test_narrative_escalates_when_she_stalls():
+    p = _payload(rotation={"builds_this_cycle": 30, "builds_until_retirement": 0,
+                           "overdue_builds": 4, "retired": []})
+    out = ap.render_inputs_narrative(p)
+    assert "4 builds ago" in out
+    assert "Nothing moves until you do" in out
+
+
+def test_narrative_tells_her_when_jeff_owes_a_replacement():
+    p = _payload(rotation={"builds_this_cycle": 3, "builds_until_retirement": 27,
+                           "roster_size": 4, "full_roster_size": 5,
+                           "retired": [{"key": "surplus", "date": "2026-09-20"}]})
+    out = ap.render_inputs_narrative(p)
+    assert "You're down to 4" in out
+    assert "Jeff owes you a 5th" in out
+    assert "surplus (2026-09-20)" in out
+
+
+def test_narrative_stays_quiet_about_the_roster_when_it_is_full():
+    out = ap.render_inputs_narrative(_payload(
+        rotation={"builds_this_cycle": 3, "builds_until_retirement": 27,
+                  "roster_size": 5, "full_roster_size": 5, "retired": []}))
+    assert "You're down to" not in out
+    assert "that's his half of this" not in out
 
 
 def test_narrative_survives_a_roster_of_one():

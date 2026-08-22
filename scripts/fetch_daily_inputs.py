@@ -568,6 +568,64 @@ def load_roster(roster_file: Path = ROSTER_FILE) -> dict:
     }
 
 
+class RetirementError(Exception):
+    """Georgia named something that can't be retired."""
+
+
+def apply_retirement(
+    key: str,
+    reason: str,
+    on: date,
+    roster_file: Path = ROSTER_FILE,
+) -> dict:
+    """Retire an input for good and open a new cycle.
+
+    This is binding. Georgia chooses and the source is gone — the roster
+    shrinks, the choice goes on the record with her reason, and the countdown
+    resets. Nothing else in the pipeline can put it back; only a human editing
+    roster.json can, which is the point.
+    """
+    state = load_roster(roster_file)
+    key = (key or "").strip()
+    if key not in state["roster"]:
+        raise RetirementError(
+            f"{key!r} is not on the roster ({', '.join(state['roster'])})"
+        )
+    if len(state["roster"]) <= 1:
+        raise RetirementError("refusing to empty the roster")
+
+    state["roster"] = [k for k in state["roster"] if k != key]
+    state.setdefault("retired", []).append({
+        "key": key,
+        "date": on.isoformat(),
+        "reason": re.sub(r"\s+", " ", reason or "").strip()[:500] or None,
+    })
+    state["builds_this_cycle"] = 0
+    state["overdue_builds"] = 0
+    state["cycles_completed"] = int(state.get("cycles_completed", 0)) + 1
+    state.setdefault("full_roster_size", len(DEFAULT_ROSTER))
+    roster_file.parent.mkdir(parents=True, exist_ok=True)
+    roster_file.write_text(json.dumps(state, indent=2) + "\n")
+    return state
+
+
+def retirement_from_diary(diary: str) -> tuple[str, str] | None:
+    """Read `retiring: <key>` out of the log entry's YAML frontmatter.
+
+    The diary already carries frontmatter that the pipeline parses on the way
+    back in, so the declaration rides along with it rather than needing a third
+    output tag. Returns (key, reason) or None if she didn't declare one.
+    """
+    m = re.match(r"\s*---\s*\n(.*?)\n---\s*\n?(.*)", diary or "", re.S)
+    if not m:
+        return None
+    front, body = m.group(1), m.group(2)
+    key = re.search(r"^\s*retiring\s*:\s*[\"']?([a-z0-9_]+)[\"']?\s*$", front, re.M | re.I)
+    if not key:
+        return None
+    return key.group(1).strip(), body.strip()
+
+
 def fetch_all(run_date: date, roster: list[str], seed: int | None = None) -> dict:
     """Fetch every source on the roster. Failures are recorded, never raised."""
     rng = random.Random(seed)
@@ -612,20 +670,34 @@ def main(argv: list[str] | None = None) -> int:
     # Surface the retirement countdown so Georgia can see it coming.
     if not args.only:
         every = int(state["retire_every_builds"])
-        # Build `every` is the retirement build; the next one opens a new cycle.
-        # Without the wrap the countdown sticks at zero and every build from
-        # then on tells her to retire something, forever.
-        state["builds_this_cycle"] = int(state.get("builds_this_cycle", 0)) + 1
-        if state["builds_this_cycle"] > every:
-            state["builds_this_cycle"] = 1
-            state["cycles_completed"] = int(state.get("cycles_completed", 0)) + 1
-        remaining = every - state["builds_this_cycle"]
+        # The cycle does NOT roll over on its own. It ends when a retirement is
+        # actually applied (apply_retirement resets the counter), so if she is
+        # asked to retire something and doesn't, the demand stands tomorrow and
+        # the day after. The countdown is a commitment, not a reminder.
+        state["builds_this_cycle"] = min(
+            int(state.get("builds_this_cycle", 0)) + 1, every
+        )
+        overdue = int(state.get("overdue_builds", 0))
+        if state["builds_this_cycle"] >= every:
+            overdue += 1
+        state["overdue_builds"] = overdue if state["builds_this_cycle"] >= every else 0
+
         payload["rotation"] = {
             "builds_this_cycle": state["builds_this_cycle"],
-            "builds_until_retirement": max(0, remaining),
+            "builds_until_retirement": max(0, every - state["builds_this_cycle"]),
+            "overdue_builds": state["overdue_builds"],
             "cycles_completed": state.get("cycles_completed", 0),
+            "roster_size": len(roster),
+            "full_roster_size": int(state.get("full_roster_size", len(DEFAULT_ROSTER))),
             "retired": state.get("retired", []),
         }
+        if state["overdue_builds"] > 1:
+            _warn(f"retirement overdue for {state['overdue_builds']} builds")
+        if len(roster) < payload["rotation"]["full_roster_size"]:
+            _warn(
+                f"roster is down to {len(roster)} — a replacement fetcher is owed. "
+                f"Retired so far: {[r.get('key') for r in state.get('retired', [])]}"
+            )
 
     if args.dry_run or args.only:
         # --only fetches a subset, so writing it would clobber the day's file
