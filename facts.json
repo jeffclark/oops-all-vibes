@@ -3,6 +3,10 @@
   "email": "jeff@clarkle.com",
   "linkedin_url": "https://www.linkedin.com/in/serialcreative",
   "linkedin_title": "Director of Product at LeagueApps",
+  "background": {
+    "hometown": "Oklahoma",
+    "lives": "Scituate, Massachusetts"
+  },
   "projects": [
     {
       "title": "HELM",

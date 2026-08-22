@@ -1,0 +1,20 @@
+name: Probe daily inputs
+
+# Diagnostic only. Fetches nothing into the site and writes nothing back.
+# Run it by hand to see which candidate daily-input sources answer from a
+# datacenter IP — the same conditions the real fetcher would run under.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Probe
+        run: python scripts/probe_inputs.py
