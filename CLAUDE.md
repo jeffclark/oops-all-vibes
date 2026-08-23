@@ -16,6 +16,28 @@ clarkle.com daily-regenerating AI-authored website. Georgia (Claude Opus 5) rebu
 - Don't push to GitHub until story_012 (dry-run + DNS cutover). Local commits only before that.
 - Don't commit secrets. All API keys live in env vars and GitHub Actions secrets.
 
+## Daily inputs
+
+Georgia gets five narrow, recurring sources every build — one photograph from the FSA/OWI
+negatives, Boston's 311 calls, a government surplus lot, Oklahoma State ACHA hockey, and one
+Federal Register document. Narrow beats broad because narrow accumulates: the same five
+sources, every day, carried forward with their own history.
+
+- `scripts/fetch_daily_inputs.py` writes `inputs/<date>.json`. Every source is fetched
+  independently and a failure is recorded rather than raised — a dead source is content, and
+  Georgia is told what went quiet.
+- `assemble_prompt.py` renders it as the `[inputs]` block, with counts and averages drawn
+  from the last 30 days so the numbers mean something.
+- `inputs/roster.json` holds the roster and the retirement countdown. Every 30 builds Georgia
+  retires one input. This is binding: she names it with `retiring: <key>` in her log
+  frontmatter, `run_georgia` applies it, and the source is gone — the roster shrinks and her
+  reason goes on the record. The cycle does not roll over on its own, so if she doesn't
+  choose, the demand stands and escalates until she does.
+- The other half of that deal is Jeff's: when the roster is short, a new fetcher is owed. The
+  fetcher logs a warning every build until one lands, and Georgia is told she's down to four
+  and who owes her. Neither side gets to quietly let this stall.
+- To swap a source: add a fetcher to `SOURCES` and edit the roster. That's the whole change.
+
 ## The split
 
 The site is chaotic on purpose. The pipeline around it is not. Chaos belongs to Georgia (what she outputs); everything else — the orchestration, the validation, the analytics, the stats page — should be boring, reliable, and easy to reason about.
