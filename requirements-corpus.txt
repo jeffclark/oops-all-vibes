@@ -1,0 +1,13 @@
+# Offline corpus tooling (stories 013-014). Runs on Jeff's machine, never in CI.
+#
+# Deliberately separate from requirements.txt: the daily GitHub Actions run must
+# not install librosa. Nothing listed here may be imported by any module under
+# scripts/ outside scripts/corpus/ — scripts/tests/test_corpus_ingest.py enforces
+# that with a source scan.
+#
+# Also requires ffmpeg and ffprobe on PATH (system packages, not pip).
+yt-dlp>=2024.1.0
+librosa>=0.10.0
+matplotlib>=3.8.0
+numpy>=1.26.0
+Pillow>=10.0.0

@@ -1015,13 +1015,13 @@ ships text-only.
   ours are 1024×576 and 1024×384, so we would clear it either way. 20 is a cost and
   attention budget, chosen because a set she can actually hold in mind beats a set
   she skims. There is headroom if a later story earns it.
-- **Corpus size**: **15 shows × 10 keepers = 150 frames**, plus one show-shape plot
-  per show. (The original plan said 8–12; Jeff supplied 15, and more shows means more
-  contrast, which is the point.) Finite is still the feature — 150 is the ceiling.
-  Do not grow this later without a story. Rotation simply cycles more slowly: at 6
-  rotating slots a day against a 140-frame rotating pool, a given non-anchor frame
-  comes back roughly every three to four weeks — often enough to notice you've seen
-  it before, rarely enough that it doesn't become wallpaper.
+- **Corpus size**: **19 shows × 10 keepers = 190 frames**, plus one show-shape plot
+  per show. (The original plan said 8–12; Jeff supplied 15, then 4 more to even out
+  the 2010s. More shows means more contrast, which is the point.) Finite is still the
+  feature — 190 is the ceiling. Do not grow this later without a story. Rotation
+  cycles slowly by design: 6 rotating slots a day against a 180-frame pool brings a
+  given non-anchor frame back about every month — often enough to notice you've seen
+  it before, rarely enough that it becomes wallpaper.
 - **Anchors vs rotating**: 10 anchor frames are shown **every single day, forever**.
   Repetition is the mechanism — a preference cannot form from a single viewing.
 - **Storage**: keeper frames live in the Anthropic Files API, never in this repo.

@@ -7,3 +7,7 @@ __pycache__/
 
 # Offline model A/B outputs — regenerate with `python -m scripts.model_ab`
 model-ab/
+
+# Corpus working files — video and frames never enter the repo.
+# Regenerate with `python -m scripts.corpus.ingest`.
+corpus/raw/
