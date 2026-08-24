@@ -1,0 +1,3224 @@
+{
+  "version": 1,
+  "published_at": "2026-08-24",
+  "frames": [
+    {
+      "frame_id": "bac-2025-t736",
+      "file_id": "file_01LNzZgJvtzdfa7Ex39E1kGr",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 736,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "bac-2025-t384",
+      "file_id": "file_01JgPyd2CmFeda9GrYmDapPX",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 384,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "bac-2025-t88",
+      "file_id": "file_017cdLDg7sadcqgdyarCaP1c",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 88,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "bac-2025-t216",
+      "file_id": "file_019xLJRvH82FkYhsUv8D1P8x",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 216,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "bac-2025-t56",
+      "file_id": "file_012BYBEMiJ5hQp96U4McnoKV",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 56,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "bac-2025-t400",
+      "file_id": "file_01WkVfEg1k4momAR9ZZw4ULr",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 400,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "bac-2025-t232",
+      "file_id": "file_01LaKCteN41HpRf8NvdTdrd1",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 232,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "bac-2025-t184",
+      "file_id": "file_01Aw4iyaS6mA2dizE3smdupV",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 184,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "bac-2025-t640",
+      "file_id": "file_01YKa2RwZqxzQcAmHnfWHoXt",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 640,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "bac-2025-t480",
+      "file_id": "file_01QKHeE6TEV9hY5fvPmQtU9d",
+      "show_id": "bac-2025",
+      "corps": "Boston Crusaders",
+      "year": 2025,
+      "t": 480,
+      "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:boston-crusaders"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "bahs-2006-t88",
+      "file_id": "file_01H4rqgz8iGFHYKSfPKBoyvU",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 88,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "bahs-2006-t608",
+      "file_id": "file_01Dt8MLAUwV7CLfZT65kUV3y",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 608,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "bahs-2006-t64",
+      "file_id": "file_01Wjzf4ZWqYXuxxbN7BJMZiF",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 64,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "bahs-2006-t384",
+      "file_id": "file_01RVJhu8poF8pAzfJpKbFVhc",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 384,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "bahs-2006-t296",
+      "file_id": "file_01R4J7pVPkA6BWjqad9RPMGR",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 296,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "bahs-2006-t448",
+      "file_id": "file_01HxQdxKnLP8vErdB89wkHBC",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 448,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "bahs-2006-t656",
+      "file_id": "file_0116NKb2zogX65orsxZtaZFh",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 656,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "bahs-2006-t568",
+      "file_id": "file_01KgLZwYwiqwPJRFmcEKXNPv",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 568,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "bahs-2006-t480",
+      "file_id": "file_013yGTjGHEcAn6risDseVRF8",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 480,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "bahs-2006-t160",
+      "file_id": "file_01BYRAAU6Hy9USJ9zBTuGWp9",
+      "show_id": "bahs-2006",
+      "corps": "Broken Arrow High School",
+      "year": 2006,
+      "t": 160,
+      "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+      "axis_tags": [
+        "era:2000s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "bahs-2021-t48",
+      "file_id": "file_01FDJYhPWCT7mo4oK9g5Utb4",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 48,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "bahs-2021-t816",
+      "file_id": "file_01JMx9Gnxn1oWqQmLkAZZQJ9",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 816,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "bahs-2021-t312",
+      "file_id": "file_01SU5pYQFThYbPmeMp3dyiUL",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 312,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "bahs-2021-t600",
+      "file_id": "file_012H9RhEpkZ6ack33NL2uBUR",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 600,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "bahs-2021-t80",
+      "file_id": "file_01V34K366NGAYVbcGkHVnP6Y",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 80,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "bahs-2021-t8",
+      "file_id": "file_01EwEq1X7x2yCt5pBXRMpV56",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 8,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "bahs-2021-t704",
+      "file_id": "file_017F6nKRboduLAG6E8RrqM9g",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 704,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "bahs-2021-t504",
+      "file_id": "file_01U2pEVgZtbLYT8k89uEWPic",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 504,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "bahs-2021-t264",
+      "file_id": "file_018dabQZ5h7p6gh7eZcuCEgM",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 264,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "bahs-2021-t400",
+      "file_id": "file_011g33ewzkzHdKZtRFhgqhdx",
+      "show_id": "bahs-2021",
+      "corps": "Broken Arrow High School",
+      "year": 2021,
+      "t": 400,
+      "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+      "axis_tags": [
+        "era:2020s",
+        "class:high-school",
+        "org:broken-arrow",
+        "pair:broken-arrow"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "bd-1992-t534",
+      "file_id": "file_01PDNTCsZzXRtRrdfMxrEa5z",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 534,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "bd-1992-t36",
+      "file_id": "file_01MDERi7FFd6iZdqLytuYNv1",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 36,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "bd-1992-t0",
+      "file_id": "file_01XuJ3krJumtckxLqe4kGyMq",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 0,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "bd-1992-t558",
+      "file_id": "file_014oLXu9Yx9dHWK8c4nRJduQ",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 558,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "bd-1992-t642",
+      "file_id": "file_0123mYfUiskzeahY7S8GAmqF",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 642,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "bd-1992-t60",
+      "file_id": "file_01RkqDT8m4eQUuTa9TBGWaH2",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 60,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "bd-1992-t90",
+      "file_id": "file_01UrsZ44JYJv9AwzWKhzGnkP",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 90,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "bd-1992-t126",
+      "file_id": "file_013793rztqgGaVt4THsaKEsY",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 126,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "bd-1992-t546",
+      "file_id": "file_01LwKvAVpdTUwoA29LGsU9sX",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 546,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "bd-1992-t288",
+      "file_id": "file_016dSEB9EyvkqQvigEUtgZk8",
+      "show_id": "bd-1992",
+      "corps": "Blue Devils",
+      "year": 1992,
+      "t": 288,
+      "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "bd-2014-t664",
+      "file_id": "file_01NtU47Jz8q3bBHJVEqAQdJV",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 664,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "bd-2014-t120",
+      "file_id": "file_01HR5MZRghPD4XXHTPm78Wnq",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 120,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "bd-2014-t352",
+      "file_id": "file_01EmNnP8hcNo3XwT1fuyefzN",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 352,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "bd-2014-t104",
+      "file_id": "file_01K39eEZ5mNTCUKrAweK5Hj3",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 104,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "bd-2014-t728",
+      "file_id": "file_01FJX4G7dAcyZCtaTdeMZNHj",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 728,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "bd-2014-t0",
+      "file_id": "file_014qPAo9RAkMR5ozHETMy5tF",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 0,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "bd-2014-t232",
+      "file_id": "file_01VMHcdHUm5raX5wVrZiSmsd",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 232,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "bd-2014-t376",
+      "file_id": "file_01SvQ6qHV4RD7vvh2EKuL5Kf",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 376,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "bd-2014-t296",
+      "file_id": "file_01YDfHhUqEcCpJpL4CczjJSA",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 296,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "bd-2014-t704",
+      "file_id": "file_014Ci2qeVTAoi3X8vhntUfs7",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 704,
+      "url": "https://www.youtube.com/watch?v=-69EF7r2IcA",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:blue-devils",
+        "pair:blue-devils"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "bloo-2014-t384",
+      "file_id": "file_01S9Qpzg6TNnDtaDFFpupkZg",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 384,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "bloo-2014-t132",
+      "file_id": "file_017mXGouM2hRK8EsHg6SnULR",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 132,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "bloo-2014-t372",
+      "file_id": "file_01JD4AisZBK1JUHLqC7P7dkV",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 372,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "bloo-2014-t690",
+      "file_id": "file_012jz3yfNcn22L3MRQTy6Xbw",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 690,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "bloo-2014-t276",
+      "file_id": "file_019nLty3fUjkm5pNgM1A5DEV",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 276,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "bloo-2014-t126",
+      "file_id": "file_013RmdCxk1foj2NjA5qHs7c2",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 126,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "bloo-2014-t414",
+      "file_id": "file_01KjMRTskjYVA1PJivEoANpG",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 414,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "bloo-2014-t12",
+      "file_id": "file_013mLGer97yyfxpr7d65VP9R",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 12,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "bloo-2014-t342",
+      "file_id": "file_012BiF1r2ooY95z8T8kqYm6Z",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 342,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "bloo-2014-t636",
+      "file_id": "file_01Umpns4bLuAuzMqAZ5pEWyU",
+      "show_id": "bloo-2014",
+      "corps": "Bluecoats",
+      "year": 2014,
+      "t": 636,
+      "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "bloo-2024-t472",
+      "file_id": "file_012ExUBG9DuRadF4b2K6fnQy",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 472,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "bloo-2024-t712",
+      "file_id": "file_01HyXNyNyUJZar42TWk2L15A",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 712,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "bloo-2024-t0",
+      "file_id": "file_015QYoGwNAPumQQERNXnv73W",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 0,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "bloo-2024-t296",
+      "file_id": "file_01EK16iYxUcAbJs9sZ9ZXdqs",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 296,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "bloo-2024-t120",
+      "file_id": "file_01TdNaZZBW2AM92Wp4Dzs3sN",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 120,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "bloo-2024-t248",
+      "file_id": "file_01YDs7fDV8LS57RoqTPF6QNn",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 248,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "bloo-2024-t168",
+      "file_id": "file_01EWQeBrDnndnBcRQNSiNRQi",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 168,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "bloo-2024-t600",
+      "file_id": "file_01LvAnUuxpZaeYN2si62vJ1X",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 600,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "bloo-2024-t96",
+      "file_id": "file_01GfZNjNZTyVWMeCBUYaN789",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 96,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "bloo-2024-t64",
+      "file_id": "file_01Wb2HBUPRUHG9QK9btszYWo",
+      "show_id": "bloo-2024",
+      "corps": "Bluecoats",
+      "year": 2024,
+      "t": 64,
+      "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:bluecoats",
+        "pair:bluecoats"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "cadets-2021-t816",
+      "file_id": "file_01SqybzeCc9QVm7nJxzkbNUy",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 816,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "cadets-2021-t384",
+      "file_id": "file_015ZKBLnNHvjBYSNzmRtBng5",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 384,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "cadets-2021-t760",
+      "file_id": "file_0174vVD8hSPTxDe1BwED2Ky1",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 760,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "cadets-2021-t56",
+      "file_id": "file_01FZDm1CdwnWcGtVYrKtpyXW",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 56,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "cadets-2021-t128",
+      "file_id": "file_016b7nmzEsidDtryehzEEPd9",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 128,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "cadets-2021-t312",
+      "file_id": "file_01EMa7vRVLTM5oxdVnYcmWwj",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 312,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "cadets-2021-t280",
+      "file_id": "file_01MGeM5YeEBXCaX4KRKv5eKo",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 280,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "cadets-2021-t168",
+      "file_id": "file_01Fz67DCBWM1VMWvKKJtHcaG",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 168,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "cadets-2021-t504",
+      "file_id": "file_01Xic2hg9EniaeDGMT5RkNyj",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 504,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "cadets-2021-t712",
+      "file_id": "file_01T83N3ru1y6ZpuPzXB5BVg8",
+      "show_id": "cadets-2021",
+      "corps": "The Cadets",
+      "year": 2021,
+      "t": 712,
+      "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:cadets"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "cav-2004-t296",
+      "file_id": "file_0171HaZ5L85GpHKuhEreTAQj",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 296,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "cav-2004-t88",
+      "file_id": "file_01HGPwbcdGXZmK522QwgmomD",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 88,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "cav-2004-t552",
+      "file_id": "file_019WY5yzDDU56ehke9Myh4Re",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 552,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "cav-2004-t80",
+      "file_id": "file_01PrpZUpxzdreK9z9kHpy6Zj",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 80,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "cav-2004-t608",
+      "file_id": "file_01FoKaXm8phXtKDiCtgxjBVm",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 608,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "cav-2004-t704",
+      "file_id": "file_01CSx1F98t1dJN4Zz2v59SXN",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 704,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "cav-2004-t240",
+      "file_id": "file_01UFAjfsdCuKHoGu76Stxdsm",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 240,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "cav-2004-t72",
+      "file_id": "file_01D69h2Xy37P9WowpqyCfEje",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 72,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "cav-2004-t288",
+      "file_id": "file_01YWPbemBxRCRbMVQSrjPeUj",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 288,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "cav-2004-t336",
+      "file_id": "file_019rUEo3FuA7ZW7qUARShBuM",
+      "show_id": "cav-2004",
+      "corps": "The Cavaliers",
+      "year": 2004,
+      "t": 336,
+      "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:cavaliers"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "crown-2013-t0",
+      "file_id": "file_01LxrPbaBSLDMigTNuMiQy8W",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 0,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "crown-2013-t728",
+      "file_id": "file_01DXigkZ6c2ojzTUstQCjUjQ",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 728,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "crown-2013-t328",
+      "file_id": "file_01E4JzEs5FPHyCtipyJs25Ap",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 328,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "crown-2013-t672",
+      "file_id": "file_01FiBpoCgxQrcTTzyQyu82QZ",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 672,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "crown-2013-t32",
+      "file_id": "file_01DuL59XS3FsLacWqdEBFAxZ",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 32,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "crown-2013-t456",
+      "file_id": "file_01WwD4H9FVmyGXNUv9V12S5Z",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 456,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "crown-2013-t296",
+      "file_id": "file_01UU5Nq4EtKv3bGoZeHxnaod",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 296,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "crown-2013-t800",
+      "file_id": "file_01RPe7BUHbPjovfv7Q3PY9vL",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 800,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "crown-2013-t120",
+      "file_id": "file_016wbbuWY6b3fDdCwncZFdZo",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 120,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "crown-2013-t648",
+      "file_id": "file_016DJYBEMsHkypXxDCWnV3gL",
+      "show_id": "crown-2013",
+      "corps": "Carolina Crown",
+      "year": 2013,
+      "t": 648,
+      "url": "https://www.youtube.com/watch?v=ENrDiWjvOh0",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "crown-2014-t28",
+      "file_id": "file_01PxUtBEKXiKrZPmnoXcBpx3",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 28,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "crown-2014-t236",
+      "file_id": "file_01J9QeF9nAZZ3DRkqr9QGLNY",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 236,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "crown-2014-t24",
+      "file_id": "file_01LKLcb414dUbdDr3VJQ4BPh",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 24,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "crown-2014-t320",
+      "file_id": "file_01HTtaG3m9rPUrDZmiyVptW2",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 320,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "crown-2014-t176",
+      "file_id": "file_011PRu4gmJnUs8zAEG1iq1gp",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 176,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "crown-2014-t276",
+      "file_id": "file_01JDTQRRGkzyw48TbcM6o6tf",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 276,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "crown-2014-t136",
+      "file_id": "file_01Min6JRzgMjyBcLpEPnuyyQ",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 136,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "crown-2014-t724",
+      "file_id": "file_01CStpVe3VJVWnNcxvv98Upg",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 724,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "crown-2014-t492",
+      "file_id": "file_01JiqQRdLuba3zyqJX5Na9CW",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 492,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "crown-2014-t344",
+      "file_id": "file_01EqUaNdTdGLz8AjPjAvuQcX",
+      "show_id": "crown-2014",
+      "corps": "Carolina Crown",
+      "year": 2014,
+      "t": 344,
+      "url": "https://www.youtube.com/watch?v=piXI4kcDIUU",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:carolina-crown",
+        "pair:carolina-crown"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "lhs-1998-t438",
+      "file_id": "file_0166bFWrihjHpXC7aynaeqzM",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 438,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "lhs-1998-t192",
+      "file_id": "file_01PX3QKQA1zTEYJzvMQhoURq",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 192,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "lhs-1998-t408",
+      "file_id": "file_01BRLuYP9rvNPdhCXjzFLwZ7",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 408,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "lhs-1998-t132",
+      "file_id": "file_01NTrbh6gnJZ4vQcdAt3gpAQ",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 132,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "lhs-1998-t612",
+      "file_id": "file_019HEWvis1Uax7ipV1spnkGx",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 612,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "lhs-1998-t462",
+      "file_id": "file_01DaH4KaGT8gAdwpXdntpmWt",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 462,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "lhs-1998-t0",
+      "file_id": "file_01Nbbzn6FtK1K3qtFr1fRqLW",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 0,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "lhs-1998-t558",
+      "file_id": "file_01FXvv226hTLG5bwu4Lsp9G7",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 558,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "lhs-1998-t174",
+      "file_id": "file_01B7tpSwyZ4RAz1eT4yhLZpS",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 174,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "lhs-1998-t24",
+      "file_id": "file_016cn7ThXeeibBm5ZyGXjAg4",
+      "show_id": "lhs-1998",
+      "corps": "Lassiter High School",
+      "year": 1998,
+      "t": 24,
+      "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:lassiter"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "mad-1995-t711",
+      "file_id": "file_015wCLCmCTA1YRuzKyiurphy",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 711,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "mad-1995-t33",
+      "file_id": "file_0164N9emu4hoVk3U6TkjRFEm",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 33,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "mad-1995-t663",
+      "file_id": "file_01EgcLWfrosVEWukdPaJMqbM",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 663,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "mad-1995-t321",
+      "file_id": "file_01FhWCbWmoExJzWP5SEX9SdQ",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 321,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "mad-1995-t288",
+      "file_id": "file_018pZyycr1Jx7BodDh1UJEGK",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 288,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "mad-1995-t672",
+      "file_id": "file_01KJjbKrcL8R8oEHswH9MEHr",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 672,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "mad-1995-t561",
+      "file_id": "file_017eAoqvVZ5UxCYuxxNJ6ZPV",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 561,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "mad-1995-t222",
+      "file_id": "file_01AV5uM6zHiYihe5ypbmZBHS",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 222,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "mad-1995-t252",
+      "file_id": "file_01N1MWphQQMH5mNiqiNL5Bzu",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 252,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "mad-1995-t18",
+      "file_id": "file_01B8Wm6YqNP7AvSw8XSBXuny",
+      "show_id": "mad-1995",
+      "corps": "Madison Scouts",
+      "year": 1995,
+      "t": 18,
+      "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:madison-scouts"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "man-2023-t474",
+      "file_id": "file_012uZZ1X9kNpQ1TVxbn43QHi",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 474,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "man-2023-t30",
+      "file_id": "file_01T29BKEuESMxGky28ZB9kFq",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 30,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "man-2023-t168",
+      "file_id": "file_01VCJxMzqpp7AnBbgoVinp15",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 168,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "man-2023-t534",
+      "file_id": "file_016PoSvdQk5Ssh3SKPKVA2eP",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 534,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "man-2023-t120",
+      "file_id": "file_011K4GGDpwtXUmNFqgkzcEEW",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 120,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "man-2023-t348",
+      "file_id": "file_015dtQ5QmSxq4WFRyyd35gbd",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 348,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "man-2023-t420",
+      "file_id": "file_01Tf7MebNHj2aouWQpxKoij9",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 420,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "man-2023-t264",
+      "file_id": "file_01UhEGZ2GY1Y6w4bD31Gosnn",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 264,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "man-2023-t96",
+      "file_id": "file_01QShz6rTTsskdrrnpirfKk4",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 96,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "man-2023-t144",
+      "file_id": "file_014cZLtfDcD6og9JFGBikhCr",
+      "show_id": "man-2023",
+      "corps": "Mandarins",
+      "year": 2023,
+      "t": 144,
+      "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+      "axis_tags": [
+        "era:2020s",
+        "class:dci-world",
+        "org:mandarins"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "pchs-1999-t336",
+      "file_id": "file_011q6Wyyrgi6X1vxUnq8shUh",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 336,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "pchs-1999-t36",
+      "file_id": "file_01H2muEZfSNcZaLjfhNcqLZZ",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 36,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "pchs-1999-t364",
+      "file_id": "file_01MwWcoGBPQirJXKf54sTehp",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 364,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "pchs-1999-t72",
+      "file_id": "file_01GkyJUayq7TDpXNNpTZXpV3",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 72,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "pchs-1999-t316",
+      "file_id": "file_01L3s1VP9YR31wEB5HWgxtmU",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 316,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "pchs-1999-t104",
+      "file_id": "file_01RDdBsBiK2VTbCrmhCdzEE4",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 104,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "pchs-1999-t432",
+      "file_id": "file_01CcUjhSiYwnaCdbdyBXEL6F",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 432,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "pchs-1999-t512",
+      "file_id": "file_01BdqXG9Gfe9wuQjeyCwJaV9",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 512,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "pchs-1999-t164",
+      "file_id": "file_01V7PCvzxFydDfqMLWYinmJa",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 164,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "pchs-1999-t592",
+      "file_id": "file_011hXn532o3im5S3SynBe8MH",
+      "show_id": "pchs-1999",
+      "corps": "Plymouth-Canton High School",
+      "year": 1999,
+      "t": 592,
+      "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+      "axis_tags": [
+        "era:1990s",
+        "class:high-school",
+        "org:plymouth-canton"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "pr-2003-t688",
+      "file_id": "file_01CjmHzumUnF8Pk1ZayQUjLx",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 688,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "pr-2003-t296",
+      "file_id": "file_01Qdq8dBoC1zm1VWicJFYdRJ",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 296,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "pr-2003-t472",
+      "file_id": "file_015F4w3WLCN7aewaYMzXD2bM",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 472,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "pr-2003-t144",
+      "file_id": "file_01DkaXQGZHiMnHSMoJa3UBVR",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 144,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "pr-2003-t0",
+      "file_id": "file_01R92L3g4HngnnzRmVTeXfSB",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 0,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "pr-2003-t112",
+      "file_id": "file_01M3we9B7AAVQP6mSYtdtjKE",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 112,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "pr-2003-t608",
+      "file_id": "file_018ACd83sToXtu7jQwZpxtvL",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 608,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "pr-2003-t176",
+      "file_id": "file_012u465hAPpYTvZyRr7nsXiF",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 176,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "pr-2003-t264",
+      "file_id": "file_01FJVJ9dSzaCBeS5TUsKra9Z",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 264,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "pr-2003-t360",
+      "file_id": "file_01MckWhKFh44ukdgL2xwtA1Q",
+      "show_id": "pr-2003",
+      "corps": "Phantom Regiment",
+      "year": 2003,
+      "t": 360,
+      "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "pr-2008-t96",
+      "file_id": "file_016Q7L1YpB6RJYiTQJi6f6w6",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 96,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "anchor",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "pr-2008-t832",
+      "file_id": "file_01LABGyDoHNBsYNP7AVjk8vr",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 832,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "pr-2008-t688",
+      "file_id": "file_01JicgSQpTFC6UfhA1QGJJvB",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 688,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "pr-2008-t0",
+      "file_id": "file_01TTVCsDRWFfEhQkash4NJP3",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 0,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "pr-2008-t32",
+      "file_id": "file_01W6Depyzkxe16f7SYeYEsrm",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 32,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "pr-2008-t560",
+      "file_id": "file_01Sdqf3FoQU1a2Xk7MYVYzqi",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 560,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "pr-2008-t616",
+      "file_id": "file_01DFbmNUzYFuHpYBmB18w4HA",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 616,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "pr-2008-t440",
+      "file_id": "file_01Trzy3J6wheKSqVUZVktFJ4",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 440,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "pr-2008-t72",
+      "file_id": "file_01Krpx9WDpfSwpymebP99sCw",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 72,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "pr-2008-t168",
+      "file_id": "file_01RQz4frcnaVuk3jTbwbG95d",
+      "show_id": "pr-2008",
+      "corps": "Phantom Regiment",
+      "year": 2008,
+      "t": 168,
+      "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+      "axis_tags": [
+        "era:2000s",
+        "class:dci-world",
+        "org:phantom-regiment",
+        "pair:phantom"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "scv-2018-t90",
+      "file_id": "file_01BpTdKLjWQrtyHj1e6a3Y2R",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 90,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "scv-2018-t582",
+      "file_id": "file_01NSmVqFR3npsEKs333F7xLw",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 582,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "scv-2018-t816",
+      "file_id": "file_01WsJJMQH13GSjJqd1zkRwRs",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 816,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "scv-2018-t84",
+      "file_id": "file_01N6zceStJnYGMG1n9YKizQ6",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 84,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "scv-2018-t120",
+      "file_id": "file_018XBQZr63YxGUjuhzKMacoL",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 120,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "scv-2018-t270",
+      "file_id": "file_017voD1HjuP4LabqDEHgM51b",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 270,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "scv-2018-t540",
+      "file_id": "file_01VsfxzHxafZk5zQfZPjd27F",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 540,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "scv-2018-t60",
+      "file_id": "file_01Ds7smNJ3Gj4FcwAxaGrFTc",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 60,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "scv-2018-t336",
+      "file_id": "file_017bUuSbMAJ7wZbE211iMKrB",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 336,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "scv-2018-t456",
+      "file_id": "file_016AarpoChAZ1xDKWGug5m1e",
+      "show_id": "scv-2018",
+      "corps": "Santa Clara Vanguard",
+      "year": 2018,
+      "t": 456,
+      "url": "https://www.youtube.com/watch?v=KfC6Xgy4ZL4",
+      "axis_tags": [
+        "era:2010s",
+        "class:dci-world",
+        "org:santa-clara-vanguard"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    },
+    {
+      "frame_id": "star-1993-t138",
+      "file_id": "file_01GXA6Ynn2SRntGBLobtftTU",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 138,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 1
+    },
+    {
+      "frame_id": "star-1993-t126",
+      "file_id": "file_01LVoUrXgRGe1HLji6Fuj4cJ",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 126,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 2
+    },
+    {
+      "frame_id": "star-1993-t486",
+      "file_id": "file_01HYENx3gMwBTCWy2kY2rkc2",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 486,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 3
+    },
+    {
+      "frame_id": "star-1993-t660",
+      "file_id": "file_012KbJj1GUgBjBJCKPUEPfHe",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 660,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 4
+    },
+    {
+      "frame_id": "star-1993-t408",
+      "file_id": "file_01HCVPteKFjnuLvpUFfHFkQj",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 408,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 5
+    },
+    {
+      "frame_id": "star-1993-t366",
+      "file_id": "file_01WeHSyA1tdosoZUaM1jwNkn",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 366,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 6
+    },
+    {
+      "frame_id": "star-1993-t432",
+      "file_id": "file_01AMBiG9t3MUe7AbtegzywxH",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 432,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 7
+    },
+    {
+      "frame_id": "star-1993-t132",
+      "file_id": "file_018NGbwvzWPbsbN9i6Nj1re4",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 132,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 8
+    },
+    {
+      "frame_id": "star-1993-t144",
+      "file_id": "file_012SF1pxFxv268BMe1Uu3tRe",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 144,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 9
+    },
+    {
+      "frame_id": "star-1993-t642",
+      "file_id": "file_01FaLJCUR1M6PF2z3rhujky5",
+      "show_id": "star-1993",
+      "corps": "Star of Indiana",
+      "year": 1993,
+      "t": 642,
+      "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+      "axis_tags": [
+        "era:1990s",
+        "class:dci-world",
+        "org:star-of-indiana"
+      ],
+      "role": "rotating",
+      "curation_rank": 10
+    }
+  ],
+  "shapes": [
+    {
+      "show_id": "bac-2025",
+      "file_id": "file_01VfhB3T5yrwr9ED5rF8peik"
+    },
+    {
+      "show_id": "bahs-2006",
+      "file_id": "file_012XHFgQ8DpBQM8A2dm3c5pb"
+    },
+    {
+      "show_id": "bahs-2021",
+      "file_id": "file_01UpKwSzMDcwRjcAeSvKeDu4"
+    },
+    {
+      "show_id": "bd-1992",
+      "file_id": "file_01FF6ewptuS7mtQMP6Kfgrju"
+    },
+    {
+      "show_id": "bd-2014",
+      "file_id": "file_01KNHqTrNkd16Bvs6avkk1c1"
+    },
+    {
+      "show_id": "bloo-2014",
+      "file_id": "file_01VujDkcSqtYHYxPS29Q5FX6"
+    },
+    {
+      "show_id": "bloo-2024",
+      "file_id": "file_0176dnaXpmrEPBcps5iiqdo1"
+    },
+    {
+      "show_id": "cadets-2021",
+      "file_id": "file_018PdYjhRC39iX4XUnBdUBkw"
+    },
+    {
+      "show_id": "cav-2004",
+      "file_id": "file_019ZFzAwK8MQsxYzLrukRVPf"
+    },
+    {
+      "show_id": "crown-2013",
+      "file_id": "file_01SNmy92iT97kzziUrzpY97F"
+    },
+    {
+      "show_id": "crown-2014",
+      "file_id": "file_01S5hU9ctQ9sZ4L9hs1uC9am"
+    },
+    {
+      "show_id": "lhs-1998",
+      "file_id": "file_01C3vUKWdDFZ3fTMV6mn7DcN"
+    },
+    {
+      "show_id": "mad-1995",
+      "file_id": "file_015edEgSPDJbkDWNWkMrwKqo"
+    },
+    {
+      "show_id": "man-2023",
+      "file_id": "file_016Ts3kMuuFCfspcCyVQAna2"
+    },
+    {
+      "show_id": "pchs-1999",
+      "file_id": "file_01F9jJunEPsgvNxjUoGGocRY"
+    },
+    {
+      "show_id": "pr-2003",
+      "file_id": "file_01WfN8eXAhdh81i6T8A1tg6Z"
+    },
+    {
+      "show_id": "pr-2008",
+      "file_id": "file_0141kVdPkuSA46sT5PNyhh2V"
+    },
+    {
+      "show_id": "scv-2018",
+      "file_id": "file_01DuJnscCzvjLFf6ht8EENVq"
+    },
+    {
+      "show_id": "star-1993",
+      "file_id": "file_01G4ch4VqovVDADxweXc7Ljo"
+    }
+  ]
+}
