@@ -18,15 +18,19 @@ td.warn{color:#8a5a00;}
 a{color:#0366d6;}
 footer{margin-top:2em;font-size:.85em;color:#666;}
 p.note{font-size:.85em;color:#666;max-width:48em;}
+p.warnline{color:#8a5a00;}
+h2{margin-top:2em;font-size:1.1em;}
 </style></head>
 <body>
 <h1>Pipeline stats — oops-all-vibes</h1>
 <p>Rolling window: last 30 runs (max 30).</p>
-<p class="note">"Archive warnings" are claims a shipped page made about the archive that
-weren't true — a miscounted total, a wrong day number, an importance that disagrees with
-that day's log. They're recorded rather than blocking, so the site still goes up. Claims
-that would have the site invent a day that never ran block the run instead, and show as
-a failure.</p>
+<p class="note">"Warnings" are things a shipped day got away with. Archive warnings are
+claims the page made about the archive that weren't true — a miscounted total, a wrong day
+number, an importance that disagrees with that day's log. Claims that would have the site
+invent a day that never ran block the run instead, and show as a failure. Corpus warnings
+are the shelf misbehaving: <code>corpus_dropped</code> means the day ran text-only because
+a frame reference failed, and the rest are <code>&lt;taste&gt;</code> lines that were
+skipped. Neither kind stops the site going up.</p>
 <p class="note">"Output tokens" counts what the model generated, including the reasoning
 it does not return. It shares the 64,000-token ceiling with the page itself, so
 the peak figure is the headroom: as the prompt grows the pages grow with it, and a run
@@ -37,11 +41,11 @@ shipped that day.</p>
   <div class="card"><span class="k">first-try success</span><span class="v">100.0%</span></div>
   <div class="card"><span class="k">committed</span><span class="v">100.0%</span></div>
   <div class="card"><span class="k">avg duration</span><span class="v">199.97s</span></div>
-  <div class="card"><span class="k">runs with false archive claims</span><span class="v">0</span></div>
+  <div class="card"><span class="k">runs with warnings</span><span class="v">0</span></div>
 
 </div>
 <table>
-  <thead><tr><th>date</th><th>attempts</th><th>committed</th><th>failures</th><th>archive warnings</th><th>api errors</th><th>duration (s)</th><th>output tokens</th></tr></thead>
+  <thead><tr><th>date</th><th>attempts</th><th>committed</th><th>failures</th><th>warnings</th><th>api errors</th><th>duration (s)</th><th>output tokens</th></tr></thead>
   <tbody>
     <tr class="ok"><td>2026-08-19</td><td>1</td><td>✓</td><td></td><td class="warn"></td><td>0</td><td>175.02</td><td></td></tr>
     <tr class="ok"><td>2026-08-18</td><td>1</td><td>✓</td><td></td><td class="warn"></td><td>0</td><td>231.49</td><td></td></tr>
@@ -75,5 +79,8 @@ shipped that day.</p>
     <tr class="ok"><td>2026-07-20</td><td>1</td><td>✓</td><td></td><td class="warn"></td><td>0</td><td>187.74</td><td></td></tr>
   </tbody>
 </table>
+<h2>Corpus</h2>
+<p class="note">Corpus verified 2026-08-24: every file reference resolves.</p><p class="note">She writes about the same ten anchor frames every day. When two verdicts on one frame sit at least 14 days apart, they get compared. <code>consistent</code> is not the good outcome and <code>reversed</code> is not failure — this is a measurement, not a score.</p>
+<p class="note">No pairs yet. A frame needs two verdicts at least 14 days apart before there is anything to compare.</p>
 <footer><a href="/">Back to today</a></footer>
 </body></html>
