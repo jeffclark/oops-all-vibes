@@ -988,7 +988,9 @@ ships text-only.
 ```
 013 (ingest: video → frames + audio shape)
       │
-      ▼
+      ├──► 013a (vision fallback classifier — ONLY if the scorer fails on a show)
+      │           │
+      ▼           ▼
 014 (curation session: Georgia picks her own shelf)
       │
       ▼
@@ -1233,6 +1235,72 @@ Curating a bad show wastes the slot and, worse, silently pollutes the corpus. Fi
 
 ---
 
+## story_013a — Vision fallback classifier (conditional — build only if needed)
+
+**Goal**: Replace the green-fraction scorer for shows where it fails outright rather
+than merely mis-tunes. **Do not build this speculatively.** It exists because the
+handoff brief tells an agent to reach for it, and improvising unspecified code into
+a repo this story-driven is worse than the problem it solves.
+
+**Depends on**: story_013
+
+**Build it only when** a show meets one of these, after a denser `interval_s` has
+already been tried:
+
+- ingest reports a field-shot rate under ~15 %, and opening the `other_*` sheets
+  shows the drill frames really are in there;
+- or nothing clears the threshold at all and the fallback warning fires.
+
+The expected cause is a heavily tarped field — plausible for `bloo-2024` and
+`man-2023` — where most of the playing surface is covered and a turf detector has
+nothing to measure. That is a different failure from a badly placed threshold, which
+`FIELD_THRESHOLD` and `interval_s` already handle. **If fewer than two shows trigger
+this, skip the story and note that in the build report.**
+
+**Files to create**:
+- `scripts/corpus/classify.py`
+
+**Behavior**:
+
+1. Read a show's `ingest.json` for its candidate frames.
+2. In batches of 20, send frames to `claude-haiku-4-5` asking a single question:
+   does this frame show formations across the field from an elevated angle? Use
+   structured outputs so each frame comes back with a boolean and a one-clause
+   reason, keyed by the frame's timestamp.
+3. Write `corpus/raw/<show_id>/classified.json` — timestamp, verdict, reason.
+4. `ingest.py`'s partition step prefers `classified.json` when present and falls back
+   to `framing.field_score` when it is not. **Frames are still partitioned, never
+   deleted**, exactly as with the heuristic.
+
+**Cost**: ~777 tokens a frame at Haiku rates, about **$0.16 per show**. Only the
+shows that need it.
+
+**Implementation notes**:
+- This is offline tooling and must never be importable from the daily pipeline, same
+  rule as everything else under `scripts/corpus/`.
+- Record which mechanism produced a show's split — heuristic or classifier — in
+  `ingest.json`, so the corpus does not quietly become two differently-judged halves
+  with no record of which is which.
+- Keep the question narrow. It is a framing judgement, not an aesthetic one; nothing
+  here may express a view about whether a formation is *good*. That is Georgia's, in
+  story_014.
+
+**Acceptance criteria**:
+- [ ] Runs only against a named show; no bulk mode
+- [ ] Produces a verdict for every candidate in that show's `ingest.json`
+- [ ] `ingest.py` prefers `classified.json` when present, uses `framing` when absent
+- [ ] Frames are partitioned, never deleted, under both mechanisms
+- [ ] `ingest.json` records which mechanism split the show
+- [ ] A show already classified is not re-classified without `--force`
+- [ ] Nothing in this module is imported by any module outside `scripts/corpus/`
+
+**Out of scope**:
+- Running it on shows the heuristic already handles — that is spending money to
+  re-derive a working answer
+- Any aesthetic judgement of the frames
+
+---
+
 ## story_014 — Curation session: Georgia picks her own shelf
 
 **Goal**: A one-off interactive script that shows Georgia the candidates and makes
@@ -1253,9 +1321,18 @@ already opened them and confirmed the angle shows drill. This script **must refu
 to run** if `sheets/` is missing for the requested show, rather than building them
 itself. Sheet generation living in ingest is what makes the inspection gate possible.
 
-**Round 1 — shortlist from the sheets.** Send every sheet for one show, plus that
-show's `shape.png`, in a single call, and ask her to shortlist **exactly 25**
-timestamps.
+**Round 1 — shortlist from the sheets.** Send **only the `field_*` sheets** for one
+show, plus that show's `shape.png`, in a single call, and ask her to shortlist
+**exactly 25** timestamps.
+
+The `other_*` sheets are **not** sent. They hold the close-ups, crowd shots and pit
+frames story_013's scorer separated out. Declining those is a category judgement,
+not a preference, and making her work through them spends attention that should go
+to choosing between comparable formations. An earlier draft of this line said "send
+every sheet"; it predates the partition and is wrong.
+
+If a show has **no** `field_*` sheets — the scorer found nothing, and ingest warned
+about it — do not fall back to `other_*`. Stop and fix the show at story_013 first.
 
 **Round 2 — finalists.** Send those 25 as individual 1024×576 frames, plus
 `shape.png` again, and require **exactly 10**, ranked 1–10, each with a reason, plus
@@ -1303,6 +1380,8 @@ from before the frame size moved to 1024×576.)
 - [ ] Round 2 returns exactly 10 ranked keepers with non-empty reasons and unique ranks 1–10
 - [ ] Every returned timestamp exists in that show's `ingest.json`; a fabricated timestamp fails the run with a clear message
 - [ ] With `sheets/` absent for the requested show: exits non-zero telling Jeff to run ingest first; no API call is made
+- [ ] Only `field_*` sheets are sent in round 1; no `other_*` sheet reaches the model
+- [ ] A show with no `field_*` sheets fails with a message pointing back at story_013, and makes no API call
 - [ ] Re-running an already-curated show refuses to overwrite without `--force`
 - [ ] With no `--show` argument: exits non-zero explaining that curation is per-show
 - [ ] Curation JSON is committed; the sheets and frames it references are not
@@ -1337,6 +1416,13 @@ repo while keeping the corpus fully verifiable by a stranger.
    - **Pass 1** — take each show's rank-1 keeper, shows ordered by descending
      axis-tag diversity (a show whose tags are rarest in the corpus goes first).
      Stop at 10.
+   - **Ordering must be deterministic.** Score a show as the sum over its
+     `axis_tags` of `1 / (number of shows carrying that tag)`, higher meaning rarer.
+     Ties are common and expected — with 19 shows most `org:` tags are unique, so
+     many shows score identically — so **break ties by `show_id` ascending**.
+     Without an explicit tiebreak the anchor set depends on the order entries happen
+     to sit in `sources.json`, which means the same corpus can publish two different
+     shelves.
    - **Pass 2** — still short (fewer than 10 shows), take each show's rank-2 keeper
      in the same order. Then rank-3, and so on.
    - Never take a third frame from one show while any show has contributed fewer
@@ -1384,6 +1470,23 @@ repo while keeping the corpus fully verifiable by a stranger.
 - `python -m scripts.corpus.publish --verify-only` — checks every `file_id` in the
   current manifest still resolves, exits non-zero if not
 
+**`--verify-only` must be scheduled, not left to a human.** An earlier draft of
+story_016 deferred routine verification to "Jeff, manually." He has since said he
+wants to be uninvolved once this is running, and the fail-open retry means a
+degrading corpus surfaces only as a stats-page warning nobody is reading. Frames
+could disappear one at a time for weeks.
+
+Add it to `.github/workflows/daily-georgia.yml` as a step **before** the Georgia run:
+
+- `continue-on-error: true` — a verification failure must never stop the day's site.
+- One batch `ids[]` lookup, so it is a single cheap API call, not one per frame.
+- On failure, emit a GitHub Actions warning annotation naming the dead frames, and
+  write a `corpus_verify_failed` entry the stats page can surface.
+
+This is the one corpus touch inside the workflow, and it is deliberately outside the
+critical path: it reports, it never blocks, and story_016's text-only retry still
+covers the case where a frame dies between the check and the call.
+
 **Implementation notes**:
 - `ANTHROPIC_API_KEY` from env, same as the daily pipeline.
 - Uploaded files are visible to any key in the same workspace. That's fine here
@@ -1391,16 +1494,25 @@ repo while keeping the corpus fully verifiable by a stranger.
 - The manifest is the archive record. `url` + `t` must be sufficient for a stranger
   to regenerate the exact frame. Treat that as a correctness property.
 - Write the manifest atomically (temp file, then rename).
+- **`published_at` changes only when the corpus does.** Set it from the run date on
+  the first publish and whenever a frame is added, removed, or has its role changed;
+  otherwise carry the previous value forward. A re-run that uploads nothing must
+  produce a byte-identical manifest, so `--verify-only`-style re-publishes do not
+  churn the git history with diffs that say nothing happened.
 
 **Acceptance criteria**:
 - [ ] Running against curated shows produces a manifest with 10 frames per show plus one shape entry per show
 - [ ] Exactly 10 frames carry `"role": "anchor"` whenever ≥10 keepers exist
 - [ ] With ≥10 shows: all 10 anchors come from distinct shows
+- [ ] Reordering the entries in `sources.json` produces the identical anchor set
 - [ ] With 8 shows: 8 shows contribute 1 anchor each and 2 contribute a second; no show contributes 3
 - [ ] With a single curated show: its 10 keepers are all anchors and publish succeeds
 - [ ] Every `frame_id` is unique; every `file_id` resolves via the batch id lookup
 - [ ] A deliberately deleted `file_id` causes `--verify-only` to exit non-zero and name the frame
+- [ ] `--verify-only` makes one batch lookup for the whole manifest, not one call per frame
+- [ ] The workflow step is `continue-on-error: true`; a failing verify still lets Georgia run and the site ship
 - [ ] Re-running does not re-upload frames already live in the manifest
+- [ ] A re-run that changes no frames produces a byte-identical `corpus/manifest.json`, `published_at` included
 - [ ] An upload failure partway through leaves the previous manifest intact (no partial write)
 - [ ] `corpus/manifest.json` contains no image data — only ids and provenance
 - [ ] Every manifest entry has a non-empty `url` and an integer `t`
@@ -1424,12 +1536,18 @@ set that touches the 3am cron, and the only one with a hard fail-open requiremen
 
 **Files to modify**:
 - `scripts/call_model.py` — accept content blocks
-- `scripts/run_georgia.py` — compose corpus blocks with the assembled prompt
+- `scripts/run_georgia.py` — select first, then assemble, then call
 - `scripts/write_outputs.py` — record shown frame ids in the prompt archive
+- `scripts/assemble_prompt.py` — accept the selection (see the fourth call site below;
+  story_017 fills in what it does with it)
 
 **Selection** — `select_for_date(run_date, manifest) -> CorpusSelection`:
 
-1. All 10 anchors, every day, in a stable order.
+1. **Every anchor in the manifest**, every day, in a stable order. That is normally
+   10, but story_015 deliberately permits fewer when the corpus is small (fewer than
+   10 keepers exist at all). Read the count from the manifest; do not assert it is
+   10. An `assert len(anchors) == 10` satisfies this story and breaks the degenerate
+   case story_015 explicitly allows.
 2. 6 rotating frames, chosen deterministically by seeding from `run_date.isoformat()`
    so a given date always yields the same set and a replay reproduces exactly.
 3. Up to 4 show-shape plots, for the shows represented in today's rotating set.
@@ -1479,11 +1597,29 @@ honest is a standing property here, not a nicety.
 **Implementation notes**:
 - `select.py` must not import anything from `requirements-corpus.txt`. It reads JSON
   and builds dicts. Nothing more.
-- **Thread the shown frame ids explicitly.** `select_for_date` returns both the image
-  blocks and the ordered `frame_id` list; `run_georgia.py` holds that list and hands
-  it to `write_outputs.py` for the prompt archive, and to story_017's parser so it can
-  reject verdicts about frames that were not shown. Three call sites, one value —
-  decide the signature up front rather than discovering it halfway through 017.
+- **Selection runs BEFORE prompt assembly.** This is the ordering constraint that is
+  easy to get backwards, because the goal line above reads as though the prompt is
+  assembled first and images are attached to it. It is the other way round:
+  story_017 makes `assemble_prompt` depend on what was selected — it needs the shown
+  frame ids to look up prior verdicts, and it needs to know whether *any* frame was
+  shown to pick between its two sentinels. So `run_georgia.py` calls
+  `select_for_date` first, then passes the result into `assemble_prompt`.
+
+- **Thread the shown frame ids explicitly, to four call sites, not three.**
+  `select_for_date` returns both the image blocks and the ordered `frame_id` list.
+  That list goes to:
+
+  1. `assemble_prompt.py` — prior-verdict lookup and sentinel choice (story_017)
+  2. `write_outputs.py` — the `## Corpus shown` archive section
+  3. story_017's `<taste>` parser — rejecting verdicts about frames not shown
+  4. `call_model.py` — as the image blocks themselves
+
+  Call site 1 is the expensive one and was missing from an earlier draft of this
+  note: it changes the signature of `assemble_prompt(run_date)`, which is public and
+  called by `model_ab.py`, `republish_from_ab.py` and `scripts/tests/test_assemble_prompt.py`.
+  **Decide that signature before writing any of story_016.** Give the new parameter a
+  default of "no corpus" so every existing caller keeps working untouched and the
+  text-only path stays the natural default rather than a special case.
 - Seed the rotation from the date string only — no `random` module global state, no
   clock reads beyond the passed-in `run_date`.
 - `model_ab.py` and `republish_from_ab.py` replay archived prompts as text. Either
@@ -1493,7 +1629,8 @@ honest is a standing property here, not a nicety.
   A/B harness lie.
 
 **Acceptance criteria**:
-- [ ] `select_for_date` returns ≤20 image blocks and the ordered frame-id list, always including all 10 anchors
+- [ ] `select_for_date` returns ≤20 image blocks and the ordered frame-id list, always including every anchor in the manifest
+- [ ] A manifest with fewer than 10 anchors still selects successfully, showing all of them
 - [ ] A manifest large enough to exceed the cap drops shapes first, then lowest-ranked rotating frames, and never an anchor
 - [ ] Same date twice → identical selection; different dates → different rotating sets
 - [ ] Shape plots included only for shows present in that day's rotating set, max 4

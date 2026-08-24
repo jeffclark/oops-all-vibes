@@ -20,6 +20,8 @@ Read these before starting, in order:
 1. `stories.md` — the corpus set is **story_013 through story_018**, at the end
    of the file, with its own dependency graph and a shared "Corpus Facts" block.
    Those stories are the spec. Their acceptance criteria are the done bar.
+   Note **story_013a** is conditional: build it only if a show actually defeats the
+   field scorer, and skip it otherwise.
 2. `CLAUDE.md` — repo conventions. Note the split: chaos belongs to Georgia's
    output; the pipeline around her is boring and reliable.
 3. `scripts/corpus/ingest.py` and `scripts/corpus/framing.py` — already built.
@@ -97,11 +99,10 @@ show — use a per-show `interval_s` instead.
 **The known risk is the modern shows.** `bloo-2024` and `man-2023` may tarp over
 most of the field, which would break a turf detector outright rather than merely
 mis-tune it — the symptom is a show where almost nothing clears the threshold and
-ingest warns about it. If that happens, do not chase the constant. Build
-`scripts/corpus/classify.py`: send each candidate to `claude-haiku-4-5` and ask
-whether it shows formations across the field from an elevated angle. About 777
-tokens per frame, ~$0.16 a show. Use it only for shows the heuristic actually
-fails; keep the free scorer for the rest.
+ingest warns about it. If that happens, do not chase the constant: build
+**story_013a**, which specifies the vision-classifier fallback and its acceptance
+criteria. Build it only for shows that actually fail, and if fewer than two shows
+trigger it, skip the story entirely and say so in the build report.
 
 ### 3. Build and run story_014 — curation
 
@@ -132,14 +133,23 @@ fails a Messages request *before inference*, which would cost a whole day of sit
 
 ### 5. Build story_016 — daily selection
 
-The only story that touches the cron. 10 anchors every day, 6 rotating, up to 4
+The only story that touches the cron. Every anchor every day, 6 rotating, up to 4
 shape plots, 20 images total. Images before text. Add `files-api-2025-04-14` to
 the existing `betas` list in `call_model.py` — it is already on the beta path, so
 this is an append, not a migration.
 
-Two things easy to miss, both spelled out in the story: `prompts/<date>.md` must
-record which frames were shown or the archive becomes a lie, and `model_ab.py`
-must not silently replay a different prompt than the one that ran.
+**Settle the `assemble_prompt` signature before you write any of this story.**
+Selection runs *before* prompt assembly, not after — story_017 makes the prompt
+depend on what was selected, for both the prior-verdict lookup and the sentinel
+choice. `assemble_prompt(run_date)` is public and called from `model_ab.py`,
+`republish_from_ab.py` and its own tests, so give the new parameter a default of
+"no corpus" and every existing caller keeps working. Getting this backwards means
+retrofitting a public signature halfway through story_017.
+
+Three more things easy to miss, all spelled out in the story: `prompts/<date>.md`
+must record which frames were shown or the archive becomes a lie; `model_ab.py`
+must not silently replay a different prompt than the one that ran; and the anchor
+count comes from the manifest — never assert it is 10.
 
 ### 6. Build story_017 — the `<taste>` tag
 
@@ -168,6 +178,7 @@ Commit what you have, write a short summary, and stop if:
 ## Done looks like
 
 - 19 shows ingested, every split visually verified by you.
+- `--verify-only` wired into the daily workflow as a non-blocking step (story_015).
 - 190 curated keepers, `corpus/curation/*.json` committed.
 - `corpus/manifest.json` with 10 anchors from distinct shows, every `file_id` live.
 - Stories 013–018 meeting their acceptance criteria.
