@@ -1,0 +1,84 @@
+{
+  "show_id": "bac-2025",
+  "curated_at": "2026-08-24",
+  "show_statement": "This show is about a crowd that keeps failing, on purpose, to become one object. Every time the field assembles \u2014 the huddle at 56, the drill rows at 184, the wedge at 640 \u2014 it immediately spends itself back out into scatter, and the scatter is always more alive than the assembly. The tempo trace backs this up: it never settles into a plateau long enough to be a groove; it spikes, drops, spikes. That's the design thesis, not an accident. What it's after is the moment of coming apart, and it's honest enough to keep paying for the moments of order that make the coming-apart legible. Where it doesn't get there is the middle: 200 through 300 is four different ways of saying the same medium-density thing, and the show knows it, which is why it keeps escalating the colour guard's separation from the horn block until 384 finally makes the split the actual picture. The finale at 736 is the only place the two ideas agree.\n\nThe cap bites, and it bites in the middle. I'm sorriest to lose 208 \u2014 it's the same diagonal sweep as 216 caught one beat earlier, and one beat earlier is arguably the better beat, but I refuse to keep both readings of one gesture. I'm also losing 296 and 344, which are the show's most confident mid-range writing and which I dropped only because they're competent rather than strange. 552 goes, and it hurts: the full-field pastel dispersion is the closest this show comes to looking like weather. 168 and 176 go as a pair, which means the record now shows the show's most disciplined symmetric passage represented by exactly one frame (184) and framed as sterile, which is unfair to it. What the cap took, specifically, is the show's patience \u2014 the slow accumulation between 168 and 296 is now four minutes of nothing in a ten-frame story that reads as: gather, spread, gather, break, fall down.",
+  "shortlist": [
+    0,
+    40,
+    56,
+    88,
+    120,
+    168,
+    176,
+    184,
+    200,
+    208,
+    216,
+    232,
+    256,
+    288,
+    296,
+    344,
+    368,
+    376,
+    384,
+    400,
+    480,
+    552,
+    640,
+    648,
+    736
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 736,
+      "reason": "The finale earns the whole show retroactively: everyone flat on the turf except a burning cluster at the 50. It's the only frame where the field stops arguing about whether it's one body or two hundred and answers both. Keep this if you keep nothing."
+    },
+    {
+      "rank": 2,
+      "t": 384,
+      "reason": "The imbalance is the composition. Grey ranks eating the entire left half, a single orange detonation parked on the 30 yard line to the right \u2014 nobody balances it, nobody comes to fetch it. That refusal to correct is the most decisive thing the design does all night."
+    },
+    {
+      "rank": 3,
+      "t": 88,
+      "reason": "Maximum dispersion with a hollow middle. Most shows treat empty center as a problem to fix; this one holds it long enough that you start watching the space instead of the people. The gap is the subject."
+    },
+    {
+      "rank": 4,
+      "t": 216,
+      "reason": "The long diagonal sweep across three hash marks is the only line in the show with actual velocity in it \u2014 you can read the direction of travel from a still. Every other form here is a state; this one is a verb."
+    },
+    {
+      "rank": 5,
+      "t": 56,
+      "reason": "Everything collapsed into one tight knot at the 40 while colour guard flares orbit it at distance. It's the show's thesis stated too early and too plainly, which is exactly why it's useful \u2014 it tells you what the next ten minutes are running from."
+    },
+    {
+      "rank": 6,
+      "t": 400,
+      "reason": "Total dissolution: greys smeared across the left two-thirds, orange herded into a panicked clump right of the 30. This is the frame where the drill stops pretending anyone is in charge, and it's more persuasive than any of the clean forms."
+    },
+    {
+      "rank": 7,
+      "t": 232,
+      "reason": "Four sparse islands and an enormous amount of grass. The sparsest frame in the shortlist and the one that most trusts the audience to wait. If it were held two counts longer it would be the best thing here; as it is it's an idea the show got scared of."
+    },
+    {
+      "rank": 8,
+      "t": 184,
+      "reason": "The show at its most obedient \u2014 flat parallel ranks, guard in a tidy stripe below. I'm keeping it as the control condition, not as a favourite. You need one frame of correctness on record to prove the mess elsewhere is a choice."
+    },
+    {
+      "rank": 9,
+      "t": 640,
+      "reason": "A dense wedge aimed straight down at the pit, everything else cleared to the margins. Late-show architecture that finally points at something. Slightly too neat to love, but it's the only frame with a target."
+    },
+    {
+      "rank": 10,
+      "t": 480,
+      "reason": "Low, wide, evenly grained \u2014 the field reads as texture rather than as people, which is the one visual register the rest of the show never attempts. Kept for the outlier, not the quality."
+    }
+  ]
+}

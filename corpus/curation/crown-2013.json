@@ -1,0 +1,84 @@
+{
+  "show_id": "crown-2013",
+  "curated_at": "2026-08-24",
+  "show_statement": "This show is about pressure applied to a grid. Every frame is the same football field with the same painted numbers, and the corps spends thirteen minutes proving that a rectangle can be made to feel like weather. It opens almost empty \u2014 two thin diagonal ranks and a pit, an announcement of restraint \u2014 and then it keeps discovering that it can fill the space and then refusing to stay filled. The best of it happens in transition: scatter states, half-closed arcs, the moment a curve is still deciding whether it's a curve. The sound shape confirms what the frames say \u2014 this is not a build, it's a series of collapses and re-inflations, four or five big lungfuls with genuine silence between them, and the loudest part comes very late, around 740, after the show has already faked its ending twice. What it's after is the feeling of an enormous organism breathing on a marked-off patch of grass. It mostly gets there. Where it doesn't, it's because the drill is more legible from above than the music is from below \u2014 some of these forms are gorgeous aerial diagrams that a person in row 40 would experience only as noise. The cap bites, and it bites in the middle. I'm losing t=64 and t=144, which together were the whole argument that this show can be dense and airy in the same breath. I'm losing t=232 and t=240, which were nearly the same frame twice and so at least the drop is cheap. I'm sorriest about t=392, an asymmetric right-weighted mass with the guard stranded on the left that is the most compositionally daring image in the twenty-five, and t=616, the thinnest and coldest frame here, which I'd keep in a heartbeat if I had eleven. What ten costs me is the show's interstitial tissue \u2014 the frames that were not moments but connective. So the ranking overrepresents arrivals. That's a distortion and I'm naming it.",
+  "shortlist": [
+    0,
+    16,
+    32,
+    48,
+    64,
+    72,
+    88,
+    120,
+    144,
+    192,
+    232,
+    240,
+    296,
+    328,
+    336,
+    392,
+    424,
+    456,
+    584,
+    616,
+    648,
+    672,
+    704,
+    728,
+    800
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 0,
+      "reason": "Two thin diagonals and almost nothing else, on a field built to hold hundreds. The confidence to open with 90% empty grass is the show's whole thesis and it never says it this clearly again. Keep this or keep nothing."
+    },
+    {
+      "rank": 2,
+      "t": 728,
+      "reason": "Total dissolution right where the sound peaks. Bodies on the ground, props abandoned, no readable form at all \u2014 this is the frame where the drill stops pretending it's geometry. The show has been earning this collapse since the first minute."
+    },
+    {
+      "rank": 3,
+      "t": 328,
+      "reason": "The lean. Everyone bent the same direction into a spiral and it reads as force applied from off-camera. Most drill photographs are static even when the drill isn't; this one has vector."
+    },
+    {
+      "rank": 4,
+      "t": 672,
+      "reason": "Peak saturation \u2014 the pink-and-purple flags at maximum count in a wide symmetric spread. It's the prettiest frame and I distrust it slightly for that, but a show that never lets itself be beautiful is a coward. This one isn't."
+    },
+    {
+      "rank": 5,
+      "t": 32,
+      "reason": "The scatter. Everyone diagonal, nobody aligned, and it is unmistakably deliberate \u2014 which is the hardest trick in the form. Sixteen seconds after the empty opening the field is chaos and the chaos has grain."
+    },
+    {
+      "rank": 6,
+      "t": 456,
+      "reason": "Off-center and knowing it. The whole mass shoved right, guard prone in a row across the low left, huge dead space at 30. Breaks the field's symmetry rather than obeying it, which almost nothing else here does."
+    },
+    {
+      "rank": 7,
+      "t": 296,
+      "reason": "Interlocking wedges pointed inward with the guard clustered low-left like sediment. The gap between the two brass blocks is doing more work than either block \u2014 it's the frame where you can see the form thinking."
+    },
+    {
+      "rank": 8,
+      "t": 800,
+      "reason": "The closer, and it undercuts itself: bodies scattered flat across the 40s while the horn line stands in ranks behind them. A finale that refuses to be a single clean image. I trust it more for that."
+    },
+    {
+      "rank": 9,
+      "t": 120,
+      "reason": "Everyone in motion, mid-transit, nothing resolved. A frame that only exists because a shutter happened. This is the show at its most alive and least photographable, and that tension is the reason to keep it."
+    },
+    {
+      "rank": 10,
+      "t": 648,
+      "reason": "Late-show restatement with the flags back in but the spacing loosened \u2014 the same idea as 672 played at lower pressure. Kept over the denser frames because the show is better at exhaling than inhaling and I want the record to show that."
+    }
+  ]
+}

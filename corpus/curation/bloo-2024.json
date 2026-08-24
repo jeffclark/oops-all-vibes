@@ -1,0 +1,84 @@
+{
+  "show_id": "bloo-2024",
+  "curated_at": "2026-08-24",
+  "show_statement": "This show's real plot isn't the drill, it's the red ramps. They start as one platform at the 50 and by the back half they've bred across the whole field like the geometry got loose. Everything else \u2014 the red-and-white bodies, the gold guard, the flags cycling through red, white, teal, gold \u2014 is arranged around that proliferation. Watch the sound shape and the same story shows up: two long troughs around 300 and 500 where the field empties out and the ramps stay behind like furniture in a cleared room, then two builds that put bodies back on top of them. The show is after the feeling of a space being constructed while you stand in it, and it mostly gets there, though it spends the middle third being organized rather than being anything. Empty stands the whole time. Nobody in the frame to see the thing except the eight rows down front, and that's the part I keep thinking about. The cap bites hard here. I'm sorriest to lose t=336 and t=360, which together are the only place you see the ramps read as a fence \u2014 a horizon line the marchers have to cross rather than climb \u2014 and dropping both means the record I'm leaving has no evidence of that idea existing. t=560 goes too, and it was the densest legible block in the show. t=80 goes, and it was the last moment before the props took over. What the cap took is the middle: I kept the opening, the two color events, and the finish, and I gutted the long patient stretch where the show actually does its work. The ten below over-report the spectacle and under-report the labor.",
+  "shortlist": [
+    0,
+    40,
+    56,
+    64,
+    80,
+    96,
+    120,
+    136,
+    144,
+    168,
+    200,
+    232,
+    248,
+    264,
+    272,
+    296,
+    336,
+    360,
+    408,
+    432,
+    472,
+    528,
+    560,
+    600,
+    712
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 472,
+      "reason": "The only moment the show admits a third color exists. Teal against a field that has been red-and-gold for eight minutes is a structural argument, not a costume change \u2014 it says the whole preceding palette was a choice and not a limit. If I keep one frame it's the one that reveals the rule by breaking it."
+    },
+    {
+      "rank": 2,
+      "t": 712,
+      "reason": "Earns its density. The gold pinwheel flags are blurred with motion in a still image, which means the frame is carrying speed the others only imply. Most finales are just everyone standing where they were told; this one is everyone still arriving."
+    },
+    {
+      "rank": 3,
+      "t": 0,
+      "reason": "The huddle at the 50 is the smallest the show ever is, and the empty grey stands above it make the scale wrong on purpose. This is the frame that sets up the ramps' expansion by showing you a field with almost nothing on it. It's a promise, and the show keeps it."
+    },
+    {
+      "rank": 4,
+      "t": 296,
+      "reason": "The widest the field ever reads. Bodies pushed to the edges, ramps lying flat as horizon lines, and a hole in the middle you could drive through. The emptiness is the composition \u2014 this is the frame where the show trusts negative space instead of filling it, and it's the bravest thing here."
+    },
+    {
+      "rank": 5,
+      "t": 120,
+      "reason": "Red-and-white flags against red-and-white uniforms is a bad idea that works. The guard nearly disappears into the band and then doesn't, and that half-second of visual confusion is more interesting than the clean contrast the rest of the show relies on."
+    },
+    {
+      "rank": 6,
+      "t": 248,
+      "reason": "White flags scattered wide read as static, snow, dropout \u2014 the visual equivalent of the sound trough this sits near. It's the one frame that looks like the show is losing signal, and it does it deliberately."
+    },
+    {
+      "rank": 7,
+      "t": 168,
+      "reason": "Full symmetry with the ramps deployed as diagonals, and it's the last time the field looks designed rather than inhabited. Keep it as the control condition. Everything after this is the show arguing with this frame."
+    },
+    {
+      "rank": 8,
+      "t": 600,
+      "reason": "The ramps have stopped being staging and become wreckage \u2014 scattered at angles nobody plotted, marchers threading between them. This is the frame where the set stops obeying the drill, and it's better than any of the tidy ones."
+    },
+    {
+      "rank": 9,
+      "t": 96,
+      "reason": "Gold guard elevated on the red platform with the band in flat ranks below is the show's cleanest hierarchy, and I distrust how easily it reads. Kept because a show should be judged partly on its most conventional good idea."
+    },
+    {
+      "rank": 10,
+      "t": 64,
+      "reason": "Unresolved. The block is dissolving and nothing has replaced it, gold bodies mid-scatter through red-and-white lines that haven't finished breaking. The gap where the form hasn't closed yet is better than the form. Last slot goes to the mess on principle."
+    }
+  ]
+}

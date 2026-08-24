@@ -1,0 +1,84 @@
+{
+  "show_id": "cadets-2021",
+  "curated_at": "2026-08-24",
+  "show_statement": "This show is about a field learning to hold two halves at once. Almost every frame in the shortlist is bilateral \u2014 two color blocks separated by the 50, or one mass split and rejoined \u2014 and the interesting thing is never the symmetry, it's the fraction of a second where the two halves are unequal and you can see which one is losing. The corps builds arcs, and arcs are cheap; what saves it is the diagonal, the raked ranks at 384 and 816 where the picture stops being a diagram and starts leaning. The sound shape confirms it: two big spires around 400 and 830, with a long trough from 550 to 690 that the drill mostly fills with texture instead of ideas. When the show gets there \u2014 and it does, twice \u2014 it's because the guard commits to a single object at scale (the white banner slashes) rather than to a pattern. When it doesn't, it's because the design mistook \"legible from the press box\" for \"worth looking at.\" It's after grandeur and it gets grandeur in the last ninety seconds, at the price of forty minutes of tidy.\n\nThe cap bites hard here and the bruise is in the middle of the show. I am sorry to lose 232 and 248, which together are the only honest record of the guard working alone in a dense field \u2014 the show's most human texture, and I dropped both because neither is a picture, they're a state. I lose 104 and 296, which are the two cleanest statements of the split-field premise, because 56 and 312 say it better with more air. I lose 344, which has the best crowd in it, and I do not get to keep a frame just because the audience showed up. And I lose 472 and 504 \u2014 the twin flag-blur frames \u2014 which is the real theft: motion blur is the only evidence in this whole set that anything is actually moving, and I kept 504 and had to shoot 472, its better-lit twin. What the cap took was the middle. What's left reads as opening, climax, climax, which is not what the show is.",
+  "shortlist": [
+    56,
+    104,
+    120,
+    128,
+    144,
+    160,
+    168,
+    232,
+    248,
+    272,
+    280,
+    296,
+    304,
+    312,
+    344,
+    384,
+    432,
+    472,
+    504,
+    648,
+    664,
+    680,
+    712,
+    760,
+    816
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 816,
+      "reason": "The only frame where the design stops arranging people and commits to an object. Those white slashes are one idea at full scale and they cut across the yard lines instead of obeying them \u2014 the whole show has been apologizing to the grid and this frame finally doesn't. Everything earlier is a rehearsal for this."
+    },
+    {
+      "rank": 2,
+      "t": 384,
+      "reason": "The raked diagonal ranks give the field a lean the rest of the show never risks. It's the densest frame here and the least symmetric, and those two facts are the same fact. If you want to know what this corps can do when it stops being polite, it's this."
+    },
+    {
+      "rank": 3,
+      "t": 760,
+      "reason": "Same banner idea as 816 but still assembling, and the incompleteness is the argument \u2014 the slashes haven't reached full angle, the horn line is a flat unbroken wall underneath. It's the frame right before the show knows it's won. I'd defend keeping the before over the after if I only had one."
+    },
+    {
+      "rank": 4,
+      "t": 56,
+      "reason": "Two-thirds of the field is empty and that emptiness is doing more work than any form in the show. The cluster jammed into the left third against all that green is the only genuinely uncomfortable composition here, and discomfort is scarcer than beauty in this set."
+    },
+    {
+      "rank": 5,
+      "t": 128,
+      "reason": "The two colors have interleaved and you can't yet tell which is absorbing which. This is the split-field premise at its most unstable \u2014 thirty seconds either side of this it's a diagram, and here it's a collision."
+    },
+    {
+      "rank": 6,
+      "t": 312,
+      "reason": "Three separated blocks with dead space between them, and the dead space is the point: the show's most confident use of nothing. Reads as a deliberate breath rather than a transition someone forgot to fill."
+    },
+    {
+      "rank": 7,
+      "t": 280,
+      "reason": "A chevron that hasn't closed. The gap at the apex is better than the chevron would be shut, and the guard scattered ahead of it keeps the whole thing from resolving into a logo."
+    },
+    {
+      "rank": 8,
+      "t": 168,
+      "reason": "The pink and cream flags along the front make a horizon line under the horn arc, and it's the one moment the guard functions as a floor rather than as decoration. Pretty in a way the show is otherwise too busy to allow."
+    },
+    {
+      "rank": 9,
+      "t": 504,
+      "reason": "Blur. The only frame in the set that proves velocity \u2014 a wall of spinning grey against a marching block that reads as stationary by comparison. Keeps the record honest about the fact that this is not a series of pictures."
+    },
+    {
+      "rank": 10,
+      "t": 712,
+      "reason": "The trough frame. Loose, wide, half the field in scattered singles, nothing resolving \u2014 and it earns its place precisely by being the show at its least composed. Without it the archive lies and says this thing was tight from end to end."
+    }
+  ]
+}

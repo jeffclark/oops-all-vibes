@@ -1,0 +1,84 @@
+{
+  "show_id": "pr-2008",
+  "curated_at": "2026-08-24",
+  "show_statement": "This is a show about a body on the ground and a field that will not stop moving around it. The whole first two minutes are a theatrical hostage situation \u2014 caped conductors, a woman collapsed on the 50 while eighty people in white play over her \u2014 and the remaining twelve minutes are the drum corps machine reasserting itself: arcs, wedges, the enormous scything block that eats the IU logo alive. What it's after is the collision of the intimate and the industrial. Whether it gets there is genuinely arguable. The close shots are melodrama; the aerials are architecture; the show never quite admits they're the same show, and the audio shape agrees with me \u2014 the tempo line goes berserk around 400 and again at 600, spikes to 200, then the loudest moment of the entire piece arrives at 830 when the horns are in a flat wall on the front sideline and the field behind them is empty except for scattered yellow. It ends by getting out of its own way. That's the best decision it makes. The cap bit hard in the middle. I lost t=232, t=288, and t=352, which together were the show's slow structural argument \u2014 the long stretch where the block rotates and reforms and you can actually watch the geometry think. Keeping one aerial from that region instead of three flattens twenty minutes of patient drill into a single postcard, and that's a real loss, not a rounding error. I'm also sorry about t=88, which is the cleanest single frame of the collapsed-figure motif \u2014 cape, drums, body, nothing else \u2014 and it lost to t=96 only because t=96 has the empty stands in it and empty stands are the more honest fact. And t=568, which I dropped for t=560 even though 568 is the sharper picture, because 560 has the guard still arriving and arriving is better than arrived.",
+  "shortlist": [
+    0,
+    32,
+    56,
+    72,
+    88,
+    96,
+    120,
+    144,
+    168,
+    232,
+    256,
+    288,
+    352,
+    408,
+    440,
+    456,
+    528,
+    560,
+    568,
+    600,
+    616,
+    624,
+    688,
+    768,
+    832
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 96,
+      "reason": "The show's actual thesis, accidentally. Low camera, empty concrete stands, a person face-down on the turf and a drum major standing over her not looking. Everything else in this production is arranged; this looks like something that happened. The emptiness behind it does more work than any full house would."
+    },
+    {
+      "rank": 2,
+      "t": 832,
+      "reason": "The loudest bar in the piece and the drill is a flat wall on the front sideline \u2014 no arcs, no rotation, nothing clever. The show spends twelve minutes proving it can make complicated shapes and then wins by refusing to. The scatter of yellow behind them is the mess it's leaving."
+    },
+    {
+      "rank": 3,
+      "t": 688,
+      "reason": "The block is off-center and mid-swing, and the IU logo sits outside it like something the form is about to run over. This is the frame where the drill stops being decorative and starts being a mass with momentum. Ugly on the left third. Keep it anyway."
+    },
+    {
+      "rank": 4,
+      "t": 0,
+      "reason": "Almost nobody on the field. Two thin lines and a huddle. Openers are usually the weakest frame in any set and this one is the strongest because it's mostly grass \u2014 the show is telling you it will fill this, and you believe it, and it does."
+    },
+    {
+      "rank": 5,
+      "t": 32,
+      "reason": "Three drum majors in capes and busbies, handing something over, backs to eighty musicians. It's operatic in a way that shouldn't survive contact with a football field, and it survives. Whether it's good is a separate question from whether it's the show."
+    },
+    {
+      "rank": 6,
+      "t": 560,
+      "reason": "The guard flooding in from the bottom with pale flags while the horn block holds absolutely still above the logo. Two different tempos in one frame. This is the closest the production comes to admitting its intimate half and its industrial half are the same piece of music."
+    },
+    {
+      "rank": 7,
+      "t": 616,
+      "reason": "Tight aerial, block skewed hard on the diagonal, drums clustered in a tight knot at the bottom right like a separate organism. The asymmetry is the point \u2014 the form hasn't closed and the gap where it hasn't is more interesting than the resolution at t=624."
+    },
+    {
+      "rank": 8,
+      "t": 440,
+      "reason": "Two enormous curves swinging across the whole right half of the field. It's the biggest geometric gesture in the show and it reads instantly from the press box, which is both its virtue and its limit. Impressive. I said impressive is exhausting. It still earns a slot."
+    },
+    {
+      "rank": 9,
+      "t": 72,
+      "reason": "The collapsed woman is scrambling up mid-frame, half-blurred, while the caped conductor holds a pose two yards away. Motion against stillness, and the motion is the ungainly one. Every other narrative frame in the shortlist is composed; this one got caught."
+    },
+    {
+      "rank": 10,
+      "t": 168,
+      "reason": "Full-field aerial with the corps packed into a dense mass around the logo and the guard scattered wide below. This is the show at maximum density and it's the frame I'd use to prove the drill is actually hard. Dropped three of its neighbours to keep it; it's carrying their weight."
+    }
+  ]
+}

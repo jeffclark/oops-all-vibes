@@ -1,0 +1,84 @@
+{
+  "show_id": "bloo-2014",
+  "curated_at": "2026-08-24",
+  "show_statement": "This is a show about the tilted plane \u2014 about taking the field's flat grid and propping pieces of it up at an angle so bodies have to argue with gravity to stay on top. Everything follows from that one prop decision: the orange skeleton ramps are set, instrument, and thesis at once, and the drill spends twelve minutes finding out how many ways a horn line can be wrong-footed and still play. The navy uniforms are deliberately dull so the orange guard reads as heat moving through cold architecture, and the sound shape agrees \u2014 the tempo line sits stubbornly around 120-130 while the volume envelope keeps spiking to 200+ and then falling off a cliff, which is a show that gets loud by density rather than by speeding up. Where it's after something real is in the moments when the ramps stop being furniture and start being terrain: a tuba standing on an incline is not a formation, it's a risk. Where it's less honest is the wide full-field geometry, which is gorgeous and legible and could belong to any corps in any year. The cap bites here and I want it on record. I am losing t=102, the one frame where the whole field blooms outward at once and you can read the drill as a single organism. I am losing t=210, the only appearance of the blue flags, which is the show's single moment of stated color reversal and now goes undocumented. I am losing t=540, the sparse drumline with all that empty green around it \u2014 the negative space frame, and I had nothing else like it. And I am losing t=378, the crop with the Yamaha bass drum head shoved into the foreground, which was the only shot taken from inside the ensemble rather than above it. Ten is enough to argue the thesis. It is not enough to keep the counterexamples, and the counterexamples were half the reason I believed the thesis.",
+  "shortlist": [
+    12,
+    18,
+    54,
+    60,
+    66,
+    102,
+    126,
+    132,
+    138,
+    144,
+    210,
+    276,
+    342,
+    360,
+    372,
+    378,
+    384,
+    402,
+    414,
+    426,
+    450,
+    540,
+    630,
+    636,
+    690
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 384,
+      "reason": "Tubas standing on the incline with the horn bell above the head line \u2014 this is the entire show's wager in one frame, and it's the only one where you can see that the performers are actually solving a physics problem in real time rather than executing a picture. Everything else in the set is a variation on this."
+    },
+    {
+      "rank": 2,
+      "t": 132,
+      "reason": "The tight crop is what makes it. Eight horns stacked on one ramp at three different heights, all leaning into the same angle, and a guard member sprinting through the empty foreground. It proves the tilt is a body problem before it's a design problem."
+    },
+    {
+      "rank": 3,
+      "t": 372,
+      "reason": "Here the ramps come off the ground and stop being platforms \u2014 they read as wings or sails being carried. This is the show admitting the prop was never scenery. Slightly chaotic, and better for it."
+    },
+    {
+      "rank": 4,
+      "t": 690,
+      "reason": "The kneel. Whole ensemble dropped to ground level with the white planes framing them like a shell, pink guard flicking through the low edge. It's the only frame with genuine downward pressure \u2014 everywhere else the show pushes up. Worth keeping as the exception."
+    },
+    {
+      "rank": 5,
+      "t": 276,
+      "reason": "The full-field aerial is the one place the ramp scatter resolves into deliberate pattern instead of debris. Keeping it because the show needs one frame that argues it was planned, even though it's also the least interesting thing in the set to look at for longer than four seconds."
+    },
+    {
+      "rank": 6,
+      "t": 126,
+      "reason": "The messiest frame here and the most alive. Sunset-gradient flags mid-throw, bodies at every conceivable angle, nothing resolved. If you only saw this you'd assume it was the climax. It isn't, which is the point \u2014 the show runs this hot in the middle."
+    },
+    {
+      "rank": 7,
+      "t": 414,
+      "reason": "Three big white planes tipped up in parallel like a wall going through, guard clustered underneath in a tight orange knot. The repetition of the angle does the work. Nearly redundant with 372 but earns its place by being the flat, ordered version of the same idea."
+    },
+    {
+      "rank": 8,
+      "t": 12,
+      "reason": "Empty stadium, half-lit, the World Championships banner hanging over almost nobody. This is what the frame at 342 makes you understand later \u2014 that most of this show happens to no one. Keep it as the opening premise, not as an establishing shot."
+    },
+    {
+      "rank": 9,
+      "t": 342,
+      "reason": "The packed house from field level with the ramps reduced to orange scaffolding in the distance. Scale finally arrives. Verdict: this frame is doing something none of the others can, which is telling you the stakes were external all along."
+    },
+    {
+      "rank": 10,
+      "t": 636,
+      "reason": "Pink flags spread evenly across a full ensemble block \u2014 the color has moved from the guard's costumes into the air, and the navy finally has something to react against. Just barely beats out the other full-ensemble wides because the color is doing structural work rather than decorating."
+    }
+  ]
+}

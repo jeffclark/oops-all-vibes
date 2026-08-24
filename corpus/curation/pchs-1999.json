@@ -1,0 +1,84 @@
+{
+  "show_id": "pchs-1999",
+  "curated_at": "2026-08-24",
+  "show_statement": "This is a show that spends ten minutes escalating a single joke until the joke becomes the argument. It opens in an empty dome with one man on a ladder and a green field lined like graph paper \u2014 order, geometry, a sport's grid \u2014 and then it systematically fills that grid with things that do not belong on it: black-clad bodies crawling like animals, a person in a blue full-body suit with wings, and finally a swarm of pastel figures who arrive in colors the stadium has no vocabulary for. The band in white stays disciplined the entire time. That's the trick. The chaos never infects the horn line; it just walks through it. What the show is after is the moment when a rigorously trained ensemble agrees to stand still and let something absurd happen in front of it, and the absurdity reads as sincere because the discipline never breaks to acknowledge it. I don't think it fully lands \u2014 the middle sags around 236 into a formation shot that could be any corps of any year, and the pastel mob at 464-512 tips from strange into merely busy, a pile rather than a picture. But the ambition is real and I'd rather have this than a clean show.\n\nThe cap bit hard. Losing t=60 hurts most \u2014 the crawl out from under the scaffold, band emerging from beneath its own infrastructure, is the show's thesis in one frame and I cut it only because t=72's scatter says the same thing with more bodies moving. I'm also sorry to lose t=92, where the black figures are frozen mid-stride with arms out and the diagonal yard line cuts the frame like a fault; it's the most beautifully composed image in the twenty-five and it lost to images that were doing more narrative work. t=208's drumline in tight diagonal is the best pure marching-technique picture here and the cap took it because this show is not about technique. t=108 and t=408 both went for being competent full-field shots that tell you nothing you don't learn elsewhere. What the cap actually cost me is the ability to show gradation \u2014 the slow arrival of color from t=396 through t=512 is a five-image sequence and I could only keep three, so the transformation now reads as a jump cut instead of a creep.",
+  "shortlist": [
+    36,
+    60,
+    72,
+    92,
+    96,
+    104,
+    108,
+    164,
+    184,
+    208,
+    236,
+    316,
+    336,
+    340,
+    344,
+    364,
+    396,
+    408,
+    432,
+    464,
+    472,
+    492,
+    496,
+    512,
+    592
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 336,
+      "reason": "The blue figure alone with arms spread, wings hanging, no one in frame to react to her \u2014 this is the show's whole gamble held at arm's length. Absurd costume, total commitment, empty green around her. If the show has a soul it is standing on the forty in a blue onesie and not apologizing."
+    },
+    {
+      "rank": 2,
+      "t": 36,
+      "reason": "The drum major in white with his back to us, INDIANAPOLIS behind him in empty stands, photographers crouched at his feet. This is a picture about being watched by almost nobody and doing it anyway. Everything that follows is more interesting because it started here."
+    },
+    {
+      "rank": 3,
+      "t": 364,
+      "reason": "Bodies on all fours in a scattered grid while the horn line marches upright over them. The band does not look down. That refusal is the most confident thing in the entire show and it happens in a single frame."
+    },
+    {
+      "rank": 4,
+      "t": 72,
+      "reason": "The scatter is the point \u2014 black figures flung across the diagonal while the white horns hold the edges. The form hasn't resolved and won't, and the unresolved version has more velocity than any set it's heading toward."
+    },
+    {
+      "rank": 5,
+      "t": 316,
+      "reason": "Blue figure framed between the bells of two sousaphones and a bass drum in the foreground. The brass is out of focus and enormous and she is small and sharp behind it. The instruments become a proscenium she has to perform through."
+    },
+    {
+      "rank": 6,
+      "t": 104,
+      "reason": "Flags mid-swing catching light so hard they read as white slashes across dark bodies. The color guard here isn't decorating the music, it's cutting the frame apart. Best use of motion blur in the set and it's accidental."
+    },
+    {
+      "rank": 7,
+      "t": 432,
+      "reason": "Rainbow bodies flooding in from the right while the black-and-white ranks hold formation above them. This is the invasion frame \u2014 the exact second the show's palette breaks. Cluttered, yes, but the clutter is the event."
+    },
+    {
+      "rank": 8,
+      "t": 512,
+      "reason": "Pastel figures pushing a ramp up to the scaffold in a ragged line, like ants moving something too big. The one figure already on top in orange is the payoff. It's the only image where the chaos looks like it has a plan."
+    },
+    {
+      "rank": 9,
+      "t": 164,
+      "reason": "One mellophone player alone on empty green, hat plume flopping, walking a diagonal line. The isolation is total. In a show this crowded, this frame proves the design can also subtract, and it's the only evidence."
+    },
+    {
+      "rank": 10,
+      "t": 592,
+      "reason": "The drum major again at the end, now facing us, arm extended, in daylight-bright white against the green. The bookend earns itself \u2014 same man, same platform, completely different posture. He's finished something."
+    }
+  ]
+}

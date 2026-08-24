@@ -1,0 +1,84 @@
+{
+  "show_id": "bd-2014",
+  "curated_at": "2026-08-24",
+  "show_statement": "This is a show about a field littered with its own evidence. Framed portraits on stands around the perimeter, tables that get carried and reassembled, ladders and towers nobody climbs, one long white plank that keeps changing what it means. The drill spends twelve minutes building large legible shapes \u2014 wedges, a ring, converging arcs \u2014 and then walks them into piles of furniture. The sound graph agrees: jagged tempo shifts stacked over long grey plateaus, a dead patch around 230-260 that the visual answers by emptying the field almost completely, and a spike near 740 that arrives after the picture has already collapsed inward. What it's after is memory as clutter \u2014 the idea that a life leaves objects behind and the objects outlast the shape. It mostly gets there. It over-trusts the center; a lot of frames point hard at a scaffold that isn't worth pointing at. The cap bit, and it bit in one place: I kept nothing between 376 and 664. That means the whole fourth movement is gone \u2014 392 with the red flags swarming a center scrum, 408's streaming diagonals, 464's clean symmetry, and worst, 560 and 568, the only two frames where a single body stands alone on a white platform at human scale. Losing those makes the show read as more architectural and less personal than it is. I'm also sorry to lose 40, the best spiral in the set, and 320, the only frame where the camera came in close enough to see that these are people. Ten is not enough for a show that changes its mind this often.",
+  "shortlist": [
+    0,
+    40,
+    88,
+    104,
+    120,
+    144,
+    152,
+    184,
+    192,
+    232,
+    264,
+    296,
+    320,
+    336,
+    352,
+    376,
+    392,
+    408,
+    464,
+    560,
+    568,
+    664,
+    696,
+    704,
+    728
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 664,
+      "reason": "The camera loses and the loss is the picture: the guard smears into gold streaks while one thin vertical column of bodies stays sharp. That contrast says more about what this show costs its performers than any static form does."
+    },
+    {
+      "rank": 2,
+      "t": 120,
+      "reason": "The only frame where the ensemble stops being a diagram and becomes a noise. Plumes and bells go up together and the field reads as one object. Other frames are louder; none are this unanimous."
+    },
+    {
+      "rank": 3,
+      "t": 352,
+      "reason": "A ring wide enough to swallow its own props, and it works precisely because it isn't centered on the 50 \u2014 the half-yard of asymmetry is what keeps it from collapsing into a logo."
+    },
+    {
+      "rank": 4,
+      "t": 104,
+      "reason": "A wedge aimed at a cluster of ladders and frames. The show insists the center matters and the center keeps turning out to be scaffolding. I believe the wedge; I don't believe the destination."
+    },
+    {
+      "rank": 5,
+      "t": 728,
+      "reason": "The last shape is a wedge again, shoved at the front sideline with flags dumped flat on the grass behind it. The debris field is doing more work than the wedge, and the show doesn't seem to know that."
+    },
+    {
+      "rank": 6,
+      "t": 0,
+      "reason": "House lights, empty stands, banner legible, people standing around a field that looks like a workshop. Keep the frame that admits the setup \u2014 every later frame is arguing against this one."
+    },
+    {
+      "rank": 7,
+      "t": 232,
+      "reason": "The emptiest the field gets: everyone thinned to scatter, nothing to watch but tables walking themselves into a diagonal. The gap is better than the forms on either side of it."
+    },
+    {
+      "rank": 8,
+      "t": 376,
+      "reason": "The camera swings off-axis and the field gets depth instead of a grid. Hoops right, columns left, nothing in agreement. The most honest frame about how many separate things are happening at once."
+    },
+    {
+      "rank": 9,
+      "t": 296,
+      "reason": "One tight knot of bodies clumped at the 30 against a hundred in tidy rows. Whatever this show is actually about lives in that knot, and the drill files it as a footnote."
+    },
+    {
+      "rank": 10,
+      "t": 704,
+      "reason": "The pull-in, stated plainly: the middle compresses to a block at the front while the edges dissolve into speed. It's the closer's whole logic in one image, which is also why it's slightly too neat."
+    }
+  ]
+}

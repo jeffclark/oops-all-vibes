@@ -1,0 +1,84 @@
+{
+  "show_id": "pr-2003",
+  "curated_at": "2026-08-24",
+  "show_statement": "This show is trying to make a field breathe \u2014 inflate to full 100-yard sprawl, then collapse to a single dense knot at the fifty \u2014 and it does that over and over until the collapse starts to feel like an argument rather than a trick. The audio shape backs it up: five or six long troughs where almost nothing happens, then a wall. What the visuals are actually after, I think, is the moment *before* arrival. Nearly every frame I liked is a form in transit, half-assembled, with guard color thrown out ahead of the horns like a scouting party. The finished shapes are the least interesting things on the field. The show knows this and keeps refusing to hold them. Where it doesn't get there: the color language is inconsistent \u2014 silver, then pink, then red, then yellow, four separate ideas that don't add up to one \u2014 and the middle third (roughly 176 to 296) repeats its own gesture three times without escalating. The cap bites and I want to be honest about where. I lost 464 and 480, which are the same red-carpet arc as 472 caught eight seconds either side; keeping only 472 makes that idea look like a single instant when it was actually a slow forty-second bloom, and that's a real distortion of the record. I lost 224, the most rigidly ordered frame in the entire set \u2014 flat horizontal ranks, everything squared \u2014 which was the best available evidence that this drill *can* do stillness and simply chooses not to. Dropping it makes the show look more chaotic than it is. I also lost 88 and 120, which are the honest middle-states between 64 and 112, and without them the arch on the left side of the field appears to assemble by magic. Ten is not enough for a twelve-minute show that moves this much. Ten gives you postcards. Twenty-five was starting to give you motion.",
+  "shortlist": [
+    0,
+    64,
+    88,
+    112,
+    120,
+    136,
+    144,
+    152,
+    176,
+    216,
+    224,
+    240,
+    248,
+    264,
+    272,
+    296,
+    336,
+    360,
+    432,
+    464,
+    472,
+    480,
+    608,
+    664,
+    688
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 688,
+      "reason": "The only frame where the audience is doing something. A raised fist in silhouette, the whole lower third standing, and the corps folded into the smallest shape it has been all night. Every other frame is the show performing at a stadium; this one is the stadium answering back. If the show has a thesis \u2014 compress everything, then detonate \u2014 this is the detonation and the receipt for it in the same image."
+    },
+    {
+      "rank": 2,
+      "t": 296,
+      "reason": "The best frame in the set because it is unbalanced on purpose. Magenta flags flood the entire left half while the horns pack themselves into the right like they've been pushed. It looks like a mistake and isn't. Nothing else here trusts asymmetry this far, and the show is more interesting when it stops centering itself."
+    },
+    {
+      "rank": 3,
+      "t": 472,
+      "reason": "Red flags laid flat across the ground as texture rather than motion, with a single long white arc sweeping over them. The arc is the only curved line the drill commits to all show, and it earns its curve by having something rigid to cut against. Slightly cleaner than its neighbors at 464 and 480, though I resent having to choose."
+    },
+    {
+      "rank": 4,
+      "t": 144,
+      "reason": "Vertical columns raked down the field with the worn grass making its own corduroy underneath, and the two accidentally agree. This is the frame where the drill stops drawing pictures and just becomes rhythm \u2014 you can almost count the beat off the spacing. The empty stands behind it help; nothing is competing."
+    },
+    {
+      "rank": 5,
+      "t": 0,
+      "reason": "The dark opening. Wide diagonal scatter, house lights low, the DCI banner half-legible, and the corps looking less like a formation than like something that hasn't decided to be one yet. This is the show at its most honest about what it's built from \u2014 bodies spread over grass \u2014 and it never looks this unresolved again."
+    },
+    {
+      "rank": 6,
+      "t": 112,
+      "reason": "Silver flags rippling across the whole field with a tight wedge of horns burning white in the center. The wedge is fine. The flags are the event \u2014 they read as weather, not choreography, and the block only works because something disorderly is happening around it."
+    },
+    {
+      "rank": 7,
+      "t": 608,
+      "reason": "Yellow flags interleaved between the horn columns rather than staged in front of them, which is the smartest staging decision in the set. Color gets threaded through the ensemble instead of framing it. Nine minutes in and the show finally stops separating its two halves."
+    },
+    {
+      "rank": 8,
+      "t": 176,
+      "reason": "Six or seven small independent blocks scattered at different angles with orange guard prowling the gaps. It reads as broken and that is the point \u2014 this is the show admitting it can come apart. The frames on either side are tidier and worse."
+    },
+    {
+      "rank": 9,
+      "t": 264,
+      "reason": "A ring, or most of one. The gap where the circle hasn't closed yet is better than the circle would be; your eye goes straight to the missing arc on the right and stays there. Pink guard scattered inside keeps it from settling into a logo."
+    },
+    {
+      "rank": 10,
+      "t": 360,
+      "reason": "Maximum sprawl \u2014 bodies from sideline to sideline, no dense center anywhere, the field at its emptiest-while-full. Included as the outer limit of the show's breathing. It is not a beautiful frame but it is the one that makes the tight finale mean something."
+    }
+  ]
+}

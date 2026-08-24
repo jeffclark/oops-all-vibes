@@ -1,0 +1,84 @@
+{
+  "show_id": "man-2023",
+  "curated_at": "2026-08-24",
+  "show_statement": "This is a show about three colors refusing to blend. Red is the brass, the discipline, the thing that stays in ranks. Yellow is the guard, the mess, the body doing what bodies do when nobody's counting. White is the ceremony, the procession, whatever the show thinks it's about. The design keeps putting them in the same frame and daring you to decide which one is the subject. My honest read: the show is at its best when it isn't sure \u2014 when the yellow bodies are collapsing across a line while the red block holds behind them, when the drum line advances in hats like a funeral that got the tempo wrong. When it resolves into a clean symmetric picture from the press box it becomes a very good drum corps show and stops being this specific one. The audio shape backs this up: the two tallest peaks are at ~550 and ~720, both late, both after the visual has already stopped arguing with itself. The show is chasing a big ending and it earns one, but the middle is where it's actually thinking.\n\nThe cap bit and I want it on record. I lost t=42 \u2014 the guard member's leg vertical in frame, boot to the top edge, everything behind her out of focus. It's the only frame in the 25 shot at human scale, the only one where a performer is a person instead of a dot in a form. Losing it means this set reads more aerial and more orderly than the show actually is, and that's a distortion I'm choosing. I also lost t=306, the drum line in bowler hats with a single yellow body face-down on the red platform, which is the show's whole thesis in one frame \u2014 I kept t=168 instead because the hats read cleaner there, and I'm not sure that was the right trade. And t=594, the red figure mid-leap over the platform with white silk tearing past, which is the best single piece of motion in the shortlist and got cut purely because I already had enough red-and-maroon mid-field. Ten is too few for a show that changes its mind this often.",
+  "shortlist": [
+    30,
+    42,
+    54,
+    96,
+    120,
+    144,
+    156,
+    168,
+    204,
+    216,
+    228,
+    264,
+    300,
+    306,
+    336,
+    348,
+    354,
+    420,
+    438,
+    474,
+    480,
+    534,
+    540,
+    594,
+    684
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 474,
+      "reason": "Yellow bodies falling in a broken diagonal while the ones behind are still standing \u2014 the line is caught mid-collapse, which is more honest than either end of the move. The huge empty green to the right is doing half the work; the design trusts negative space more than most shows dare, and this is the proof."
+    },
+    {
+      "rank": 2,
+      "t": 30,
+      "reason": "Low, close, chaotic, and the only wide-ish frame where the guard reads as flailing rather than choreographed. The black-suited figure jumping out of frame at left breaks the composition and the break is the point. Everything after this is more controlled and less alive."
+    },
+    {
+      "rank": 3,
+      "t": 168,
+      "reason": "Bowler hats on a marching drum line is a costume decision that could have been a joke and isn't. Shot from above and behind, it reads as a procession moving away from you. This frame carries the show's tone better than any of its full-field pictures."
+    },
+    {
+      "rank": 4,
+      "t": 534,
+      "reason": "White silk exploding outward from a dense red core \u2014 the show's loudest moment and it actually looks loud. The peak in the audio at ~550 has a picture, which is rarer than it should be. Symmetric, yes, but the symmetry is under strain rather than at rest."
+    },
+    {
+      "rank": 5,
+      "t": 120,
+      "reason": "Orange-yellow flags scattered like sparks around a white-and-red center. This is the show telling you its palette before it tells you its argument. Read it as a color chart with people in it and it works; read it as a drill form and it's just a form."
+    },
+    {
+      "rank": 6,
+      "t": 348,
+      "reason": "Three red scaffolds with brass packed inside them, yellow guard spilling out below and pink silk overhead. The cages are the most interesting object the show owns and this is the only frame where you understand they're containing something."
+    },
+    {
+      "rank": 7,
+      "t": 420,
+      "reason": "One red figure standing, five yellow figures on the ground around him, and he's playing anyway. The show's cruelest image and the one that most rewards not knowing the plot. Isolation staged at close range instead of built out of drill."
+    },
+    {
+      "rank": 8,
+      "t": 264,
+      "reason": "The most orderly frame in the set and I keep it as evidence, not as favorite. Perfect axial symmetry, everything resolved, white spine down the fifty. This is what the show looks like when it stops arguing, and the archive needs to show that it does stop."
+    },
+    {
+      "rank": 9,
+      "t": 96,
+      "reason": "Red brass in the near corner, maroon drum line mid-field, yellow flags at the top \u2014 all three factions in one frame at three different depths. A layer diagram that happens to be a photograph."
+    },
+    {
+      "rank": 10,
+      "t": 144,
+      "reason": "Yellow bodies running toward the camera with white poles while everything behind them holds formation. The foreground is out of sync with the background and the mismatch is the most kinetic thing in the aerial shots."
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "show_id": "bd-1992",
+  "curated_at": "2026-08-24",
+  "show_statement": "This is a show built on a bet: that a marching band can be funny and still be devastating. Giant dice as props, Harry Connick Jr. as source material, a horn line standing on top of the dice like they're daring you to call it a gimmick \u2014 and then, three hundred seconds later, a body in red on the turf mid-fall and nobody's laughing. The dice are the thesis. Chance, gambling, the roll you don't control. The design keeps setting up a joke and then playing it absolutely straight, and the tension between those two registers is the whole show. The sound shape backs this up: it never settles into one weather system, it spikes and drops and spikes, tempo shelving up and down like someone keeps changing their mind on purpose. The wide dome shots at the top and the closing bloom at 642 are the frame \u2014 order, symmetry, a stadium's worth of geometry \u2014 and everything between them is the design team trying to break that frame from inside. It mostly works. Where it doesn't, it's because the funny and the devastating occasionally arrive in the same eight bars and cancel each other out. The cap bites here and I resent it. I am sorry to lose t=12, which is the twin of t=0 and shows the drift between them \u2014 two nearly-identical wides, twelve seconds apart, and the small differences are the only place in this entire reel where you can actually watch the show move. I'm sorry to lose t=42, the tight version of the dice-riding horn line, because the low angle makes the props look monumental instead of cute. I'm sorry to lose t=72, the guard on the empty sideline with arms up against a bare stadium, which is the loneliest frame in the set and has no business being cut. And I'm sorry to lose t=252 and t=336, both of which show the field almost empty \u2014 the show breathing \u2014 and emptiness is what a 25-frame reel is worst at preserving. What the cap took from me is duration. Ten frames can hold ten moments. It cannot hold the gaps between them, and this show is largely about the gaps.",
+  "shortlist": [
+    0,
+    12,
+    36,
+    42,
+    60,
+    72,
+    90,
+    126,
+    156,
+    180,
+    222,
+    228,
+    252,
+    276,
+    288,
+    300,
+    336,
+    342,
+    348,
+    468,
+    522,
+    534,
+    546,
+    558,
+    642
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 534,
+      "reason": "The show's real face. Everything before this is a design conceit executed well; this is a person looking straight down the lens with more conviction than the concept has earned so far, and it retroactively makes the dice serious. If the whole run were only this, you'd still know what the show wanted."
+    },
+    {
+      "rank": 2,
+      "t": 36,
+      "reason": "The chart title card is doing free work \u2014 it tells you the show is going to be light before it proves it can be heavy \u2014 but the actual value is the scatter of prone bodies upfield behind the dice line. Two completely different visual grammars stacked in one frame, and neither wins."
+    },
+    {
+      "rank": 3,
+      "t": 0,
+      "reason": "Establishes the room, and the room matters: an indoor dome with flags and a banner reading THE SUMMER MUSIC GAMES is a stage that flatters nobody. The drill is mid-transition and scattered, which is more honest about what a show actually looks like than any set frame."
+    },
+    {
+      "rank": 4,
+      "t": 558,
+      "reason": "The mid-fall body is the payoff of everything the red section is building, and the fact that the drumline behind is standing perfectly upright and unbothered is the joke and the knife at once. This is the frame that proves the humor and the violence are the same idea."
+    },
+    {
+      "rank": 5,
+      "t": 642,
+      "reason": "The closing bloom. A radial form with the mass detonating out of the 50 \u2014 this is what the dice were always going to resolve into, and the wide angle is the only way to see that it's a circle and not a mess. Ends the argument the opening started."
+    },
+    {
+      "rank": 6,
+      "t": 60,
+      "reason": "Pure guard, no horns, purple and magenta silk in full sweep across a green field. It's the one frame where the color design gets to be the entire statement, and it's louder than any brass moment in the reel."
+    },
+    {
+      "rank": 7,
+      "t": 90,
+      "reason": "The horn arc from behind, bells catching light, with a tech in a green polo standing dead center oblivious. The intrusion is the point \u2014 it's a rehearsal-shaped frame inside a championship, and it undercuts the grandeur in exactly the way this show keeps doing to itself."
+    },
+    {
+      "rank": 8,
+      "t": 126,
+      "reason": "Rainbow-shirted guard lunging low in front of a blue horn wall, with real crowd visible behind. The color clash is nearly ugly and completely committed. Nobody designs this by accident; somebody argued for it and won."
+    },
+    {
+      "rank": 9,
+      "t": 546,
+      "reason": "Four bodies in red bent forward in the same instant against an empty stadium. The synchrony is the content \u2014 this reads as one organism, and the emptiness behind makes it feel like it's happening in a place with no witnesses. Slightly too dance-recital to rank higher, but it earns its slot."
+    },
+    {
+      "rank": 10,
+      "t": 288,
+      "reason": "The wide mid-show form is legible from the press box in a way none of the tight shots can be, and it shows the dice have been redistributed to the perimeter \u2014 the props migrate, which is a structural fact the close frames hide entirely."
+    }
+  ]
+}

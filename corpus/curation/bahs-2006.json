@@ -1,0 +1,84 @@
+{
+  "show_id": "bahs-2006",
+  "curated_at": "2026-08-24",
+  "show_statement": "This show is about a field getting emptier and more honest as it goes. The first three minutes are a machine: full-width symmetry, the horn line hammering the front sideline, the tempo trace spiking and clawing at 250 like it's trying to prove something. Then around 300 seconds the volume envelope goes quiet and stays quiet for two full minutes, and the drill stops filling the field \u2014 it starts using it. Ladders, single lines, one enormous white arc marooned on the left hash. That's where the show becomes interesting instead of impressive, and I say that as someone with a documented bias. The payoff is the last ninety seconds: the loudest spike of the entire chart at ~565 is answered not by an explosion outward but by everyone collapsing into a clump and then, unbelievably, walking off into a corner of the endzone while three-quarters of the field sits empty. That is either the bravest ending choice here or a company front they never got around to building. I can't tell from stills and I like that I can't. Whether it gets there: mostly. The opening block is generic and the show knows it, which is why it spends the middle apologizing. Now the cap. Ten out of twenty-five is a mugging. I lose t=240, the only frame where the drill looks genuinely out of control \u2014 a swirl with no readable center, the most human thing in the set \u2014 and I lose it because I already spent a slot on chaos and it lost to legibility, which is a cowardly trade. I lose t=304's stacked white arcs, which are the cleaner version of the shape I kept at 448, and losing it means the archive won't show that this design had a second idea about curves. I lose t=8 and t=656 nearly cancelled each other and 8 went, so the record no longer contains the empty stadium at the start \u2014 the show now appears to begin already in motion. I lose t=456 and t=400, which are the quiet middle's slow variations, and without them the middle reads as one gesture instead of four. The cap took the show's patience. What's left is its highlights, and highlights lie.",
+  "shortlist": [
+    8,
+    40,
+    64,
+    80,
+    88,
+    96,
+    144,
+    160,
+    168,
+    184,
+    240,
+    248,
+    264,
+    296,
+    304,
+    344,
+    384,
+    400,
+    448,
+    456,
+    480,
+    560,
+    568,
+    608,
+    656
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 88,
+      "reason": "A vertical teal spine punched straight up the 50 through a field of horizontal white. Everything else in this show is width; this is the one frame that has a direction. If I keep one, it's the one that argues with the rest."
+    },
+    {
+      "rank": 2,
+      "t": 608,
+      "reason": "The entire show shoved into the left third of the endzone with INDIANAPOLIS filling the space where the drill should be. The empty green is doing more work than the bodies. Almost certainly a transition someone would call unfinished, and it's better than the finished thing."
+    },
+    {
+      "rank": 3,
+      "t": 64,
+      "reason": "Flattened to a single line across the front with the guard scattered in a loose lattice behind. Ruthlessly boring as a shape and completely correct as a moment \u2014 this is the show admitting that a wall of sound needs a wall."
+    },
+    {
+      "rank": 4,
+      "t": 384,
+      "reason": "Teal verticals hung like rungs over a horizontal white base. The only frame here that reads as a deliberate grid rather than a curve, and the tension between the two colors doing opposite jobs is the smartest visual decision in the set."
+    },
+    {
+      "rank": 5,
+      "t": 296,
+      "reason": "One long ribbon curving across four hashes with the guard sprayed above it. Reads as a single continuous line at a moment the audio has gone flat and patient. This is what the quiet middle is for and it earns it."
+    },
+    {
+      "rank": 6,
+      "t": 448,
+      "reason": "An enormous white arc parked off-center on the left while the right side stays in ranks. Unbalanced on purpose. The asymmetry is the content; centering this would have killed it."
+    },
+    {
+      "rank": 7,
+      "t": 656,
+      "reason": "Drill walking off into the corner with the crowd in frame and half the field abandoned. Either a bold closer or a dissolve caught mid-collapse. Keeping it because the ambiguity is the most alive thing in the last minute."
+    },
+    {
+      "rank": 8,
+      "t": 568,
+      "reason": "Everyone crushed into one tight block at the 30 while the guard stands alone across the whole rest of the field. Maximum density against maximum emptiness at the show's loudest instant. Blunt, and it works because it's blunt."
+    },
+    {
+      "rank": 9,
+      "t": 480,
+      "reason": "Dense diagonal churn that almost resolves into letterforms and doesn't. The busiest frame in the set and the only one where I genuinely can't count the parts \u2014 that failure of legibility is worth a slot."
+    },
+    {
+      "rank": 10,
+      "t": 160,
+      "reason": "Converging wedges pulling toward the center-left with the arcs still open. The gap where the form hasn't closed yet is better than the form; two counts later this is just a symmetric picture."
+    }
+  ]
+}

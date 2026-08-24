@@ -1,0 +1,84 @@
+{
+  "show_id": "bahs-2021",
+  "curated_at": "2026-08-24",
+  "show_statement": "This is a show about rings \u2014 hoops that never quite close, and a band that spends eleven minutes trying to arrange itself into agreement with them. The costuming (blue-to-pink gradient, then a late defection into orange) tells you the argument is chromatic before it's structural: the field starts cool and evenly seeded, gets crowded and hot in the back half, and then empties. What it's actually after, I think, is the sensation of a large object almost resolving. The best frames are the ones where the form is 80% arrived \u2014 the diagonal staircase of rings stacked into the left corner at 312, the redistribution at 504 \u2014 because the drill's real subject is transit, not arrival. When it does arrive it looks like a lot of other bands arriving. It gets there maybe two-thirds of the time, which is a good rate. The cap bit hard and it bit in one specific place: 56, 64 and 72 are a continuous low-angle sequence, three beats of the same sideline vantage where the dancers slowly outnumber the frame, and I could only justify one close-in image so I kept 48 and lost all three. That sequence was the only place in the 25 where you could see the show at human scale over time rather than in a single stolen glance. I'm also sorry about 576 \u2014 the exact frame where the orange flags first contaminate the blue \u2014 which I dropped for 600, where the contamination is already complete and therefore less interesting. And I dropped 88, 224, 232, 328, 344, 392, 424, 456, 464, 560, 688 largely as duplicates, which is a polite word for: the high wide camera makes eleven distinct minutes look like one long minute. The audio shape says the show's loudest moment is around 770 seconds and there is no frame of it in the shortlist at all. The nearest I have is 704, and then 816, which is after. So the record I'm keeping is of a climax by inference. Fine. That's most records.",
+  "shortlist": [
+    8,
+    48,
+    56,
+    64,
+    72,
+    80,
+    88,
+    224,
+    232,
+    264,
+    312,
+    328,
+    344,
+    392,
+    400,
+    424,
+    456,
+    464,
+    504,
+    560,
+    576,
+    600,
+    688,
+    704,
+    816
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 48,
+      "reason": "The only frame in the set where these are people and not pixels, and it changes what the whole show is worth. Everything else is drill; this is a kid in a shako standing very still in the foreground while the field goes off behind him. Keep it because the show's scale is only legible once you've seen the unit of measurement."
+    },
+    {
+      "rank": 2,
+      "t": 816,
+      "reason": "The entire ensemble has evacuated into the right corner and about eighty percent of the frame is empty grass with the house lights up and the crowd back. This is the truest image of what a competition show is: a temporary occupation. The green wins. Every wide shot before this is a rebuttal to this shot, and this shot is correct."
+    },
+    {
+      "rank": 3,
+      "t": 312,
+      "reason": "The rings stacked into a descending staircase along the left twenty is the single most committed design decision in the show \u2014 it dumps all the weight into one corner and dares the drill to balance it. It doesn't balance. That's the point and it's why this beats the symmetric frames it's sandwiched between."
+    },
+    {
+      "rank": 4,
+      "t": 600,
+      "reason": "Orange arrives and the field stops being cold. The band has knotted into a dense diamond dead center while the guard scatters warm around it \u2014 this is the only moment where the color guard and the drill are doing genuinely different jobs instead of the same job at different heights."
+    },
+    {
+      "rank": 5,
+      "t": 80,
+      "reason": "Every dancer on the ground simultaneously, sprawled, while the horns kneel along the sideline. A whole field of vertical objects going horizontal at once is a better effect than anything the rings do all night, and it's over in about two seconds."
+    },
+    {
+      "rank": 6,
+      "t": 8,
+      "reason": "Keep the opener not for the drill but because it's one of only two frames with an audience in it. The stands are full and lit, the video board is black, and the show hasn't started asserting itself yet. This is the before, and you need a before or the 816 means nothing."
+    },
+    {
+      "rank": 7,
+      "t": 704,
+      "reason": "Maximum density \u2014 orange, pink, blue, rings, all of it, nothing held in reserve. This is the show spending everything, and it's slightly too much, which is the correct amount for minute eleven. Cluttered on purpose reads differently from cluttered by accident, and this reads on purpose."
+    },
+    {
+      "rank": 8,
+      "t": 504,
+      "reason": "The rings have been dealt back out across the whole field like a hand of cards and the band has re-massed on the left. It's the cleanest picture of the show's actual mechanic: the props stay put and the people redistribute around them. Everything else is decoration on top of this."
+    },
+    {
+      "rank": 9,
+      "t": 264,
+      "reason": "The tightest convergence in the set \u2014 the band folded into a narrow center column with the guard flung out to both hashes. It's the one frame where the drill looks like it's under pressure rather than under instruction. Keep it as the counterweight to all the evenly-spread wides."
+    },
+    {
+      "rank": 10,
+      "t": 400,
+      "reason": "Barely survives the cut and I want that on the record. What earns it is the left ring cluster still holding while the band has spread into a wide near-front \u2014 a form and its leftover, in the same frame. Marginal, but it's the last frame where you can see the show's two ideas coexisting before density eats them both."
+    }
+  ]
+}

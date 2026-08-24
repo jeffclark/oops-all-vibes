@@ -1,0 +1,84 @@
+{
+  "show_id": "cav-2004",
+  "curated_at": "2026-08-24",
+  "show_statement": "This show is about the field as a drafting table. Almost every frame is a legible geometric proposition \u2014 chevrons, arcs, nested circles, diagonal ranks \u2014 and the drill's real argument is that a hundred-odd bodies can hold a line clean enough that the line reads as a line, not as people trying. What it's after is inevitability: the sense that the next form was always going to happen and the marchers are just the ink. It mostly gets there. Where it gets there hardest is not in the finished forms but in the two or three frames where the geometry is halfway assembled and you can see the intention before it lands \u2014 t=80, t=88, t=608. Those are the ones with a pulse. The finished ones (t=552, t=544) are beautiful and slightly airless, which is why I ranked the transitional stuff above some of it and then put t=552 back near the top anyway, because sometimes airless is the point. The sound shape backs this up: the loud spikes at ~260, ~400, ~740 don't line up with the tidiest pictures. The tidiest pictures happen in the troughs. This show relaxes into its geometry rather than shouting it.\n\nThe cap bites. Ten out of twenty-five means I lose the entire early-arc sequence except one frame \u2014 t=8 and t=56 both go, and t=8 was the honest establishing shot, the one that tells you this drill thinks in mirrored diagonals from the first bar. I lose t=104 and t=400, which are the two most interesting off-axis camera frames, where the whole field skews and the drill briefly looks like a thing being observed rather than a thing being presented. That's a real loss \u2014 it was the only visual argument against the show's own tidiness. I lose t=152, t=168, t=184, t=208, t=224 \u2014 that's five consecutive flag-heavy frames, an entire color-guard movement, gone as a block, and with it the only sustained warm color in the whole thing. Reduced to one representative (t=240). That's not a summary, that's an amputation. I also lose t=264, t=288, t=320, t=336, t=392, t=432, t=472. What the cap actually took: continuity. Ten frames can show you what this show looks like. They cannot show you that it is patient, and patience is most of what it is.",
+  "shortlist": [
+    8,
+    56,
+    72,
+    80,
+    88,
+    104,
+    152,
+    168,
+    184,
+    208,
+    224,
+    240,
+    264,
+    288,
+    296,
+    320,
+    336,
+    392,
+    400,
+    432,
+    472,
+    544,
+    552,
+    608,
+    704
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 296,
+      "reason": "The one frame where the drill stops being geometry and starts being handwriting \u2014 those vertical strokes read as glyphs, as if the field is spelling something in a language you almost have. Every other frame in this show is a shape; this one is a sentence. If the whole show were this, it would be a different and probably better show."
+    },
+    {
+      "rank": 2,
+      "t": 88,
+      "reason": "The nested arcs are two beats from closing and that's the entire value. You can see the curve intending itself. A closed circle is a fact; this is an argument in progress, and arguments are more watchable than facts."
+    },
+    {
+      "rank": 3,
+      "t": 552,
+      "reason": "Three clean circles and a hook, dead-center, marchers evenly spaced enough that the spacing itself becomes the content. This is the show cashing the check it's been writing all night. It's airless and I don't care \u2014 the airlessness is the achievement."
+    },
+    {
+      "rank": 4,
+      "t": 80,
+      "reason": "A wedge that hasn't decided if it's a wedge. The density gradient from packed-left to sparse-right does more work than any symmetric form in the set, because it implies motion the still frame can't show. Best sense of velocity here."
+    },
+    {
+      "rank": 5,
+      "t": 608,
+      "reason": "Diagonal ranks stacked at an angle the camera didn't ask for, and the drill wins the argument with the camera. The right-side cluster is visually unbalanced against the left mass and the imbalance is load-bearing. This is the one frame that risks looking wrong."
+    },
+    {
+      "rank": 6,
+      "t": 704,
+      "reason": "Broad mirrored form with the guard pushed to the extreme edges \u2014 the show at its widest. The value is that it uses the whole field including the parts nobody uses, and the emptiness in the middle is a deliberate hole, not a gap. Confidence, late."
+    },
+    {
+      "rank": 7,
+      "t": 240,
+      "reason": "The one flag frame I kept and it has to carry four others. The horn line in a flat shallow arc under a rank of raised flags \u2014 total separation of function, guard doing color, brass doing line. Cleanest labor division in the show. It reads as a poster, which is both the compliment and the complaint."
+    },
+    {
+      "rank": 8,
+      "t": 72,
+      "reason": "Scattered mid-field with a knot of bodies at the center that hasn't resolved. Reads as controlled disorder rather than disorder, which is a harder thing to draw. Keeps the set honest \u2014 proof the show can do texture and not just outline."
+    },
+    {
+      "rank": 9,
+      "t": 288,
+      "reason": "Loose grid across the whole field with an arc breaking out of the top right. The grid is boring and the escape is not; keep it for the escape. This is the frame where the drill admits it's tired of order."
+    },
+    {
+      "rank": 10,
+      "t": 336,
+      "reason": "Split staging \u2014 a compressed left block against a spread right field with flags between them. The asymmetry is the only real structural risk in the back half and it earns its place on that alone. Slightly muddled, and the muddle is the reason it barely survives the cut."
+    }
+  ]
+}

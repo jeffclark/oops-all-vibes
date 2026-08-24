@@ -1,0 +1,84 @@
+{
+  "show_id": "crown-2014",
+  "curated_at": "2026-08-24",
+  "show_statement": "This is a show about mass as a material. Not individuals doing things in unison \u2014 a single body of roughly a hundred and fifty people that thickens, shears, collapses, and reconstitutes, with the drill treating the field the way a sculptor treats clay rather than the way a draftsman treats a grid. The corps is in cream-white almost throughout, which is a bet: strip out color and the only variable left is density. Where it works, it works enormously \u2014 the t=28 collapse, where every white body folds over a dark one at once, is a full sentence in a language most shows never learn. Where it doesn't, the sameness of the uniform makes the wide shots read as texture rather than event, and the audio shape agrees: the long low trough from roughly 440 to 580 is real, the show genuinely loses altitude there before the 620 and 700 spikes bring it back. The green guard is the only accent, and it's used sparingly enough that when it's a full line of chartreuse flags at t=64 you feel it as intrusion rather than decoration. What the show is after is scale as an emotional argument \u2014 the idea that a crowd doing one thing is more moving than a soloist doing anything. It doesn't quite believe its own thesis: it keeps cutting to the soloist at t=236 and t=240, alone on an empty field, and those are the frames that stick. The cap bit hard and it bit in a predictable place. I'm sorriest to lose t=240, which is the same soloist as 236 pulled back far enough that the emptiness around him becomes the subject \u2014 I kept the tighter one and I'm not certain that was right. I also lose t=32, the scattered walk-off after the collapse, which is the only frame in the whole set where the corps looks tired and human; t=316, the densest of the three cluster frames, dropped only because 320 has the same mass with legible motion; and t=92 and t=204, two wide symmetric statements that are more honest about the show's architecture than anything I kept. What the cap took was the middle register \u2014 the frames that were neither peak event nor useful context, which turns out to be where a lot of this show actually lives.",
+  "shortlist": [
+    24,
+    28,
+    32,
+    64,
+    92,
+    128,
+    136,
+    140,
+    176,
+    204,
+    236,
+    240,
+    244,
+    276,
+    288,
+    312,
+    316,
+    320,
+    344,
+    392,
+    456,
+    492,
+    520,
+    588,
+    724
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 28,
+      "reason": "The single best thing here and possibly the best thing in any show this year. Every white figure folded over a dark one simultaneously, motion blur on the plumes proving it happened fast. It reads as violence and as tenderness at the same time and it refuses to resolve into either. Everything else in the show is trying to earn this."
+    },
+    {
+      "rank": 2,
+      "t": 236,
+      "reason": "The show spends ten minutes arguing that mass is the point, then puts one person on an empty field and undoes itself. The grass around him is doing more work than the corps does in some of the wide frames. Keep it because it's the counterexample, not despite that."
+    },
+    {
+      "rank": 3,
+      "t": 24,
+      "reason": "The setup for 28, and it holds on its own \u2014 paired figures caught mid-reach, the white ones taller and lit, the dark ones angled away. The diagonal of the drill fights the diagonal of the yard lines and the friction is the whole image. This is the show at its most compositionally awake."
+    },
+    {
+      "rank": 4,
+      "t": 320,
+      "reason": "A hundred and fifty people compressed into thirty yards and still visibly moving \u2014 legs mid-stride, drums at odd angles. Most cluster forms photograph as a blob. This one photographs as pressure. The upper-left tubas breaking loose is the detail that makes it a moment instead of a shape."
+    },
+    {
+      "rank": 5,
+      "t": 176,
+      "reason": "The tightest wide frame in the set. A dense white knot dead center with the guard scattered to the far edges like debris thrown clear. The empty green between them is the loudest part of the picture \u2014 the show is saying something about isolation using nothing but blank field."
+    },
+    {
+      "rank": 6,
+      "t": 276,
+      "reason": "The only frame where the guard costuming changes the argument \u2014 striped legs and green tops kneeling in a low band under a standing brass line. Two populations, two heights, one plane. It's the clearest statement of hierarchy the show makes and it doesn't repeat it."
+    },
+    {
+      "rank": 7,
+      "t": 136,
+      "reason": "Tenor line walking across the Colts helmet in tight crop, drums catching light, the purple-and-chartreuse flag intruding at the top edge. The logo underneath is an accident of venue that the framing turns into a stage. Small, specific, and it breaks the monotony of white-on-green better than any drill move does."
+    },
+    {
+      "rank": 8,
+      "t": 724,
+      "reason": "The closer, and it earns the wideness the other wide shots don't \u2014 bilateral symmetry with flags mid-toss in a wave that hasn't landed. Caught in the incomplete instant, which is the only reason to photograph a symmetric form at all. Half a second later this is a postcard."
+    },
+    {
+      "rank": 9,
+      "t": 492,
+      "reason": "The thinnest frame here and I'm keeping it for that. Scattered figures on a mostly empty field during the show's audio trough. It looks like the show forgot what it was doing, and that honesty is worth a slot. The two green guard members at the fifty are the only thing holding it together."
+    },
+    {
+      "rank": 10,
+      "t": 344,
+      "reason": "Full brass wall standing and delivering while the guard crawls flat on the ground at the left edge. The contrast is almost too neat, but the crawling bodies are genuinely unsettling against all that upright discipline. Keep it as the show's one moment of open cruelty."
+    }
+  ]
+}

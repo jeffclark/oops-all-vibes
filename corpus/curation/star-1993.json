@@ -1,0 +1,84 @@
+{
+  "show_id": "star-1993",
+  "curated_at": "2026-08-24",
+  "show_statement": "This show is trying to make drill do what the Bartok does: build a symmetrical arch out of anxious material and then let the arch survive it. Nearly every wide frame is a mirror \u2014 an arrow, a wedge, a lens shape opening and closing on the fifty \u2014 and the sound graph agrees, low and prowling until around 440 and then a sustained shove through 480 before the last climb. The white uniforms are a decision, not a default: they make the field read as ruled paper so that any color at all (the rainbow poles, the red flags at the end) lands as an event. It mostly gets there. What it doesn't get is surprise; the symmetry is so obedient that the best frames are the ones where the camera drops down and the geometry falls apart into legs and elbows. The cap bit hard on exactly that. I lose t=252, the messiest scatter in the set and the one place the form looked genuinely unresolved. I lose t=348's side angle, the only frame with real depth. I lose t=60's ghosted opening. Four near-identical scoreboard wides \u2014 294, 540, 594, 618 \u2014 ate slots I would rather have spent on chaos, and I still had to drop one of the good ones to hold ten.",
+  "shortlist": [
+    60,
+    84,
+    126,
+    132,
+    138,
+    144,
+    150,
+    192,
+    216,
+    222,
+    234,
+    246,
+    252,
+    294,
+    348,
+    366,
+    408,
+    432,
+    444,
+    486,
+    540,
+    594,
+    618,
+    642,
+    660
+  ],
+  "keepers": [
+    {
+      "rank": 1,
+      "t": 138,
+      "reason": "The only frame where the drill stops being seen from above and starts being felt: bodies lunging toward the lens, the wedge crowding forward, the whole arch compressed into one shove. Everything else in this set is a diagram; this is a threat."
+    },
+    {
+      "rank": 2,
+      "t": 126,
+      "reason": "Three guard members vaulting on poles above a hornline that isn't looking at them. The show's whole argument in one shot \u2014 rigid ranks below, one gesture of flight above \u2014 and it works because the horns refuse to acknowledge it."
+    },
+    {
+      "rank": 3,
+      "t": 486,
+      "reason": "Pull the brass out and the guard alone still holds the field. Black bodies, rainbow silks, poles all struck at the same angle: this is the cleanest visual idea in the show and it needed no music behind it to prove that."
+    },
+    {
+      "rank": 4,
+      "t": 660,
+      "reason": "Red arrives last and the field can't hold it. The flags read as a swarm rather than a form, which is the first honest disorder the drill permits itself. Late, but earned."
+    },
+    {
+      "rank": 5,
+      "t": 408,
+      "reason": "A hundred people in the same lunge at a low angle with the drum majors in frame \u2014 the shot that shows the labor. Precision looks like effort here instead of looking like a printout, and that's rarer than it should be."
+    },
+    {
+      "rank": 6,
+      "t": 366,
+      "reason": "The title card is not a cheat. The show tells you it's Bartok while the horns are mid-scatter behind the text, and the mismatch between the composer's name and the sight of people jogging in white pajamas is the most interesting thing in the whole set."
+    },
+    {
+      "rank": 7,
+      "t": 432,
+      "reason": "Rainbow silks drifting off the right side against a white curve that hasn't finished. The imbalance is the point \u2014 the color is escaping the form, and for six seconds the show looks like it might not close."
+    },
+    {
+      "rank": 8,
+      "t": 132,
+      "reason": "Poles at a hard diagonal cutting across a horizontal block: the one wide shot where two geometries disagree with each other. Most of the wides here are one idea repeated; this is two ideas colliding."
+    },
+    {
+      "rank": 9,
+      "t": 144,
+      "reason": "The motion blur is doing the composing. Whatever the drill is actually doing is unreadable, and the smear is more faithful to how this music feels than any clean frame of it. Keep the accident."
+    },
+    {
+      "rank": 10,
+      "t": 642,
+      "reason": "The definitive statement of the arch \u2014 arrow closed, red flags posted at the perimeter, everyone facing the same way. It's the show's thesis and it is slightly boring, which is exactly why it belongs at ten and not at one."
+    }
+  ]
+}
