@@ -1,8 +1,13 @@
 # Corpus build report
 
 Written for Jeff, 2026-08-24, at the end of the autonomous run described in
-`corpus/HANDOFF.md`. Everything below happened on this machine, on branch
-`claude/handoff-corpus-execution-d1f470`. **Nothing has been pushed.**
+`corpus/HANDOFF.md`.
+
+**Status: merged to `main` and live.** The build was finished and committed locally
+first, as the handoff required; Jeff then gave explicit permission to push and merge
+so the corpus would be picked up by the next 3am cron. `main` is at the merge commit
+and `corpus/manifest.json` is on it, so tomorrow is the corpus's first real day
+rather than a dark one.
 
 ---
 
@@ -313,11 +318,24 @@ because there is a lot of bright astroturf behind a few people. Its first sheet 
 80 % clean drill, so the show averages out fine — but a blunt scorer is blunt in
 both directions and that is worth knowing.
 
-**Output tokens are at 50 % of the ceiling.** The dry run below produced **32,233
-output tokens against `MAX_TOKENS = 64000`**, on a 64,837-token input. The previous
-observed peak was ~30.7k, so the corpus has not moved output much — but the prompt
-grows ~1.5 KB a day and the archive keeps growing, so watch the stats page's peak
-card. There is roughly 2× headroom today.
+**Output tokens are at 75 % of the ceiling, and this is the number to watch.**
+Two dry runs, both shipping on the first attempt:
+
+| | input | output | of `MAX_TOKENS = 64000` |
+|---|---:|---:|---:|
+| corpus only (pre-merge) | 64,837 | 32,233 | 50 % |
+| corpus + daily inputs (merged, what ships) | 74,345 | **47,922** | **75 %** |
+
+The `call_model` comment says 64000 "leaves roughly 2× headroom over the worst day
+observed" — that was written when the worst day was 30.7k. It is now 1.34×. The
+corpus and the daily-inputs layer landed in the same week and their costs added.
+
+I did **not** change `MAX_TOKENS`. It is a documented cost-and-behaviour decision
+with a history comment attached, the retry covers a single truncation, and both runs
+shipped clean — so it is green, not broken. But you have about 16k tokens of room,
+the prompt grows ~1.5 KB a day, and Opus 5 will take up to 128k output. Raising it
+costs nothing until she uses it. The stats page's peak-output card exists exactly for
+this, and it will now show a real number instead of a comfortable one.
 
 **Whether she keeps writing this well.** One day is not a trend. The verdicts from
 the dry run are genuinely comparative and genuinely opinionated, but the interesting
@@ -388,9 +406,16 @@ Check the shelf is the shape you expect (10 anchors, 10 distinct shows, 20 image
 .venv/bin/python -c "import json;m=json.load(open('corpus/manifest.json'));a=[f for f in m['frames'] if f['role']=='anchor'];print(len(m['frames']),'frames,',len(a),'anchors from',len({x['show_id'] for x in a}),'shows')"
 ```
 
-**Then push.** One thing to know: the cron fires at **07:00 UTC**. If the manifest
-is not on `main` by then, `select_for_date` finds nothing, fails open, and Georgia
-gets `CORPUS_DARK_SENTINEL` — she will write about a shelf that never loaded, which
-is true but not the debut you want. Push before 07:00 UTC or accept one dark day.
+**This is now done.** For the record, what the merge to `main` involved: `main` had
+moved 22 commits since this branch was cut — the whole daily-inputs and roster-
+retirement feature — and four files conflicted, three of them in the pipeline
+(`assemble_prompt.py`, `run_georgia.py`, the workflow). All four were both-sides-
+*added* rather than both-sides-changed, so nothing had to be chosen between; the
+prompt now carries the world's inputs and her own past verdicts as separate blocks,
+and `run()` does selection → assembly → call → taste → retirement → stats → write.
+Verified by reading the merged call order and by rendering all three prompt variants,
+not just by a green suite, then by the second dry run in the table above. 667 tests
+pass from a clean clone of `main`, and `--verify-only` returns 209/209 from it.
 
-I did **not** merge this branch or open a PR, per the hard rules.
+The one thing to keep an eye on tomorrow: the stats page will show a **75 %**
+peak-output figure. See the headroom note above.
