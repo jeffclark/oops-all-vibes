@@ -1015,8 +1015,13 @@ ships text-only.
   ours are 1024×576 and 1024×384, so we would clear it either way. 20 is a cost and
   attention budget, chosen because a set she can actually hold in mind beats a set
   she skims. There is headroom if a later story earns it.
-- **Corpus size**: 8–12 shows × 10 keepers = **80–120 frames**, plus one show-shape
-  plot per show. Finite is the feature. Do not grow this later without a story.
+- **Corpus size**: **15 shows × 10 keepers = 150 frames**, plus one show-shape plot
+  per show. (The original plan said 8–12; Jeff supplied 15, and more shows means more
+  contrast, which is the point.) Finite is still the feature — 150 is the ceiling.
+  Do not grow this later without a story. Rotation simply cycles more slowly: at 6
+  rotating slots a day against a 140-frame rotating pool, a given non-anchor frame
+  comes back roughly every three to four weeks — often enough to notice you've seen
+  it before, rarely enough that it doesn't become wallpaper.
 - **Anchors vs rotating**: 10 anchor frames are shown **every single day, forever**.
   Repetition is the mechanism — a preference cannot form from a single viewing.
 - **Storage**: keeper frames live in the Anthropic Files API, never in this repo.
@@ -1065,20 +1070,38 @@ Script must check for both at startup and exit with a clear message if missing.
 ]
 ```
 
-`angle` must be `press-box` or `high`. **A `field-level` entry is rejected with a
-loud error, not a warning** — field-level footage shows a wall of backs, contributes
-nothing about drill, and would silently poison the corpus with frames she cannot
-form a real preference about.
+`angle` is one of three values, and the third one is why this section exists:
+
+- **`high`** (or `press-box`) — the whole show from above. Sample every **8 s**.
+- **`multi-cam`** — a broadcast cut that alternates between a high angle and
+  field-level or close-up shots. **Accepted**, but sampled every **6 s** instead of 8,
+  because a meaningful share of the frames will land on a close-up and be useless for
+  drill. The larger pool keeps enough high-angle candidates to shortlist 25 from.
+  No automatic detection of which frames are which — **curation is already the
+  filter.** The contact sheets show everything; Georgia simply won't shortlist the
+  close-ups, and what she declines to pick is itself a preference worth recording.
+- **`field-level`** — **rejected with a loud error, not a warning.** Footage shot
+  entirely from the stands shows a wall of backs, contributes nothing about drill,
+  and would silently poison the corpus with frames she cannot form a real preference
+  about.
+
+An earlier draft of this story allowed only the first value. Six of the fifteen
+supplied shows are `multi-cam`, several of them the most interesting ones in the set,
+so rejecting the category would have cost more than it protected.
 
 **Behavior** — `ingest_show(entry: dict, out_dir: Path) -> ShowIngest`:
 
-1. Download via `yt-dlp` at ≤720p to `corpus/raw/<show_id>/source.mp4`. Skip the
-   download if the file already exists (re-runs must be cheap and idempotent).
+1. Download via `yt-dlp` at ≤720p to `corpus/raw/<show_id>/source.mp4`, **always with
+   `--no-playlist`**. Several supplied URLs carry `&list=` or `start_radio=1`
+   parameters; without that flag yt-dlp would pull an entire playlist instead of the
+   one show. `sources.json` stores the bare `watch?v=<id>` form as a second guard.
+   Skip the download if the file already exists (re-runs must be cheap and idempotent).
 2. `ffprobe` the duration. Reject anything under 4 minutes or over 20 — that's not
    a full show and the arc won't mean anything.
-3. Extract candidate frames every **8 seconds**, scaled to 1024×576, JPEG quality 4,
-   to `corpus/raw/<show_id>/frames/t<seconds:05d>.jpg`. An 11-minute show yields
-   ~82 candidates.
+3. Extract candidate frames at the interval set by `angle` — **8 s** for `high`,
+   **6 s** for `multi-cam` — scaled to 1024×576, JPEG quality 4, to
+   `corpus/raw/<show_id>/frames/t<seconds:05d>.jpg`. An 11-minute show yields ~82
+   candidates at 8 s, ~110 at 6 s.
 4. Extract audio to a temp wav. Compute, with librosa/numpy:
    - RMS loudness envelope (hop such that there are ~1000 points across the show)
    - tempo curve
@@ -1111,8 +1134,8 @@ Curating a bad show wastes the slot and, worse, silently pollutes the corpus. Fi
 **Implementation notes**:
 - Shell out to `ffmpeg`/`ffprobe`/`yt-dlp` via `subprocess`; do not add a Python
   ffmpeg wrapper dependency.
-- One `ffmpeg` invocation for all frames (`-vf fps=1/8,scale=1024:576`), not one per
-  frame.
+- One `ffmpeg` invocation for all frames (`-vf fps=1/8,scale=1024:576`, or `fps=1/6`
+  for `multi-cam`), not one per frame.
 - Frame filenames encode the source timestamp. That timestamp is the provenance
   record and must survive into the manifest — it's what makes the corpus
   reproducible by a third party.
@@ -1120,7 +1143,9 @@ Curating a bad show wastes the slot and, worse, silently pollutes the corpus. Fi
 
 **Acceptance criteria**:
 - [ ] With `ffmpeg` absent from PATH: exits non-zero with a message naming ffmpeg, before downloading anything
-- [ ] A valid press-box entry produces `source.mp4`, ≥30 frames at 1024×576, `shape.png`, and `ingest.json`
+- [ ] A valid `high` entry produces `source.mp4`, ≥30 frames at 1024×576, `shape.png`, and `ingest.json`
+- [ ] A `multi-cam` entry is accepted and sampled at 6 s, yielding more candidates than the same-length `high` show
+- [ ] A URL containing `&list=` downloads exactly one video, not a playlist
 - [ ] Every emitted frame is exactly 1024×576
 - [ ] An entry with `"angle": "field-level"` is rejected with a non-zero exit and an explicit message; no download occurs
 - [ ] A video shorter than 4 minutes is rejected with a clear message
@@ -1199,7 +1224,8 @@ a short statement of what the show as a whole is doing.
 
 **Cost note**: round 1 is ~5 sheets at the 4784-token ceiling plus the soul doc,
 ~26k input. Round 2 is 25 frames at 777 tokens each plus `shape.png`, ~20k input.
-With output, roughly **$0.35/show — under $5 for the whole corpus**, one time.
+With output, roughly **$0.35/show — about $5.25 across the 15 supplied shows**, one
+time. Multi-cam shows run slightly higher (more candidates, so one extra sheet).
 (An earlier draft said $0.22/show; it costed round 2 with the 640×360 token figure
 from before the frame size moved to 1024×576.)
 

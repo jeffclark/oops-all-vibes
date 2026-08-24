@@ -1,0 +1,122 @@
+[
+  {
+    "show_id": "bd-1992",
+    "url": "https://www.youtube.com/watch?v=_xvL7jALbkI",
+    "corps": "Blue Devils",
+    "year": 1992,
+    "angle": "multi-cam",
+    "axis_tags": ["era:1990s", "class:dci-world", "org:blue-devils"]
+  },
+  {
+    "show_id": "star-1993",
+    "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
+    "corps": "Star of Indiana",
+    "year": 1993,
+    "angle": "high",
+    "axis_tags": ["era:1990s", "class:dci-world", "org:star-of-indiana"]
+  },
+  {
+    "show_id": "mad-1995",
+    "url": "https://www.youtube.com/watch?v=2UEyuEY6gQY",
+    "corps": "Madison Scouts",
+    "year": 1995,
+    "angle": "multi-cam",
+    "axis_tags": ["era:1990s", "class:dci-world", "org:madison-scouts"]
+  },
+  {
+    "show_id": "lhs-1998",
+    "url": "https://www.youtube.com/watch?v=GP-08XqVhtA",
+    "corps": "Lassiter High School",
+    "year": 1998,
+    "angle": "multi-cam",
+    "axis_tags": ["era:1990s", "class:high-school", "org:lassiter"]
+  },
+  {
+    "show_id": "pchs-1999",
+    "url": "https://www.youtube.com/watch?v=fD0Xvzrulug",
+    "corps": "Plymouth-Canton High School",
+    "year": 1999,
+    "angle": "multi-cam",
+    "axis_tags": ["era:1990s", "class:high-school", "org:plymouth-canton"]
+  },
+  {
+    "show_id": "pr-2003",
+    "url": "https://www.youtube.com/watch?v=w9AEpXSpx1E",
+    "corps": "Phantom Regiment",
+    "year": 2003,
+    "angle": "high",
+    "axis_tags": ["era:2000s", "class:dci-world", "org:phantom-regiment", "pair:phantom"]
+  },
+  {
+    "show_id": "cav-2004",
+    "url": "https://www.youtube.com/watch?v=6TuKic5Lj5k",
+    "corps": "The Cavaliers",
+    "year": 2004,
+    "angle": "high",
+    "axis_tags": ["era:2000s", "class:dci-world", "org:cavaliers"]
+  },
+  {
+    "show_id": "bahs-2006",
+    "url": "https://www.youtube.com/watch?v=nLvfCHdP27Q",
+    "corps": "Broken Arrow High School",
+    "year": 2006,
+    "angle": "high",
+    "axis_tags": ["era:2000s", "class:high-school", "org:broken-arrow", "pair:broken-arrow"]
+  },
+  {
+    "show_id": "pr-2008",
+    "url": "https://www.youtube.com/watch?v=YHmydSfbxNs",
+    "corps": "Phantom Regiment",
+    "year": 2008,
+    "angle": "high",
+    "axis_tags": ["era:2000s", "class:dci-world", "org:phantom-regiment", "pair:phantom"]
+  },
+  {
+    "show_id": "bloo-2014",
+    "url": "https://www.youtube.com/watch?v=oKYf5jxAJus",
+    "corps": "Bluecoats",
+    "year": 2014,
+    "angle": "multi-cam",
+    "axis_tags": ["era:2010s", "class:dci-world", "org:bluecoats", "pair:bluecoats"]
+  },
+  {
+    "show_id": "bahs-2021",
+    "url": "https://www.youtube.com/watch?v=9QGRtct3_b4",
+    "corps": "Broken Arrow High School",
+    "year": 2021,
+    "angle": "high",
+    "axis_tags": ["era:2020s", "class:high-school", "org:broken-arrow", "pair:broken-arrow"]
+  },
+  {
+    "show_id": "cadets-2021",
+    "url": "https://www.youtube.com/watch?v=M7tGEEQHLrI",
+    "corps": "The Cadets",
+    "year": 2021,
+    "angle": "high",
+    "axis_tags": ["era:2020s", "class:dci-world", "org:cadets"]
+  },
+  {
+    "show_id": "man-2023",
+    "url": "https://www.youtube.com/watch?v=JRkn1MC2FMs",
+    "corps": "Mandarins",
+    "year": 2023,
+    "angle": "multi-cam",
+    "axis_tags": ["era:2020s", "class:dci-world", "org:mandarins"]
+  },
+  {
+    "show_id": "bloo-2024",
+    "url": "https://www.youtube.com/watch?v=2gP9MurwvAk",
+    "corps": "Bluecoats",
+    "year": 2024,
+    "angle": "high",
+    "axis_tags": ["era:2020s", "class:dci-world", "org:bluecoats", "pair:bluecoats"]
+  },
+  {
+    "show_id": "bac-2025",
+    "url": "https://www.youtube.com/watch?v=2em9TKqQe_s",
+    "corps": "Boston Crusaders",
+    "year": 2025,
+    "angle": "high",
+    "axis_tags": ["era:2020s", "class:dci-world", "org:boston-crusaders"]
+  }
+]
