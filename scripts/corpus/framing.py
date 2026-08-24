@@ -36,9 +36,26 @@ SAT_MIN = 60
 # starts reading as all-close-up, this is the first constant to revisit.
 VAL_MIN = 100
 
-# Above this fraction of green pixels a frame is treated as a field shot. Provisional
-# until measured against real sheets — see the module docstring.
-FIELD_THRESHOLD = 0.35
+# Above this fraction of green pixels a frame is treated as a field shot.
+#
+# Measured against real Madison 1995 sheets rather than guessed. Scoring every
+# labelled cell on one field sheet and one other sheet gave three bands:
+#
+#     0.00 - 0.24   crowd, pit close-ups, faces, a boot on a podium
+#     0.27 - 0.54   essentially all real drill, wide and mid
+#     0.63          a single dancer standing on turf
+#
+# The first cut was 0.35, which sat in the middle of the drill band and split it in
+# half — the widest, most useful formations score LOW, because a true wide shot of a
+# stadium necessarily includes a thick band of crowd. 0.25 lands in the gap.
+#
+# The 0.63 dancer is a known false positive and no threshold fixes it: a tight shot
+# of one person on grass is nearly all green. It is a handful of frames per show and
+# curation rejects them, which is the kind of judgement curation should be making.
+# If a show ever breaks this differently — a heavily tarped modern field reading as
+# all-close-up is the likely case — replace this scorer with a vision classifier
+# rather than chasing the constant further.
+FIELD_THRESHOLD = 0.25
 
 
 def field_score(path: Path) -> float:

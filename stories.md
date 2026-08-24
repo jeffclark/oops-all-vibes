@@ -1129,11 +1129,26 @@ Three things keep this honest:
   so. A heavily tarped field — common in modern shows — can legitimately defeat a
   turf detector.
 
-`FIELD_THRESHOLD` and the HSV bounds are **provisional and unvalidated against real
-broadcast footage.** One constant already bit: at a value floor of 40 a hornline in
-dark green serge scored as turf, because uniform green and turf green share a hue
-band. Madison wears green. The floor is now 100, separating lit turf from serge, and
-it is the first thing to revisit if dim tape starts reading as all-close-up.
+`FIELD_THRESHOLD` is now **measured, not guessed.** Scoring the labelled cells of real
+Madison 1995 sheets gave three bands: `0.00-0.24` crowd, pit, faces; `0.27-0.54`
+essentially all real drill; `0.63` a single dancer on turf. The first cut sat at 0.35
+— in the middle of the drill band — and split it in half, because the widest and most
+useful formations score *low*: a true wide shot of a stadium necessarily includes a
+thick band of crowd. 0.25 lands in the gap. Tests pin the measured scores on both
+sides so the threshold cannot drift back into either band.
+
+Two known limits, both accepted rather than fixed:
+
+- A tight shot of one person on grass scores ~0.63 and is kept. No threshold fixes
+  it, it is a handful of frames per show, and curation declining them is exactly the
+  judgement curation should be making.
+- A heavily tarped field — plausible for the modern shows — could read as
+  all-close-up. If that happens, replace this scorer with a vision classifier
+  (roughly $0.16/show at Haiku rates) rather than chasing the constant further.
+
+One earlier constant already bit: at a value floor of 40, a hornline in dark green
+serge scored as turf, since uniform green and turf green share a hue band and differ
+only in brightness. Madison wears green. The floor is now 100.
 
 **Behavior** — `ingest_show(entry: dict, out_dir: Path) -> ShowIngest`:
 

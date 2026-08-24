@@ -91,3 +91,31 @@ def test_histogram_counts_every_frame():
     scores = {f"t{i}": i / 20 for i in range(21)}
     h = framing.histogram(scores)
     assert sum(c for _, _, c in h) == len(scores)
+
+
+# ---------------------------------------------- threshold placement, from real data
+
+# Scores measured off labelled Madison 1995 contact sheets. The point of these is
+# that the threshold sits in the empty gap between the junk band and the drill band,
+# not inside either one.
+MEASURED_DRILL = [0.27, 0.29, 0.31, 0.32, 0.34, 0.35, 0.37, 0.39, 0.42, 0.47, 0.54]
+MEASURED_JUNK = [0.00, 0.03, 0.06, 0.08, 0.09, 0.10, 0.11, 0.13, 0.17, 0.21, 0.24]
+
+
+@pytest.mark.parametrize("score", MEASURED_DRILL)
+def test_measured_drill_frames_are_kept(score):
+    assert framing.is_field(score), f"{score} is a real formation and must survive"
+
+
+@pytest.mark.parametrize("score", MEASURED_JUNK)
+def test_measured_junk_frames_are_dropped(score):
+    assert not framing.is_field(score)
+
+
+def test_threshold_sits_in_the_gap_between_the_bands():
+    assert max(MEASURED_JUNK) < framing.FIELD_THRESHOLD <= min(MEASURED_DRILL)
+
+
+def test_dancer_on_turf_is_a_known_accepted_false_positive():
+    """A tight shot of one person on grass scores ~0.63. Documented, not fixed."""
+    assert framing.is_field(0.63)
