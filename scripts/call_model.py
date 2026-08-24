@@ -1,14 +1,20 @@
 """Thin wrapper around the Anthropic SDK for Georgia's daily call.
 
-Takes an assembled prompt, calls the model, and returns the two pieces of
-Georgia's output: today's HTML (inside <site>...</site>) and today's diary
-entry (inside <log>...</log>). Missing or empty tags raise ModelOutputError.
+Takes an assembled prompt, calls the model, and returns the pieces of Georgia's
+output: today's HTML (inside <site>...</site>), today's diary entry (inside
+<log>...</log>), and her preference verdicts (inside <taste>...</taste>).
+Missing or empty <site>/<log> raise ModelOutputError. <taste> is optional by
+design — the corpus is additive and must never be able to take the site down.
 API errors propagate — retry/fail-open logic lives in run_georgia.py.
+
+`prompt` may be a plain string or a list of content blocks. The string path is
+the text-only day and every existing caller; the block path is how the corpus
+frames get in front of her, images first.
 """
 from __future__ import annotations
 
 import re
-from typing import NamedTuple
+from typing import Any, NamedTuple, Sequence
 
 from anthropic import Anthropic
 
@@ -42,8 +48,14 @@ MAX_TOKENS = 64000
 # fallback model inside the same call, routed by refusal category.
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
 
+# Referencing an uploaded frame by `file_id` needs this. call_model is already on
+# the beta messages path for `fallbacks`, so it is an append to the existing list,
+# not a migration.
+FILES_BETA = "files-api-2025-04-14"
+
 _SITE_RE = re.compile(r"<site>(.*?)</site>", re.DOTALL)
 _LOG_RE = re.compile(r"<log>(.*?)</log>", re.DOTALL)
+_TASTE_RE = re.compile(r"<taste>(.*?)</taste>", re.DOTALL)
 
 
 class ModelResult(NamedTuple):
@@ -58,6 +70,10 @@ class ModelResult(NamedTuple):
     diary: str
     input_tokens: int
     output_tokens: int
+    # Raw text between <taste>...</taste>, or "" when she wrote none. Parsed and
+    # validated downstream, never here — a malformed block is a warning, not a
+    # failed day.
+    taste: str = ""
 
 
 class ModelOutputError(Exception):
@@ -68,22 +84,29 @@ class ModelOutputError(Exception):
         self.raw = raw
 
 
-def call_model(prompt: str, client: Anthropic | None = None) -> ModelResult:
+def call_model(
+    prompt: str | Sequence[dict[str, Any]], client: Anthropic | None = None
+) -> ModelResult:
     """Call the model with `prompt`, return a ModelResult.
 
-    Reads ANTHROPIC_API_KEY from env when `client` is not provided.
-    Raises ModelOutputError if either <site> or <log> is missing or empty, or
-    if the whole fallback chain declined the request.
+    `prompt` is either the assembled text or a list of content blocks with the
+    corpus images first and the text last. Reads ANTHROPIC_API_KEY from env when
+    `client` is not provided. Raises ModelOutputError if either <site> or <log>
+    is missing or empty, or if the whole fallback chain declined the request.
     API errors (anthropic.APIError and subclasses) propagate.
     """
     if client is None:
         client = Anthropic()
+    # The string is passed through unchanged rather than wrapped in a text block:
+    # identical request bytes on a text-only day, so nothing about the existing
+    # path moves when the corpus is dark.
+    content = prompt if isinstance(prompt, str) else list(prompt)
     with client.beta.messages.stream(
         model=MODEL,
         max_tokens=MAX_TOKENS,
-        betas=[FALLBACK_BETA],
+        betas=[FALLBACK_BETA, FILES_BETA],
         fallbacks="default",
-        messages=[{"role": "user", "content": prompt}],
+        messages=[{"role": "user", "content": content}],
     ) as stream:
         message = stream.get_final_message()
 
@@ -116,9 +139,11 @@ def call_model(prompt: str, client: Anthropic | None = None) -> ModelResult:
             raw=raw,
         )
 
+    taste_match = _TASTE_RE.search(raw)
     return ModelResult(
         html=site_text,
         diary=log_text,
         input_tokens=message.usage.input_tokens,
         output_tokens=message.usage.output_tokens,
+        taste=taste_match.group(1).strip() if taste_match else "",
     )

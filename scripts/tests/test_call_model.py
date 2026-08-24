@@ -12,6 +12,7 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from scripts.call_model import (  # noqa: E402
     FALLBACK_BETA,
+    FILES_BETA,
     MAX_TOKENS,
     MODEL,
     ModelOutputError,
@@ -60,7 +61,10 @@ def test_sends_opus_5_config_with_fallbacks():
     kwargs = client.beta.messages.stream.call_args.kwargs
     assert kwargs["model"] == "claude-opus-5"
     assert kwargs["max_tokens"] == 64000
-    assert kwargs["betas"] == [FALLBACK_BETA]
+    # Both betas, not one: the files beta is what lets a corpus frame be
+    # referenced by file_id, and it is an append to the existing fallback beta
+    # rather than a migration off it.
+    assert kwargs["betas"] == [FALLBACK_BETA, FILES_BETA]
     assert kwargs["fallbacks"] == "default"
     assert kwargs["messages"] == [{"role": "user", "content": "prompt"}]
     # `thinking` is deliberately omitted — Opus 5 runs adaptive thinking by default.

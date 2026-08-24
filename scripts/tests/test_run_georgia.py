@@ -61,7 +61,11 @@ def _valid_diary() -> str:
 
 def _patch_common(monkeypatch, tmp_path, *, record_sink=None):
     """Patch assemble_prompt/write_outputs/record_stats; return the record sink."""
-    monkeypatch.setattr(run_module, "assemble_prompt", lambda run_date, repo_root=None: "PROMPT")
+    monkeypatch.setattr(
+        run_module,
+        "assemble_prompt",
+        lambda run_date, repo_root=None, shown_frame_ids=None: "PROMPT",
+    )
     if record_sink is None:
         record_sink = []
     monkeypatch.setattr(

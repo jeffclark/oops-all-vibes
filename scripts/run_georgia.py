@@ -1,9 +1,26 @@
 """Daily pipeline orchestrator.
 
-Assembles Georgia's prompt, calls the model, validates output, retries once on
-validation or missing-tag failure, and records pipeline stats on every exit
-path. Exits 0 on success (files written + committed); 1 on failure (no commit
-— yesterday's site stays live).
+Selects today's corpus frames, assembles Georgia's prompt, calls the model,
+validates output, retries once on validation or missing-tag failure, and records
+pipeline stats on every exit path. Exits 0 on success (files written +
+committed); 1 on failure (no commit — yesterday's site stays live).
+
+**Selection runs before assembly, not after.** The prompt depends on what was
+selected: it needs the shown frame ids to feed her prior verdicts back, and it
+needs to know whether any frame was shown at all to pick between the two corpus
+sentinels. Reading that order backwards would mean retrofitting a public
+signature halfway through.
+
+**The corpus can never cost a day.** Three layers:
+
+1. `selection_for_date` swallows everything — missing manifest, malformed JSON,
+   a cap violation — and returns an empty selection.
+2. A dead `file_id` is the failure the local checks cannot catch: it makes the
+   Messages request fail *before* inference, so it arrives as an API error rather
+   than a block-building error, and a plain retry would hit the same dead file.
+   The first API error on a corpus-bearing call drops the corpus and goes once
+   more, text-only.
+3. Nothing about `<taste>` can fail a run; it only produces warnings.
 """
 from __future__ import annotations
 
@@ -19,8 +36,9 @@ from anthropic import APIError
 
 from scripts.assemble_prompt import REPO_ROOT, assemble_prompt
 from scripts.call_model import ModelOutputError, call_model
+from scripts.corpus import select as corpus_select
 from scripts.record_stats import record_stats
-from scripts.validate_output import validate_output
+from scripts.validate_output import validate_output, validate_taste
 from scripts.verify_archive_claims import (
     Discrepancy,
     SOFT,
@@ -78,26 +96,55 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
     validation_failures: list[list[str]] = []
     api_errors = 0
     committed = False
+    corpus_warnings: list[str] = []
     # Tokens for the response that shipped. A run that retried spent more than
     # this; the shipped figure is what MAX_TOKENS actually had to accommodate.
     input_tokens = 0
     output_tokens = 0
 
-    prompt = assemble_prompt(date.fromisoformat(today), repo_root=repo_root)
+    run_date = date.fromisoformat(today)
+    selection = corpus_select.selection_for_date(
+        run_date, repo_root / "corpus" / "manifest.json"
+    )
+    prompt = assemble_prompt(
+        run_date, repo_root=repo_root, shown_frame_ids=list(selection.frame_ids)
+    )
+    request = corpus_select.build_content(selection, prompt)
+    corpus_dropped = False
 
-    for attempt in (1, 2):
+    attempt = 0
+    while attempt < 2:
+        attempt += 1
         attempts = attempt
         try:
-            result = call_model(prompt)
+            result = call_model(request)
             html, diary = result.html, result.diary
             input_tokens = result.input_tokens
             output_tokens = result.output_tokens
         except APIError as exc:
             api_errors += 1
             print(f"run_georgia: API error on attempt {attempt}: {exc}", file=sys.stderr)
+            if selection.shown and not corpus_dropped:
+                # Most likely a frame was deleted out from under the manifest, which
+                # fails the request before inference — the same request would fail
+                # again. Drop the corpus and rebuild the prompt so she is told the
+                # shelf is dark and is not asked for verdicts on frames she never
+                # saw. This is not a validation failure, so it does not spend one of
+                # the two validation attempts.
+                corpus_dropped = True
+                attempt -= 1
+                corpus_warnings.append(f"corpus_dropped: {type(exc).__name__}: {exc}")
+                print(
+                    "run_georgia: retrying text-only without the corpus",
+                    file=sys.stderr,
+                )
+                selection = corpus_select.EMPTY
+                prompt = assemble_prompt(run_date, repo_root=repo_root, shown_frame_ids=[])
+                request = prompt
+                continue
             record_stats(
             today, attempts, validation_failures, api_errors, committed, start,
-            repo_root=repo_root,
+            repo_root=repo_root, corpus_warnings=corpus_warnings,
         )
             return 1
         except ModelOutputError as exc:
@@ -110,6 +157,7 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                     file=sys.stderr,
                 )
                 prompt = add_retry_hint(prompt, reasons)
+                request = corpus_select.build_content(selection, prompt)
                 continue
             print(
                 f"run_georgia: ModelOutputError twice. Raw excerpt: {exc.raw[:500]!r}",
@@ -117,7 +165,7 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
             )
             record_stats(
             today, attempts, validation_failures, api_errors, committed, start,
-            repo_root=repo_root,
+            repo_root=repo_root, corpus_warnings=corpus_warnings,
         )
             return 1
 
@@ -141,6 +189,7 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                         file=sys.stderr,
                     )
                     prompt = add_retry_hint(prompt, reasons)
+                    request = corpus_select.build_content(selection, prompt)
                     continue
                 print(
                     f"run_georgia: archive claims failed twice. Latest: {reasons}",
@@ -148,7 +197,7 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                 )
                 record_stats(
                     today, attempts, validation_failures, api_errors, committed, start,
-                    repo_root=repo_root,
+                    repo_root=repo_root, corpus_warnings=corpus_warnings,
                 )
                 return 1
 
@@ -157,6 +206,18 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
             warnings = [d.message for d in soft_failures(found)]
             for warning in warnings:
                 print(f"run_georgia: archive warning: {warning}", file=sys.stderr)
+
+            # Her verdicts on today's frames. Never fatal: a missing or malformed
+            # <taste> block is a warning and the day still ships. On a dark day we
+            # never asked for one, so we do not complain about its absence either.
+            taste_entries: list[dict] = []
+            if selection.shown:
+                taste_entries, taste_warnings = validate_taste(
+                    result.taste, selection.frame_ids, today
+                )
+                corpus_warnings.extend(taste_warnings)
+            for warning in corpus_warnings:
+                print(f"run_georgia: corpus warning: {warning}", file=sys.stderr)
 
             # Record stats BEFORE write_outputs so this run's stats line is
             # included in write_outputs's `git add -A` commit.
@@ -170,11 +231,21 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                 start,
                 repo_root=repo_root,
                 archive_warnings=warnings,
+                corpus_warnings=corpus_warnings,
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
             )
             write_outputs(
-                today, final_html, diary, prompt, no_commit=no_commit, repo_root=repo_root
+                today,
+                final_html,
+                diary,
+                prompt,
+                no_commit=no_commit,
+                repo_root=repo_root,
+                frame_ids=selection.frame_ids,
+                manifest_version=selection.manifest_version,
+                shape_show_ids=selection.shape_show_ids,
+                taste_entries=taste_entries,
             )
             return 0
 
@@ -185,12 +256,13 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                 file=sys.stderr,
             )
             prompt = add_retry_hint(prompt, reasons)
+            request = corpus_select.build_content(selection, prompt)
             continue
 
         print(f"run_georgia: validation failed twice. Latest reasons: {reasons}", file=sys.stderr)
         record_stats(
             today, attempts, validation_failures, api_errors, committed, start,
-            repo_root=repo_root,
+            repo_root=repo_root, corpus_warnings=corpus_warnings,
         )
         return 1
 

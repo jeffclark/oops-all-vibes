@@ -10,6 +10,14 @@ verify_archive_claims is deliberately NOT run: it checks the page against the
 archive currently on disk, which has moved on since these prompts were written,
 so a replayed page would be judged against dates it couldn't have known about.
 
+**Corpus days replay text-only, and say so.** Once story_016 started sending
+frames, prompts/<date>.md became the text half of the request plus a
+`## Corpus shown` list of what went with it. This tool replays that file
+verbatim, so on such a day both arms see the text and neither sees the images.
+Rebuilding the blocks would compare a different request than the one that ran,
+which is a subtler lie than the one it fixes — so it is called out instead, on
+the console and in the viewer, rather than papered over.
+
 This is a review tool, not part of the daily pipeline. It never writes to
 index.html, archive/, log/, or stats.jsonl, and run_georgia.py doesn't import
 it. It does spend real API money — roughly $1.20 per date for both arms — so
@@ -41,6 +49,18 @@ from scripts.validate_output import validate_output
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = REPO_ROOT / "model-ab"
+
+# write_outputs stamps this into prompts/<date>.md on any day that carried frames.
+CORPUS_MARKER = "## Corpus shown"
+TEXT_ONLY_NOTICE = (
+    "replaying TEXT-ONLY: this day's real request also carried corpus frames as "
+    "images, which are not reconstructed here"
+)
+
+
+def corpus_dates(prompts: dict[str, str]) -> list[str]:
+    """Dates whose archived prompt records frames that this replay will not send."""
+    return sorted(d for d, text in prompts.items() if CORPUS_MARKER in text)
 
 
 @dataclass(frozen=True)
@@ -196,9 +216,15 @@ def write_arm_output(out_dir: Path, arm_name: str, html: str, diary: str) -> Non
         (out_dir / f"{arm_name}.diary.md").write_text(diary)
 
 
-def build_viewer(results: list[Result], dates: list[str], output_dir: Path) -> None:
+def build_viewer(
+    results: list[Result],
+    dates: list[str],
+    output_dir: Path,
+    text_only_dates: list[str] | None = None,
+) -> None:
     """Write model-ab/index.html — side-by-side iframes plus a numbers table."""
     by_key = {(r.date, r.arm): r for r in results}
+    text_only = set(text_only_dates or ())
     sections = []
 
     for date in dates:
@@ -226,7 +252,15 @@ def build_viewer(results: list[Result], dates: list[str], output_dir: Path) -> N
                 reason = escape(r.error) if r and r.error else "not run"
                 body = f'<div class="failed"><strong>No output</strong><br>{reason}</div>'
             panes.append(f'<div class="pane"><h3>{arm.name}<span>{arm.model}</span></h3>{body}</div>')
-        sections.append(f'<section><h2>{date}</h2><div class="panes">{"".join(panes)}</div></section>')
+        note = (
+            f'<p class="invalid"><strong>Text-only replay.</strong> {escape(TEXT_ONLY_NOTICE)}, '
+            "so neither arm below saw what Georgia saw.</p>"
+            if date in text_only
+            else ""
+        )
+        sections.append(
+            f'<section><h2>{date}</h2>{note}<div class="panes">{"".join(panes)}</div></section>'
+        )
 
     rows = []
     for date in dates:
@@ -360,6 +394,12 @@ def main(argv: list[str] | None = None) -> int:
     prompts = {d: (REPO_ROOT / "prompts" / f"{d}.md").read_text() for d in dates}
     facts = json.loads((REPO_ROOT / "facts.json").read_text())
 
+    with_corpus = corpus_dates(prompts)
+    if with_corpus:
+        print(f"model_ab: NOTE — {TEXT_ONLY_NOTICE}.")
+        for d in with_corpus:
+            print(f"model_ab:   {d} showed corpus frames on the day; replaying text-only")
+
     def execute(job: tuple[str, Arm]) -> Result:
         date, arm = job
         print(f"model_ab: calling {arm.model} for {date}...", flush=True)
@@ -425,7 +465,7 @@ def main(argv: list[str] | None = None) -> int:
     (output_dir / "results.json").write_text(
         json.dumps([r.__dict__ for r in results], indent=2) + "\n"
     )
-    build_viewer(results, dates, output_dir)
+    build_viewer(results, dates, output_dir, text_only_dates=with_corpus)
 
     failures = [r for r in results if not r.ok]
     invalid = [r for r in results if r.ok and not r.valid]

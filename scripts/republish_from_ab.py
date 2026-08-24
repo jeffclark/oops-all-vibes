@@ -144,6 +144,16 @@ def republish(
     for path, _ in targets:
         print(f"  would write {path.relative_to(repo_root)}")
     print(f"  prompts/{date_str}.md unchanged (model_ab replayed it verbatim)")
+    if "## Corpus shown" in prompt_path.read_text():
+        # The archived prompt records frames that model_ab did not send. The page
+        # about to be installed was written without seeing them, so the archive
+        # would claim a request shape that did not produce this page. Worth saying
+        # out loud rather than leaving the record quietly wrong.
+        print(
+            f"  NOTE: prompts/{date_str}.md records corpus frames that were shown on "
+            "the day. model_ab replays text-only, so this page was written without "
+            "them — the archived prompt overstates what produced it."
+        )
 
     if not write:
         print("\nrepublish: dry run — nothing written. Pass --write to apply.")

@@ -2,13 +2,24 @@
 
 Pushes to origin only when GEORGIA_PUSH is set truthy (CI sets it; local runs
 don't — honors the CLAUDE.md guidance to stay local until story_012).
+
+Two corpus-era additions, both append-only:
+
+- `prompts/<date>.md` gains a `## Corpus shown` section when frames were sent.
+  That file claims to be the day's prompt; once part of the prompt is images, it
+  is a lie unless it says which ones. The archive being honest is a standing
+  property in this repo, not a nicety.
+- `corpus/preferences.jsonl` gains today's verdicts. Never rewritten, never
+  reordered — the record stands, and she is free to contradict it tomorrow.
 """
 from __future__ import annotations
 
+import json
 import os
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any, Sequence
 
 from scripts.build_archive_index import build_archive_index
 from scripts.normalize_links import normalize_links
@@ -78,6 +89,57 @@ def finalize_html(html: str, date_str: str, repo_root: Path | None = None) -> st
     return _maybe_inject_tech(html, date_str) + FINALIZED_MARKER
 
 
+def append_preferences(
+    entries: Sequence[dict[str, Any]], repo_root: Path
+) -> None:
+    """Append today's verdicts to corpus/preferences.jsonl. Never fatal.
+
+    The accumulated file *is* the taste, so losing a day of it matters — but not
+    as much as shipping the site does. A write failure here is reported and
+    swallowed, exactly like normalize_links: run_georgia has already recorded
+    committed=True by the time this runs.
+    """
+    if not entries:
+        return
+    path = repo_root / "corpus" / "preferences.jsonl"
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("a") as f:
+            for entry in entries:
+                f.write(json.dumps(entry) + "\n")
+    except OSError as exc:  # noqa: BLE001 — a preference line must never cost a day
+        print(f"write_outputs: could not append preferences ({exc})", file=sys.stderr)
+
+
+def prompt_archive_text(
+    prompt: str,
+    frame_ids: Sequence[str] | None,
+    manifest_version: Any = None,
+    shape_show_ids: Sequence[str] | None = None,
+) -> str:
+    """The prompt as archived: the text, plus what was shown alongside it.
+
+    Omitted entirely when no frame was sent, so a text-only day archives exactly
+    the bytes that were sent and nothing extra.
+    """
+    if not frame_ids:
+        return prompt
+    lines = [
+        prompt.rstrip("\n"),
+        "",
+        "## Corpus shown",
+        "",
+        "The prompt above is the text half of the request. These frames were sent",
+        "as images before it, referenced by Files API id, in this order:",
+        "",
+    ]
+    lines += [f"- {fid}" for fid in frame_ids]
+    if shape_show_ids:
+        lines += ["", "Show-shape plots: " + ", ".join(shape_show_ids)]
+    lines += ["", f"Manifest version: {manifest_version}", ""]
+    return "\n".join(lines)
+
+
 def write_outputs(
     date_str: str,
     html: str,
@@ -86,6 +148,10 @@ def write_outputs(
     *,
     no_commit: bool = False,
     repo_root: Path | None = None,
+    frame_ids: Sequence[str] | None = None,
+    manifest_version: Any = None,
+    shape_show_ids: Sequence[str] | None = None,
+    taste_entries: Sequence[dict[str, Any]] | None = None,
 ) -> None:
     root = repo_root or REPO_ROOT
 
@@ -97,7 +163,13 @@ def write_outputs(
     (root / "index.html").write_text(html)
     (root / "archive" / f"{date_str}.html").write_text(html)
     (root / "log" / f"{date_str}.md").write_text(diary)
-    (root / "prompts" / f"{date_str}.md").write_text(prompt)
+    (root / "prompts" / f"{date_str}.md").write_text(
+        prompt_archive_text(prompt, frame_ids, manifest_version, shape_show_ids)
+    )
+
+    # Her verdicts on what she saw. Written before the commit so they land in the
+    # same `git add -A` as everything else the day produced.
+    append_preferences(taste_entries or [], root)
 
     # Boring archive index
     build_archive_index(root)

@@ -199,7 +199,7 @@ def test_warnings_column_shows_count_and_preview(tmp_path):
     _write_stats(tmp_path, [{**BASE_ENTRY, "archive_warnings": ["Day 3 is wrong", "count off"]}])
     build_stats_page(repo_root=tmp_path)
     html = (tmp_path / "stats.html").read_text()
-    assert "<th>archive warnings</th>" in html
+    assert "<th>warnings</th>" in html
     assert "2 · Day 3 is wrong | count off" in html
 
 
@@ -234,7 +234,7 @@ def test_summary_counts_runs_that_shipped_something_untrue(tmp_path):
     ])
     build_stats_page(repo_root=tmp_path)
     html = (tmp_path / "stats.html").read_text()
-    assert "runs with false archive claims" in html
+    assert "runs with warnings" in html
     assert '<span class="v">2</span>' in html
 
 

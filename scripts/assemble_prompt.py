@@ -14,7 +14,7 @@ import sys
 from dataclasses import dataclass
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Sequence
 
 import frontmatter
 
@@ -48,6 +48,54 @@ FETCHER_FAILED_FEEDBACK_SENTINEL = (
     "You're building blind.\n"
     "[/feedback]"
 )
+
+# How many days of her own verdicts come back to her. Every prior verdict on a
+# frame shown *today* is included regardless of age — being shown what you
+# thought of this exact image four months ago is the entire point of the anchors.
+TASTE_WINDOW_DAYS = 30
+TASTE_MIN_ENTRIES = 3
+TASTE_MAX_ENTRIES = 8
+
+# Frames were shown, and she has never written a verdict about any of them.
+# NOT the site's day 1 — she will be around 120 days into the project the first
+# time this fires, so it may claim only that the images are new, not that she is.
+DAY_1_TASTE_SENTINEL = (
+    "[taste]\n"
+    "These images are new. Not you — them. There is no preference log yet because "
+    "you have never looked at any of this before, so there is nothing here to "
+    "agree or disagree with. Whatever you write about them today becomes the thing "
+    "tomorrow-you gets measured against.\n"
+    "[/taste]"
+)
+
+# story_016's fail-open path caught a missing manifest, malformed JSON or a dead
+# file_id. Say so plainly: she will write about the silence either way, and it is
+# better that she knows which silence it is.
+CORPUS_DARK_SENTINEL = (
+    "[taste]\n"
+    "The shelf didn't load today. No frames reached you — the manifest was missing "
+    "or something in it had gone stale. This is a pipeline fault, not a decision, "
+    "and it should be back tomorrow. You are working without it today.\n"
+    "[/taste]"
+)
+
+TASTE_TASK = """3. Write your verdicts on today's frames. Output inside <taste>...</taste> tags,
+   one JSON object per line, nothing else between the tags:
+
+   {"frame_id": "bd-2014-t152", "verdict": "...", "compared_to": "cad-1987-t201", "confidence": 3}
+
+   Between %(lo)d and %(hi)d lines, each about a frame you were actually shown above.
+   `verdict` is prose, in your voice. `confidence` is 1-5. `compared_to` is another
+   frame_id or null — optional, but preference forms at boundaries, so a comparison
+   is worth more than an isolated reaction.
+
+   Pick the ones that struck you today. Say what you think, and say it in a way a
+   stranger could disagree with. Not description — verdict. "Wide symmetric block,
+   pit at the front sideline" tells nobody anything. "The version of this with the
+   gap still open is better than the one where it closes" is something you could
+   turn out to be wrong about later, which is what makes it worth writing down.
+
+""" % {"lo": TASTE_MIN_ENTRIES, "hi": TASTE_MAX_ENTRIES}
 
 
 @dataclass
@@ -242,6 +290,108 @@ def render_feedback_narrative(data: dict) -> str:
     return "\n".join(lines)
 
 
+def load_preferences(path: Path) -> list[dict[str, Any]]:
+    """Every entry in corpus/preferences.jsonl, oldest first. Never raises.
+
+    A broken preference log is a reason to show her less history, never a reason
+    for the day not to ship, so unparseable lines are skipped rather than fatal.
+    """
+    if not path.exists():
+        return []
+    entries: list[dict[str, Any]] = []
+    try:
+        raw_lines = path.read_text().splitlines()
+    except OSError as exc:
+        _warn(f"preferences.jsonl unreadable ({exc}); continuing without history")
+        return []
+    for n, raw in enumerate(raw_lines, start=1):
+        raw = raw.strip()
+        if not raw:
+            continue
+        try:
+            entry = json.loads(raw)
+        except json.JSONDecodeError:
+            _warn(f"preferences.jsonl line {n} is not JSON; skipping")
+            continue
+        if isinstance(entry, dict) and entry.get("frame_id"):
+            entries.append(entry)
+    return entries
+
+
+def _entry_date(entry: dict[str, Any]) -> date | None:
+    try:
+        return date.fromisoformat(str(entry.get("date", "")))
+    except ValueError:
+        return None
+
+
+def build_taste_block(
+    entries: list[dict[str, Any]],
+    shown_frame_ids: Sequence[str],
+    run_date: date,
+    window_days: int = TASTE_WINDOW_DAYS,
+) -> str:
+    """Her own preference log, fed back.
+
+    Two selections, unioned: the last `window_days` of everything, plus *every*
+    prior verdict on a frame in front of her today however old. The second is the
+    one that matters — an anchor she has written about for four months is the only
+    place drift can show up, and withholding any of it was considered and rejected
+    (story_018).
+    """
+    if not shown_frame_ids:
+        return CORPUS_DARK_SENTINEL
+    if not entries:
+        return DAY_1_TASTE_SENTINEL
+
+    shown = set(shown_frame_ids)
+    cutoff = run_date - timedelta(days=window_days)
+    selected = [
+        e for e in entries
+        if e.get("frame_id") in shown
+        or ((_entry_date(e) or date.min) >= cutoff)
+    ]
+    if not selected:
+        # Entries exist but none is recent and none is about today's frames. Not a
+        # beginning and not a fault, so no sentinel — just an empty history.
+        return (
+            "[taste]\n"
+            "Your preference log has entries, but none from the last "
+            f"{window_days} days and none about anything you are looking at today.\n"
+            "[/taste]"
+        )
+
+    on_view = [e for e in selected if e.get("frame_id") in shown]
+    other = [e for e in selected if e.get("frame_id") not in shown]
+
+    parts = ["[taste]", "What you have said before, in your own words."]
+    if on_view:
+        parts.append("")
+        parts.append("About frames in front of you right now:")
+        parts.append("")
+        parts += [_format_preference(e) for e in on_view]
+    if other:
+        parts.append("")
+        parts.append(f"Recent verdicts on other frames (last {window_days} days):")
+        parts.append("")
+        parts += [_format_preference(e) for e in other]
+    parts.append("[/taste]")
+    return "\n".join(parts)
+
+
+def _format_preference(entry: dict[str, Any]) -> str:
+    when = entry.get("date") or "undated"
+    frame = entry.get("frame_id", "?")
+    confidence = entry.get("confidence")
+    against = entry.get("compared_to")
+    bits = [f"- {when} {frame}"]
+    if confidence is not None:
+        bits.append(f"(confidence {confidence})")
+    if against:
+        bits.append(f"[against {against}]")
+    return " ".join(bits) + f": {entry.get('verdict', '')}"
+
+
 def pick_no_feedback_sentinel(archive_dir: Path) -> str:
     """Day-1 vs fetcher-failed sentinel, based on whether archive/ has entries."""
     if not archive_dir.is_dir():
@@ -279,7 +429,25 @@ def build_history_block(entries: list[LogEntry], run_date: date) -> str:
     return "\n".join(parts)
 
 
-def assemble_prompt(run_date: date, repo_root: Path = REPO_ROOT) -> str:
+def assemble_prompt(
+    run_date: date,
+    repo_root: Path = REPO_ROOT,
+    shown_frame_ids: Sequence[str] | None = None,
+) -> str:
+    """Assemble the day's text prompt.
+
+    `shown_frame_ids` is the ordered frame-id list story_016's `select_for_date`
+    returns, threaded here because the prompt depends on what was selected: it
+    needs the ids to look up prior verdicts, and it needs to know whether *any*
+    frame was shown to choose between the two corpus sentinels. Selection
+    therefore runs BEFORE assembly, not after.
+
+    The default is `None`, meaning "no corpus in play at all" — every existing
+    caller keeps working untouched and the text-only path stays the natural
+    default rather than a special case. That is deliberately distinct from an
+    empty sequence, which means the corpus was expected and failed to load, and
+    gets CORPUS_DARK_SENTINEL.
+    """
     soul = (repo_root / "georgia-soul.md").read_text()
     facts_raw = (repo_root / "facts.json").read_text().rstrip()
     facts = json.loads(facts_raw)
@@ -297,6 +465,19 @@ def assemble_prompt(run_date: date, repo_root: Path = REPO_ROOT) -> str:
     today_str = run_date.isoformat()
     project_checklist = _project_checklist_line(facts)
     archive_note = _archive_url_note(repo_root / "archive")
+
+    # No corpus in play: no block, no task, exactly the prompt that shipped before
+    # the corpus existed.
+    taste_block = ""
+    taste_task = ""
+    if shown_frame_ids is not None:
+        preferences = load_preferences(repo_root / "corpus" / "preferences.jsonl")
+        taste_block = build_taste_block(preferences, shown_frame_ids, run_date) + "\n\n---\n"
+        # On a dark day, do not ask for verdicts about frames she was never shown.
+        # Validation already drops entries naming frames absent from the selection,
+        # so asking anyway would reliably generate warnings for output we requested.
+        if shown_frame_ids:
+            taste_task = TASTE_TASK
 
     return f"""You are Georgia. Read this carefully.
 
@@ -318,6 +499,7 @@ These are the facts about Jeff. They are inviolable — every version of the sit
 
 ---
 
+{taste_block}
 Today is {today_str}.
 
 Your task — output `<site>...</site>` first, then `<log>...</log>`. In that order. Don't invert.
@@ -341,6 +523,7 @@ Your task — output `<site>...</site>` first, then `<log>...</log>`. In that or
 
    Importance scale: 1 = routine day. 2 = ordinary. 3 = memorable. 4 = significant. 5 = a day that defined something about you. Be honest. Most days are 1 or 2.
 
+{taste_task}
 Remember: the facts above are inviolable. Everything else — tone, design, copy, structure — is yours.
 """
 

@@ -6,6 +6,7 @@ first-person hints that can be shown to her verbatim.
 """
 from __future__ import annotations
 
+import json
 from datetime import date, datetime
 from typing import Any
 
@@ -164,3 +165,101 @@ def _check_diary(diary: str, today: str, failures: list[str]) -> None:
             f"Your diary's body is too short ({len(body)} chars). Write at least "
             f"{MIN_DIARY_BODY_LEN} characters of diary content after the frontmatter."
         )
+
+
+# ---------- <taste> (story_017) ----------
+#
+# Deliberately different from <site> and <log>: this validation never fails a
+# day. Site and diary are hard requirements; the corpus is additive and must
+# never be able to take the site down. Everything below returns warnings and the
+# entries that survived, and raises nothing.
+
+TASTE_MIN_ENTRIES = 3
+TASTE_MAX_ENTRIES = 8
+CONFIDENCE_MIN, CONFIDENCE_MAX = 1, 5
+
+
+def validate_taste(
+    raw: str,
+    shown_frame_ids: Any,
+    today: str,
+) -> tuple[list[dict], list[str]]:
+    """Parse a <taste> block into appendable entries plus warnings.
+
+    `shown_frame_ids` is the ordered list threaded out of `select_for_date`, not
+    the manifest: she does not get to write verdicts about frames she did not
+    look at, and "in the manifest" is a much weaker claim than "on screen today".
+    """
+    warnings: list[str] = []
+    shown = set(shown_frame_ids or ())
+
+    if not (raw or "").strip():
+        return [], ["No <taste> block in today's output; nothing appended to the preference log."]
+
+    entries: list[dict] = []
+    for n, line in enumerate((raw or "").splitlines(), start=1):
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            parsed = json.loads(line)
+        except json.JSONDecodeError as exc:
+            warnings.append(f"<taste> line {n} is not valid JSON ({exc}); skipped.")
+            continue
+        if not isinstance(parsed, dict):
+            warnings.append(f"<taste> line {n} is not a JSON object; skipped.")
+            continue
+
+        frame_id = parsed.get("frame_id")
+        if frame_id not in shown:
+            warnings.append(
+                f"<taste> line {n} names frame_id {frame_id!r}, which was not shown "
+                "today; dropped."
+            )
+            continue
+
+        verdict = str(parsed.get("verdict") or "").strip()
+        if not verdict:
+            warnings.append(f"<taste> line {n} ({frame_id}) has an empty verdict; dropped.")
+            continue
+
+        confidence = parsed.get("confidence")
+        if isinstance(confidence, bool) or not isinstance(confidence, int):
+            warnings.append(
+                f"<taste> line {n} ({frame_id}) has a non-integer confidence "
+                f"({confidence!r}); dropped."
+            )
+            continue
+        if not CONFIDENCE_MIN <= confidence <= CONFIDENCE_MAX:
+            warnings.append(
+                f"<taste> line {n} ({frame_id}) has confidence {confidence}, outside "
+                f"{CONFIDENCE_MIN}-{CONFIDENCE_MAX}; dropped."
+            )
+            continue
+
+        compared_to = parsed.get("compared_to")
+        if compared_to is not None and not isinstance(compared_to, str):
+            compared_to = None
+
+        entries.append({
+            "date": today,
+            "frame_id": frame_id,
+            "verdict": verdict,
+            "compared_to": compared_to,
+            "confidence": confidence,
+        })
+
+    if len(entries) > TASTE_MAX_ENTRIES:
+        warnings.append(
+            f"<taste> had {len(entries)} valid entries; keeping the first "
+            f"{TASTE_MAX_ENTRIES} and dropping the rest."
+        )
+        entries = entries[:TASTE_MAX_ENTRIES]
+    elif len(entries) < TASTE_MIN_ENTRIES:
+        warnings.append(
+            f"<taste> produced only {len(entries)} valid entr"
+            f"{'y' if len(entries) == 1 else 'ies'}; at least {TASTE_MIN_ENTRIES} "
+            "were asked for."
+        )
+
+    return entries, warnings
