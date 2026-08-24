@@ -43,6 +43,21 @@ jobs:
         run: python -m scripts.fetch_feedback
         continue-on-error: true
 
+      # Corpus health check. Deliberately outside the critical path: it reports,
+      # it never blocks. A dead file_id would fail Georgia's request before
+      # inference, so it is worth knowing about — but a verification problem must
+      # never be the reason the site doesn't ship, and story_016's text-only retry
+      # already covers a frame that dies between this check and the call.
+      #
+      # This exists because "Jeff checks it manually" stopped being true. The
+      # fail-open retry means a corpus rotting one frame at a time would surface
+      # only as a stats-page warning nobody was reading.
+      - name: Verify the corpus still resolves
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m scripts.corpus.publish --verify-only
+        continue-on-error: true
+
       # A manual dispatch defaults to a dry run: real runner, real secrets, real
       # API call, but --no-commit returns before both the commit and the push, so
       # nothing reaches the repo. The scheduled run is never a dry run.
