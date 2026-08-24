@@ -1,0 +1,156 @@
+{
+  "date": "2026-08-24",
+  "fetched_at": "2026-08-24T07:58:41+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "De Land pool. Sewing plane wing fabric. Mrs. Eleanor Lane was a widow supporting her two children as an interior decorator. When her hometown of De Land, Florida pooled its manpower and machines to go into war work, she gave up her business and went along. She is shown learning aircraft fabric work in the vocational school set up to train workers for the war plant",
+        "date": "1942-01-01",
+        "location": [
+          "volusia county",
+          "florida",
+          "de land",
+          "united states"
+        ],
+        "subject": [
+          "volusia county",
+          "film negatives",
+          "florida",
+          "united states",
+          "de land"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8e11000/8e11000/8e11078v.jpg#h=1024&w=809",
+        "image_width": 809,
+        "item_url": "http://www.loc.gov/item/2017693112/",
+        "era": "OWI (wartime)",
+        "is_oklahoma": false,
+        "collection_total": 171074
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-22",
+        "total_cases": 315,
+        "distinct_types": 21,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 179
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 42
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 24
+          },
+          {
+            "case": "Sign Repair",
+            "n": 17
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 10
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 8
+          }
+        ],
+        "only_one_of": [
+          "Bed Bugs",
+          "Mice Infestation - Residential",
+          "Squalid Living Conditions",
+          "Unsafe/Dangerous Conditions",
+          "Unsanitary Conditions - Establishment",
+          "Unsanitary Conditions - Food"
+        ],
+        "resolved": [
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "South End",
+            "note": "1 syringe and 3 dt recovered.RA"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Allston / Brighton",
+            "note": "3 syringes 13 dt recovered jc"
+          },
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "Downtown / Financial District",
+            "note": "This location is \"All Clear\" of violators. Reported at 5:28 pm"
+          }
+        ]
+      }
+    },
+    "surplus": {
+      "label": "Something a government is selling off",
+      "data": {
+        "name": "Gravely St. Walk-Behind Trimmer - Located at Fort Plain CSD",
+        "url": "https://municibid.com/Listing/Details/84699373",
+        "description": "Gravely St. Walk Behind Trimmer - Located at Fort Plain CSD Turns over, Needs Carburetor Cleaned. Model# ST 622 946151, Year: 2008-2010 DISCLAIMERItem IsSold as Is - Where IsCondition. Without any warranties expressed or implied. The item listed is not guaranteed to be in working condition. This auction is a legally binding contract to buy this item.The item purchased may have physical damage. We reserve the right to cancel this listing at any time.There could be additional problems not mentioned and components missing that are required to make it function properly. Please refer to the auction",
+        "seller": "DCMO BOCES",
+        "price": "100.00",
+        "currency": "USD",
+        "listings_on_page": 20
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 10
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-08-21",
+        "published_that_day": 116,
+        "sampled_from": 100,
+        "title": "Agency Information Collection Activities; Submission to the Office of Management and Budget (OMB) for Review and Approval; Comment Request; Procedures for Submissions by Certain Steel and Aluminum Producers Committing to New U.S. Steel or Aluminum Production To Obtain Tariff Adjustments Under Proclamation 10984",
+        "type": "Notice",
+        "agencies": [
+          "Commerce Department",
+          "International Trade Administration"
+        ],
+        "abstract": null,
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/08/21/2026-17155/agency-information-collection-activities-submission-to-the-office-of-management-and-budget-omb-for"
+      }
+    }
+  },
+  "failures": {},
+  "rotation": {
+    "builds_this_cycle": 2,
+    "builds_until_retirement": 28,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
