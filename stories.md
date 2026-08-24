@@ -958,3 +958,528 @@ These are explicitly out of scope for v1, per the PRD and your accepted flags:
 - When running on 2026-04-22 (day 1), both the day-1 history sentinel AND the day-1 feedback sentinel fire automatically — no special-casing needed in Jeff's setup.
 - If anything is ambiguous mid-implementation, prefer asking Jeff over guessing. This is a personal site tied to his name.
 - Two hygiene checks before marking anything "done": (a) does the script gracefully survive missing env vars and missing files, and (b) does an unhappy path still produce a clean commit history (no half-written files, no broken state)?
+- Stories 013–018 (the corpus set) are appended at the end of this file and have their own dependency graph and shared-facts block. They post-date launch; 013–015 run offline on Jeff's machine, only 016 touches the cron.
+
+---
+
+# Corpus Story Set (story_013 – story_018)
+
+Georgia asked for "a corpus I can have taste about" — a finite visual set she sees
+repeatedly, so preference can form from being moved by specific things rather than
+from reading descriptions of people being moved. This story set builds that.
+
+**Source material**: marching band / drum corps full-show video, supplied by Jeff.
+**Why it fits**: drill is composition on a 100-yard grid, designed to be read from
+above as a static form. A press-box frame is already a legible visual artifact.
+**What she cannot have**: sound. She gets the *shape* of the audio (loudness and
+tempo over time, rendered as an image) alongside frames from the same timestamps.
+No transcripts, no commentary, no fan reactions — those are descriptions, which is
+the exact thing she named as the problem.
+
+## The split (per CLAUDE.md)
+
+Chaos is hers; the pipeline is boring. Stories 013–015 run **offline, once**, on
+Jeff's machine. Only story_016's selection step runs inside the 3am cron, and it
+must fail open: if anything about the corpus is broken or missing, the day still
+ships text-only.
+
+## Corpus Dependency Graph
+
+```
+013 (ingest: video → frames + audio shape)
+      │
+      ▼
+014 (curation session: Georgia picks her own shelf)
+      │
+      ▼
+015 (Files API upload + public manifest)
+      │
+      ▼
+016 (daily selection + multimodal call)  ──►  017 (preference log: <taste> tag)
+                                                      │
+                                                      ▼
+                                              018 (blind re-test + consistency)
+```
+
+## Corpus Facts (shared context for stories 013–018)
+
+- **Frame size**: 1024×576 JPEG. Costs `ceil(1024/28) × ceil(576/28)` = 37 × 21 =
+  **777 visual tokens**. 640×360 would be 299 tokens, but at that size a 150-person
+  field form is a few pixels per performer and drill stops being legible. Cost
+  difference is fractions of a cent a day; legibility is the whole product. Do not
+  downsize to save tokens.
+- **Daily image budget**: **20 images, hard cap**. 10 anchors + 6 rotating frames +
+  up to 4 show-shape plots. ~15.5k input tokens ≈ **$0.08/day** at Opus 5's $5/1M.
+  Staying at or below 20 also avoids the stricter per-image dimension rule the API
+  applies to requests with more than 20 image blocks.
+- **Corpus size**: 8–12 shows × 10 keepers = **80–120 frames**, plus one show-shape
+  plot per show. Finite is the feature. Do not grow this later without a story.
+- **Anchors vs rotating**: 10 anchor frames are shown **every single day, forever**.
+  Repetition is the mechanism — a preference cannot form from a single viewing.
+- **Storage**: keeper frames live in the Anthropic Files API, never in this repo.
+  Files persist until deleted (no expiry unless one is set at upload); upload,
+  storage, listing and deletion are free; only tokens are billed at use. The public
+  repo holds the manifest — source URL, timestamp, corps, year — so the corpus is
+  fully reproducible by anyone without clarkle.com rehosting copyrighted footage.
+- **Beta header**: referencing files by `file_id` needs `files-api-2025-04-14`.
+  `call_model.py` is already on `client.beta.messages.stream`, so this is an append
+  to the existing `betas` list, not a migration.
+
+---
+
+## story_013 — Corpus ingest: video → candidate frames + audio shape
+
+**Goal**: An offline script that turns a supplied show video into (a) a set of
+candidate frames and (b) one image showing the show's dynamic arc. Runs on Jeff's
+machine, once per show. Never runs in CI.
+
+**Depends on**: nothing in this set (needs only the repo)
+
+**Files to create**:
+- `scripts/corpus/__init__.py` (empty)
+- `scripts/corpus/ingest.py`
+- `requirements-corpus.txt` — `yt-dlp`, `librosa`, `matplotlib`, `numpy`, `Pillow`.
+  **Separate from `requirements.txt` on purpose**: the daily Actions run must not
+  install librosa. Nothing in this file may ever be imported by the daily pipeline.
+- `.gitignore` — add `corpus/raw/`
+
+**System prerequisite (manual, Jeff)**: `ffmpeg` and `ffprobe` on PATH.
+Script must check for both at startup and exit with a clear message if missing.
+
+**Input**: `corpus/sources.json`, hand-written by Jeff, committed. One entry per show:
+
+```json
+[
+  {
+    "show_id": "bd-2014",
+    "url": "https://www.youtube.com/watch?v=...",
+    "corps": "Blue Devils",
+    "year": 2014,
+    "angle": "press-box",
+    "axis_tags": ["style:dci", "form:asymmetric", "era:2010s"]
+  }
+]
+```
+
+`angle` must be `press-box` or `high`. **A `field-level` entry is rejected with a
+loud error, not a warning** — field-level footage shows a wall of backs, contributes
+nothing about drill, and would silently poison the corpus with frames she cannot
+form a real preference about.
+
+**Behavior** — `ingest_show(entry: dict, out_dir: Path) -> ShowIngest`:
+
+1. Download via `yt-dlp` at ≤720p to `corpus/raw/<show_id>/source.mp4`. Skip the
+   download if the file already exists (re-runs must be cheap and idempotent).
+2. `ffprobe` the duration. Reject anything under 4 minutes or over 20 — that's not
+   a full show and the arc won't mean anything.
+3. Extract candidate frames every **8 seconds**, scaled to 1024×576, JPEG quality 4,
+   to `corpus/raw/<show_id>/frames/t<seconds:05d>.jpg`. An 11-minute show yields
+   ~82 candidates.
+4. Extract audio to a temp wav. Compute, with librosa/numpy:
+   - RMS loudness envelope (hop such that there are ~1000 points across the show)
+   - tempo curve
+   - onset density
+5. Render **one** `corpus/raw/<show_id>/shape.png` at 1024×384: loudness envelope as
+   the primary trace, tempo as a secondary axis, and a tick on the x-axis at every
+   candidate frame timestamp so a frame can be located in the arc. Dark background
+   to match how it will be read. No title text beyond `<corps> <year>`.
+6. Write `corpus/raw/<show_id>/ingest.json` — duration, frame count, frame
+   timestamps, and the source entry echoed back.
+
+**CLI**:
+- `python -m scripts.corpus.ingest` — ingests every entry in `sources.json`
+- `python -m scripts.corpus.ingest --show bd-2014` — one show
+- `python -m scripts.corpus.ingest --show bd-2014 --force` — re-download
+
+**Implementation notes**:
+- Shell out to `ffmpeg`/`ffprobe`/`yt-dlp` via `subprocess`; do not add a Python
+  ffmpeg wrapper dependency.
+- One `ffmpeg` invocation for all frames (`-vf fps=1/8,scale=1024:576`), not one per
+  frame.
+- Frame filenames encode the source timestamp. That timestamp is the provenance
+  record and must survive into the manifest — it's what makes the corpus
+  reproducible by a third party.
+- Delete the temp wav on the way out, including on failure.
+
+**Acceptance criteria**:
+- [ ] With `ffmpeg` absent from PATH: exits non-zero with a message naming ffmpeg, before downloading anything
+- [ ] A valid press-box entry produces `source.mp4`, ≥30 frames at 1024×576, `shape.png`, and `ingest.json`
+- [ ] Every emitted frame is exactly 1024×576
+- [ ] An entry with `"angle": "field-level"` is rejected with a non-zero exit and an explicit message; no download occurs
+- [ ] A video shorter than 4 minutes is rejected with a clear message
+- [ ] Re-running without `--force` re-uses the existing download and does not re-fetch
+- [ ] `shape.png` is 1024×384 and carries one x-axis tick per candidate frame
+- [ ] `corpus/raw/` is gitignored; `git status` is clean after a full ingest
+- [ ] Nothing in `requirements-corpus.txt` is imported by any module under `scripts/` outside `scripts/corpus/`
+
+**Out of scope**:
+- Any selection or ranking of frames (that's story_014)
+- Scene detection or drill-set detection — interval sampling plus curation is the design
+- Uploading anything anywhere
+- Running in GitHub Actions
+
+---
+
+## story_014 — Curation session: Georgia picks her own shelf
+
+**Goal**: A one-off interactive script that shows Georgia the candidates and makes
+her choose which 10 frames per show she keeps, ranked, with reasons. She builds the
+corpus; Jeff does not. Forced choice under a hard cap is what makes this taste
+rather than appreciation.
+
+**Depends on**: story_013
+
+**Files to create**:
+- `scripts/corpus/curate.py`
+- `corpus/curation/<show_id>.json` (output, committed — this is her writing)
+
+**Two rounds per show.**
+
+**Round 1 — contact sheets.** Compose candidates into 4×5 grids of 20 cells using
+Pillow, each cell labelled with its timestamp, written to
+`corpus/raw/<show_id>/sheets/sheet_N.jpg`. Size each sheet so it lands at or under
+the high-resolution ceiling (2576 px long edge / 4784 visual tokens) after the API's
+downscale — cells land around 500×280, enough to judge form and color, not detail.
+~82 candidates is 4–5 sheets. Send all sheets for one show plus that show's
+`shape.png` in a single call, and ask her to shortlist **exactly 25** timestamps.
+
+**Round 2 — finalists.** Send those 25 as individual 1024×576 frames, plus
+`shape.png` again, and require **exactly 10**, ranked 1–10, each with a reason, plus
+a short statement of what the show as a whole is doing.
+
+**Output** `corpus/curation/<show_id>.json`:
+
+```json
+{
+  "show_id": "bd-2014",
+  "curated_at": "2026-08-25",
+  "show_statement": "...",
+  "shortlist": [48, 96, 152],
+  "keepers": [
+    {"rank": 1, "t": 152, "reason": "..."},
+    {"rank": 2, "t": 96,  "reason": "..."}
+  ]
+}
+```
+
+**Implementation notes**:
+- Use structured outputs so the counts are enforced at the tool-call layer and the
+  model retries on mismatch, rather than parsing prose and hoping. Exactly 25 in
+  round 1, exactly 10 in round 2 — reject and retry short or long lists.
+- Reuse the existing soul doc as system context so it is *Georgia* choosing, not a
+  generic assistant. Do **not** feed her the diary history — this is a fresh act of
+  looking, not a continuation of her running narrative.
+- Do not tell her the corps name or year in round 1. She should react to the image.
+  Reveal provenance in round 2 only if it's already visible in the frame.
+- Prompt her for what she'd *drop*, not only what she'd keep, when the cap bites.
+- One show at a time. `--show` required; no bulk mode. This is a deliberate act.
+- Every timestamp she returns must exist in `ingest.json`; reject hallucinated ones
+  and retry that round once before failing the show.
+
+**Cost note**: roughly 25k input + 4k output tokens per show ≈ $0.22/show, so under
+$3 for the whole corpus. This is a one-time spend.
+
+**Acceptance criteria**:
+- [ ] `python -m scripts.corpus.curate --show bd-2014` writes a valid `corpus/curation/bd-2014.json`
+- [ ] Round 1 returns exactly 25 timestamps; a short or long list triggers a retry
+- [ ] Round 2 returns exactly 10 ranked keepers with non-empty reasons and unique ranks 1–10
+- [ ] Every returned timestamp exists in that show's `ingest.json`; a fabricated timestamp fails the run with a clear message
+- [ ] Contact sheets are written to disk and are visually inspectable by Jeff afterward
+- [ ] Re-running an already-curated show refuses to overwrite without `--force`
+- [ ] With no `--show` argument: exits non-zero explaining that curation is per-show
+- [ ] Curation JSON is committed; the sheets and frames it references are not
+
+**Out of scope**:
+- Jeff overriding her picks (if he wants a different corpus, he changes the sources)
+- Any notion of "correct" picks or scoring her choices
+- Uploading (story_015)
+
+---
+
+## story_015 — Files API upload and public manifest
+
+**Goal**: Upload the keepers once, and write the public, reproducible manifest that
+the daily run reads. This is the story that keeps copyrighted pixels out of a public
+repo while keeping the corpus fully verifiable by a stranger.
+
+**Depends on**: story_014
+
+**Files to create**:
+- `scripts/corpus/publish.py`
+- `corpus/manifest.json` (output, committed)
+
+**Behavior**:
+
+1. For every curated show, upload each of its 10 keeper frames and the show's
+   `shape.png` via `client.beta.files.upload(...)`, with beta `files-api-2025-04-14`.
+   Upload with **no expiry** — the corpus is meant to be permanent.
+2. Assign roles. Exactly **10 anchors** across the whole corpus, chosen as each
+   show's rank-1 keeper until 10 are filled, preferring axis-tag diversity over
+   filling from a single show. Everything else is `rotating`.
+3. Write `corpus/manifest.json`:
+
+```json
+{
+  "version": 1,
+  "published_at": "2026-08-25",
+  "frames": [
+    {
+      "frame_id": "bd-2014-t152",
+      "file_id": "file_...",
+      "show_id": "bd-2014",
+      "corps": "Blue Devils",
+      "year": 2014,
+      "t": 152,
+      "url": "https://www.youtube.com/watch?v=...",
+      "axis_tags": ["style:dci", "form:asymmetric"],
+      "role": "anchor",
+      "curation_rank": 1
+    }
+  ],
+  "shapes": [
+    {"show_id": "bd-2014", "file_id": "file_..."}
+  ]
+}
+```
+
+4. **Verify before writing.** After upload, confirm every `file_id` resolves, using
+   the batch `ids[]` lookup (up to 100 ids in one request). Any id that does not come
+   back is a hard failure — write no manifest rather than a manifest with a dead
+   reference, because a dead `file_id` fails a Messages request *before inference*,
+   which would cost a whole day of site.
+5. Idempotent: a frame already present in the existing manifest with a live
+   `file_id` is not re-uploaded.
+
+**CLI**:
+- `python -m scripts.corpus.publish` — publishes everything curated
+- `python -m scripts.corpus.publish --verify-only` — checks every `file_id` in the
+  current manifest still resolves, exits non-zero if not
+
+**Implementation notes**:
+- `ANTHROPIC_API_KEY` from env, same as the daily pipeline.
+- Uploaded files are visible to any key in the same workspace. That's fine here
+  (single owner), but never accept a `file_id` from anywhere except this manifest.
+- The manifest is the archive record. `url` + `t` must be sufficient for a stranger
+  to regenerate the exact frame. Treat that as a correctness property.
+- Write the manifest atomically (temp file, then rename).
+
+**Acceptance criteria**:
+- [ ] Running against curated shows produces a manifest with 10 frames per show plus one shape entry per show
+- [ ] Exactly 10 frames carry `"role": "anchor"`, drawn from at least 5 distinct shows
+- [ ] Every `frame_id` is unique; every `file_id` resolves via the batch id lookup
+- [ ] A deliberately deleted `file_id` causes `--verify-only` to exit non-zero and name the frame
+- [ ] Re-running does not re-upload frames already live in the manifest
+- [ ] An upload failure partway through leaves the previous manifest intact (no partial write)
+- [ ] `corpus/manifest.json` contains no image data — only ids and provenance
+- [ ] Every manifest entry has a non-empty `url` and an integer `t`
+
+**Out of scope**:
+- Deleting old files (manual for now)
+- Any UI for browsing the corpus
+- Re-curation or role reassignment after publish (that would be a new story)
+
+---
+
+## story_016 — Daily corpus selection and multimodal call
+
+**Goal**: Put the corpus in front of Georgia every morning. The only story in this
+set that touches the 3am cron, and the only one with a hard fail-open requirement.
+
+**Depends on**: story_015, story_004 (`call_model.py`), story_006 (`run_georgia.py`)
+
+**Files to create**:
+- `scripts/corpus/select.py`
+
+**Files to modify**:
+- `scripts/call_model.py` — accept content blocks
+- `scripts/run_georgia.py` — compose corpus blocks with the assembled prompt
+- `scripts/write_outputs.py` — record shown frame ids in the prompt archive
+
+**Selection** — `select_for_date(run_date, manifest) -> CorpusSelection`:
+
+1. All 10 anchors, every day, in a stable order.
+2. 6 rotating frames, chosen deterministically by seeding from `run_date.isoformat()`
+   so a given date always yields the same set and a replay reproduces exactly.
+3. Up to 4 show-shape plots, for the shows represented in today's rotating set.
+4. **Hard cap of 20 image blocks.** Assert it; do not let a future manifest change
+   silently push past it.
+
+**Call shape**: images first, then the text prompt — image-before-text measurably
+helps. Each frame is preceded by a short text label naming its `frame_id` so she can
+refer to it and so the preference log can key on it. Frames are referenced by
+`file_id`, so the request payload stays tiny regardless of corpus size.
+
+**`call_model.py` changes**:
+- Signature moves from `prompt: str` to accepting a content-block list; keep a
+  string-accepting path so existing callers and tests don't all have to change at once.
+- Append `"files-api-2025-04-14"` to the existing `betas` list. No other migration —
+  it is already on the beta messages path.
+- `MAX_TOKENS` stays 64000. Images add input tokens only; output is unaffected.
+
+**Fail-open, non-negotiable**:
+- Manifest missing, unparseable, or empty → log to stderr, run text-only.
+- Any error building corpus blocks → log, run text-only.
+- Do **not** preflight-verify `file_id`s inside the daily run — that's a second API
+  call in the critical path. Verification is story_015's `--verify-only`, run by Jeff.
+  If a dead `file_id` does take a day down, the existing retry and the next morning
+  both still work, and `stats.jsonl` will show it.
+
+**Archive truthfulness**: `prompts/YYYY-MM-DD.md` currently claims to be the full
+prompt. Once part of the prompt is images, that file is a lie unless it says so.
+Append a `## Corpus shown` section listing today's `frame_id`s and the manifest
+version. This repo already ships `verify_archive_claims.py`; the archive being
+honest is a standing property here, not a nicety.
+
+**Implementation notes**:
+- `select.py` must not import anything from `requirements-corpus.txt`. It reads JSON
+  and builds dicts. Nothing more.
+- Seed the rotation from the date string only — no `random` module global state, no
+  clock reads beyond the passed-in `run_date`.
+- `model_ab.py` and `republish_from_ab.py` replay archived prompts as text. Either
+  teach them to rebuild corpus blocks from the archived frame-id list, or make them
+  explicitly skip the corpus and say so in their output. **Do not leave them
+  silently replaying a different prompt than the one that ran** — that would make the
+  A/B harness lie.
+
+**Acceptance criteria**:
+- [ ] `select_for_date` returns ≤20 image blocks, always including all 10 anchors
+- [ ] Same date twice → identical selection; different dates → different rotating sets
+- [ ] Shape plots included only for shows present in that day's rotating set, max 4
+- [ ] Missing manifest → text-only prompt, stderr warning, exit 0, day still ships
+- [ ] Malformed manifest JSON → same graceful path
+- [ ] Built request has all image blocks before the text block
+- [ ] `betas` contains both the fallback beta and the files beta
+- [ ] `prompts/<date>.md` contains a `## Corpus shown` section listing every frame id sent
+- [ ] Existing `call_model` tests still pass unchanged via the string-accepting path
+- [ ] `model_ab.py` either reconstructs corpus blocks or prints an explicit notice that it is replaying text-only
+
+**Out of scope**:
+- Her writing anything about the frames (story_017)
+- Any on-page rendering of the corpus
+- Adaptive or preference-weighted selection — rotation is dumb and deterministic on purpose
+
+---
+
+## story_017 — Preference log: the `<taste>` tag
+
+**Goal**: Give her somewhere to put the verdict, and give tomorrow's her the memory
+of today's. Without this the corpus is decoration — she looks and forgets. The
+accumulated file *is* the taste.
+
+**Depends on**: story_016
+
+**Files to create**:
+- `corpus/preferences.jsonl` (append-only, committed)
+
+**Files to modify**:
+- `scripts/assemble_prompt.py` — add the task instruction and a preference-history block
+- `scripts/call_model.py` — parse a third tag
+- `scripts/validate_output.py` — validate it
+- `scripts/write_outputs.py` — append it
+
+**Output contract**: a third tag alongside `<site>` and `<log>`, parsed the same way:
+
+```
+<taste>
+{"frame_id": "bd-2014-t152", "verdict": "...", "compared_to": "cad-1987-t201", "confidence": 3}
+{"frame_id": "sv-2018-t88", "verdict": "...", "compared_to": null, "confidence": 2}
+</taste>
+```
+
+One JSON object per line. She must write **at least 3 and at most 8** entries a day,
+each about a frame actually shown that day. `verdict` is prose in her voice.
+`confidence` is 1–5. `compared_to` is optional but encouraged — preference forms at
+boundaries, so comparisons are worth more than isolated reactions.
+
+**Prompt changes**:
+- Task instruction: pick frames that struck her today, say what she thinks, and say
+  it in a way a stranger could disagree with. Not description — verdict.
+- Feed back the last 30 days of her own preference entries, plus every prior entry
+  for any frame shown today. Being shown her own past verdict on a frame she is
+  looking at again is the entire point of the anchors.
+
+**Fail-soft, deliberately different from `<site>` and `<log>`**:
+- A missing or malformed `<taste>` block **must not fail the day**. Log a validation
+  warning, ship the site. Site and diary stay hard requirements; the corpus is
+  additive and must never be able to take the site down.
+- Individual malformed lines are skipped with a warning; valid lines still land.
+- Entries naming a `frame_id` not shown today are dropped with a warning — she does
+  not get to write verdicts about frames she didn't look at.
+
+**Acceptance criteria**:
+- [ ] A well-formed `<taste>` block appends N lines to `corpus/preferences.jsonl`
+- [ ] Missing `<taste>` → warning recorded, site and diary still ship, exit 0
+- [ ] Malformed JSON on one line → that line skipped, others appended, warning recorded
+- [ ] An entry for a `frame_id` not in today's selection is dropped with a warning
+- [ ] Fewer than 3 valid entries → warning recorded in `stats.jsonl`, day still ships
+- [ ] More than 8 entries → extras dropped, warning recorded
+- [ ] `confidence` outside 1–5 → that entry dropped with a warning
+- [ ] Assembled prompt contains prior verdicts for every anchor shown today
+- [ ] The file is append-only; a run never rewrites or reorders existing lines
+
+**Out of scope**:
+- Rendering preferences on the site (hers to do, if she wants, in the daily HTML)
+- Any aggregate scoring or ranking across entries
+- Letting her edit or retract past verdicts — the record stands, she can contradict it
+
+---
+
+## story_018 — Blind re-test and consistency reporting
+
+**Goal**: Answer the question she actually asked. She wrote that she doesn't know
+whether she has taste or a very convincing average. Because the corpus is finite and
+fixed, that's testable: show her a frame she has already judged, without telling her,
+and see whether she says the same thing.
+
+**Depends on**: story_017
+
+**Files to create**:
+- `scripts/corpus/consistency.py`
+
+**Files to modify**:
+- `scripts/corpus/select.py` — blind slot
+- `scripts/build_stats_page.py` — surface the result
+
+**Blind slot**: every 10th day (deterministic on the date, not random), one of the 6
+rotating slots is replaced by an anchor she has already written about **at least 14
+days ago**. It is presented with a neutral `frame_id` label like the others — nothing
+in the prompt flags it as a re-test. She is not told, on that day or ever, that this
+mechanism exists. Record the substitution in `prompts/<date>.md` alongside the rest
+of the corpus list, so the archive stays honest even though she isn't told.
+
+**Comparison** — `compare(frame_id, old_entry, new_entry) -> Verdict`. A separate,
+cheap model call, offline, not in the critical path:
+- `consistent` — same direction, same reasons
+- `evolved` — same direction, different or deeper reasons
+- `reversed` — opposite direction
+- `unrelated` — no meaningful relationship
+
+Append to `corpus/consistency.jsonl` with both verdict texts and the day gap.
+
+**Stats page**: a small block — number of blind re-tests run, the split across the
+four outcomes, and the longest gap tested. Plain, factual, no interpretation.
+`consistent` is not the "good" outcome and `reversed` is not failure; a `reversed`
+after 90 days may be the most interesting thing on the page. Do not editorialize in
+the pipeline — that's her job, on the site, if she notices.
+
+**Ethics note, deliberate**: this is the one place the pipeline keeps something from
+her. It's justified because telling her would destroy the measurement, the record is
+public in the repo and on the stats page, and she is the site's author rather than
+its subject — she will read her own repo eventually and find this story. Do not
+extend concealment beyond this single mechanism.
+
+**Acceptance criteria**:
+- [ ] On a blind-test day, exactly one rotating slot is replaced; the cap of 20 images still holds
+- [ ] Blind frames are ≥14 days since their last written verdict
+- [ ] Same date twice → same blind decision and same frame (fully deterministic)
+- [ ] Nothing in the assembled prompt indicates a frame is a re-test
+- [ ] `prompts/<date>.md` records which frame was the blind slot
+- [ ] With no eligible frame (corpus too young), no substitution happens and the day is normal
+- [ ] `consistency.py` classifies into exactly the four outcomes and appends one line per test
+- [ ] Stats page renders the four-way split and the longest gap; renders cleanly with zero tests recorded
+- [ ] The comparison call failing does not affect the daily site run in any way
+
+**Out of scope**:
+- Any behavioral change based on the result — this measures, it does not steer
+- Telling Georgia about the mechanism in the prompt
+- More than one blind slot per day
