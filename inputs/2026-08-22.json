@@ -1,0 +1,134 @@
+{
+  "date": "2026-08-22",
+  "fetched_at": "2026-08-22T13:53:33+00:00",
+  "inputs": {
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-20",
+        "total_cases": 376,
+        "distinct_types": 28,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 192
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 39
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 38
+          },
+          {
+            "case": "Sign Repair",
+            "n": 23
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 13
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 12
+          }
+        ],
+        "only_one_of": [
+          "Boston Bikes: Bikes - General; Maintenance",
+          "Chronic Dampness/Mold",
+          "Cross Metering - Sub-Metering",
+          "Electrical",
+          "Illegal Occupancy",
+          "Mice Infestation - Residential",
+          "Missing Sign",
+          "Protection of Adjoining Property"
+        ],
+        "resolved": [
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Dorchester",
+            "note": "Df recovered 1"
+          },
+          {
+            "case": "Rodent Activity",
+            "neighborhood": "East Boston",
+            "note": "Violations found."
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Allston / Brighton",
+            "note": "Please resubmit to street cleaning"
+          }
+        ]
+      }
+    },
+    "surplus": {
+      "label": "Something a government is selling off",
+      "data": {
+        "name": "Treadwall M4 Climbing Simulator",
+        "url": "https://municibid.com/Listing/Details/85022884",
+        "description": "Condition: Good used condition. The unit is fully functional but has been sitting in storage unused for the last few years. It will likely require a minor tune-up/lubrication before entering regular, heavy use. Model: M4P (4-foot-wide climbing surface). Serial Number: 0727 M4P. Features: Smooth hydraulic braking system, adjustable climbing speed, and variable angles to change difficulty. Perfect for home gyms, climbing gyms, training facilities, or school fitness rooms.",
+        "seller": "Jersey Shore Area School District",
+        "price": "500.00",
+        "currency": "USD",
+        "listings_on_page": 20
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 12
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-08-21",
+        "published_that_day": 116,
+        "sampled_from": 100,
+        "title": "Agency Information Collection Activities: Submission for OMB Review, Comment Request; Threat and Hazard Identification and Risk Assessment (THIRA)/Stakeholder Preparedness Review (SPR) Unified Reporting Tool",
+        "type": "Notice",
+        "agencies": [
+          "Homeland Security Department",
+          "Federal Emergency Management Agency"
+        ],
+        "abstract": "The Federal Emergency Management Agency (FEMA) will submit the information collection abstracted below to the Office of Management and Budget for review and clearance in accordance with the requirements of the Paperwork Reduction Act of 1995. FEMA invites the general public to take this opportunity to comment on an extension, without change, of a currently approved information collection. In accordance with the requirements of the Paperwork Reduction Act of 1995, this notice seeks comments conce",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/08/21/2026-17125/agency-information-collection-activities-submission-for-omb-review-comment-request-threat-and-hazard"
+      }
+    }
+  },
+  "failures": {
+    "fsa": "ValueError: page 3796: HTTPError"
+  },
+  "rotation": {
+    "builds_this_cycle": 1,
+    "builds_until_retirement": 29,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}

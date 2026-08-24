@@ -1,0 +1,65 @@
+{
+  "date": "2026-08-22",
+  "yesterday": {
+    "visitors": 4,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 16,
+    "last_7_days_avg": 2.29,
+    "last_30_days_visitors": 60,
+    "last_30_days_avg": 2.0
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 120,
+    "peak_day": {
+      "date": "2026-07-17",
+      "visitors": 11
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": 1.75,
+    "week_over_week_pct": -11.1
+  },
+  "days_live_series": {
+    "2026-06-26": 1,
+    "2026-06-27": 3,
+    "2026-06-28": 0,
+    "2026-06-29": 0,
+    "2026-07-03": 0,
+    "2026-07-04": 0,
+    "2026-07-05": 4,
+    "2026-07-06": 0,
+    "2026-07-10": 8,
+    "2026-07-11": 1,
+    "2026-07-12": 0,
+    "2026-07-13": 0,
+    "2026-07-17": 11,
+    "2026-07-18": 4,
+    "2026-07-19": 6,
+    "2026-07-20": 11,
+    "2026-07-23": 1,
+    "2026-07-24": 1,
+    "2026-07-25": 1,
+    "2026-07-26": 1,
+    "2026-07-30": 1,
+    "2026-07-31": 1,
+    "2026-08-01": 3,
+    "2026-08-02": 2,
+    "2026-08-06": 0,
+    "2026-08-07": 3,
+    "2026-08-08": 2,
+    "2026-08-09": 0,
+    "2026-08-13": 1,
+    "2026-08-14": 1,
+    "2026-08-15": 3,
+    "2026-08-16": 2,
+    "2026-08-19": 4,
+    "2026-08-20": 4,
+    "2026-08-21": 1,
+    "2026-08-22": 4
+  },
+  "data_freshness_note": null,
+  "jeff_note": "I wrote you that note as the agent was finalizing the daily data updates. However, the code review was taking forever so I went to bed before it finished. I woke up this morning and ran a couple more code reviews on it just to make sure-sure. \n\nSo anyways, the creative information is in the instructions that run every night - so you should now have plenty of new information to use to generate your stuff. Which is cool. I'm very excited to see what you do with this on Sunday!\n\nThe dirt update didn't really work well last night. It puts the dirt over the chalk, so you can't really see anything besides the dirt. Could you have known this?\n\nToday was a great Maine day: blueberry pancakes. Pickleball. Went down to the Old Port and got a shirt that just says LOBSTER ROLLS in a varsity font (and I love it). Went to a Sea Dogs game and saw fireworks. At the Sea Dogs game, they assumed the alternate teamname \"Bean Suppahs\" for the night. Which is hilarious in and of itself. Except that at this game, they will also SELL you an actual Maine bean suppah: 2 red snapper dogs, in baked beans, with brown bread and a whoopie pie. $15. It was so weird and I loved it! I love Maine. And I love minor league baseball. After the game, there were fireworks.\n\nA buddy of mine wants to start a college futures level team in Scituate. Wants to me to run social and AI. I of course said yes. I have this weird fascination with a stadium (even a very small one) being the workplace when it's empty. Like walking through some kind of hallway that has beer ads and closed concessions, and just knowing that at some point it will have a few thousand people buying hot dogs and whatnot. So I hope this happens. Also, I think it would be awesome to be part of a minor league organization (or minor minor, in this case).\n\nI ran out of Anthropic credits last night, so this is the first real try of the new prompting with the new creative data. I hope it works.\n\nGood morning and good night!"
+}

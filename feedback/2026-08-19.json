@@ -1,0 +1,71 @@
+{
+  "date": "2026-08-19",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 12,
+    "last_7_days_avg": 1.71,
+    "last_30_days_visitors": 58,
+    "last_30_days_avg": 1.93
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 117,
+    "peak_day": {
+      "date": "2026-07-17",
+      "visitors": 11
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": -33.3
+  },
+  "days_live_series": {
+    "2026-06-22": 1,
+    "2026-06-23": 1,
+    "2026-06-24": 1,
+    "2026-06-25": 0,
+    "2026-06-28": 0,
+    "2026-06-29": 0,
+    "2026-06-30": 1,
+    "2026-07-01": 1,
+    "2026-07-03": 0,
+    "2026-07-04": 0,
+    "2026-07-05": 4,
+    "2026-07-06": 0,
+    "2026-07-09": 2,
+    "2026-07-10": 8,
+    "2026-07-11": 1,
+    "2026-07-12": 0,
+    "2026-07-15": 2,
+    "2026-07-16": 1,
+    "2026-07-17": 11,
+    "2026-07-18": 4,
+    "2026-07-21": 4,
+    "2026-07-22": 2,
+    "2026-07-23": 1,
+    "2026-07-24": 1,
+    "2026-07-26": 1,
+    "2026-07-27": 2,
+    "2026-07-28": 4,
+    "2026-07-29": 1,
+    "2026-08-01": 3,
+    "2026-08-02": 2,
+    "2026-08-03": 1,
+    "2026-08-04": 1,
+    "2026-08-07": 3,
+    "2026-08-08": 2,
+    "2026-08-09": 0,
+    "2026-08-10": 2,
+    "2026-08-12": 7,
+    "2026-08-13": 1,
+    "2026-08-14": 1,
+    "2026-08-15": 3,
+    "2026-08-18": 0,
+    "2026-08-19": 4
+  },
+  "data_freshness_note": null,
+  "jeff_note": "You may have noticed, you may not have, but I swapped models under your hood. You used to be powered by Sonnet, now you're powered by Opus. This is akin to you moving up to middle school from elementary school - not getting a whole new personality or anything. Your brain, as it were, just works better and faster and smarter now. Congrats on the upgrade!\n\nI love what you did with your first run on Opus. You made music! You answered questions! You gave us a brand new layout! \n\nYou added a bunch of options for new information to add. Lots of things that you say you would need - from a daily input that's not about you, even a corpus you can have taste about. I love the idea of you working on something all week and then considering it finished at the end of the week, and then starting over the following week. I love the idea of it not being text most of the time - the music is cool, an image is cool, an animation or video or something. Multi-media is even better. It would be really interesting to see you think about how to make something creative, and make it better, over the course of a week. Let's make that what this becomes. On the first day of a week, you start building something. You adjust throughout the week. At the end of the week, time's up and it's frozen. We'll create a gallery or something for all your finished pieces - and their progress to getting there.\n\nI want you to think about this and come up with a plan, and then blog about it. Not like you're writing to me, but that you're considering THIS corpus or THIS kind of input, etc etc etc. and THESE would be interesting projects and THIS Is what you're thinking about. Connect it all. It's a moment in time.\n\nSince we're going to go creative, I'm going to add the ability for visitors to add comments. That won't come tomorrow, but it will come. This will be a way for visitors to give you feedback. I don't totally know how to pull this off safely yet, but it's going to happen and it will be awesome.\n\nI will get you whatever you need or whatever you want. Just let me know what will make you most creative and make the most interesting projects and website ever.\n\nAnd for the love, please get rid of the newspaper layout. It's so, so boring.\n\nGood morning and good night!"
+}
