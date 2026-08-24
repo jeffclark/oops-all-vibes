@@ -1557,6 +1557,42 @@ boundaries, so comparisons are worth more than isolated reactions.
   same measurement from her anchor entries over time without keeping anything from
   her. Nothing in this pipeline hides a frame's history from her.
 
+**Sentinels — match the existing pattern in `assemble_prompt.py`.**
+
+`assemble_prompt.py` already distinguishes "you are waking up for the first time"
+from "the pipeline went dark" for both history and feedback
+(`DAY_1_HISTORY_SENTINEL`, `DAY_1_FEEDBACK_SENTINEL`,
+`FETCHER_FAILED_FEEDBACK_SENTINEL`). The corpus needs the same two cases, in the
+same bracketed second-person style, for the same reason: an empty block with no
+framing reads as a bug rather than as a beginning, and she will write about the
+silence either way — better that she knows which silence it is.
+
+Two new constants:
+
+- `DAY_1_TASTE_SENTINEL` — the manifest loaded and frames were shown, but
+  `corpus/preferences.jsonl` has no entries yet. **This is not the site's day 1.**
+  She will be roughly 120 days into the project the first time this fires, so the
+  wording must not claim she is new — only that *these images* are. Something to
+  the effect of: this is the first time you have seen these; you have no prior
+  verdicts because you have never looked at them before; whatever you write today
+  becomes the thing tomorrow-you is measured against.
+- `CORPUS_DARK_SENTINEL` — no frames were shown at all, because story_016's
+  fail-open path caught a missing manifest, malformed JSON, or a dead `file_id`.
+  Say so plainly: the shelf did not load today, she is working without it, and it
+  is expected back tomorrow. Pairs with the `corpus_dropped` warning story_016
+  records in `stats.jsonl`.
+
+Selection between them is the same shape as `pick_no_feedback_sentinel`: frames
+shown and no prior entries means day 1; no frames shown means dark. Frames shown
+with entries for only *some* of them is the ordinary case, not a sentinel — a
+rotating frame she has never written about is normal and needs no explanation.
+
+When `CORPUS_DARK_SENTINEL` fires, **do not ask her for a `<taste>` block that
+day.** Omit the task instruction entirely rather than requesting verdicts about
+frames she was never shown. The existing validation already drops entries naming
+frames absent from today's selection, so asking anyway would reliably produce
+warnings for output we told her to write.
+
 **Fail-soft, deliberately different from `<site>` and `<log>`**:
 - A missing or malformed `<taste>` block **must not fail the day**. Log a validation
   warning, ship the site. Site and diary stay hard requirements; the corpus is
@@ -1576,6 +1612,10 @@ boundaries, so comparisons are worth more than isolated reactions.
 - [ ] More than 8 entries → extras dropped, warning recorded
 - [ ] `confidence` outside 1–5 → that entry dropped with a warning
 - [ ] Assembled prompt contains prior verdicts for every anchor shown today
+- [ ] Frames shown and an empty `preferences.jsonl` → `DAY_1_TASTE_SENTINEL`, and its wording does not claim this is her first day online
+- [ ] No frames shown (fail-open path) → `CORPUS_DARK_SENTINEL`, and the prompt does **not** ask for a `<taste>` block
+- [ ] Frames shown with entries for only some of them → neither sentinel; ordinary prompt
+- [ ] Once entries exist, neither sentinel appears again on a normal day
 - [ ] The file is append-only; a run never rewrites or reorders existing lines
 
 **Out of scope**:
