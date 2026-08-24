@@ -391,10 +391,20 @@ def main(argv: list[str] | None = None) -> int:
             return 1
 
     client = Anthropic()
-    prompts = {d: (REPO_ROOT / "prompts" / f"{d}.md").read_text() for d in dates}
+    # Strip the archive annotation before replaying. prompts/<date>.md is the
+    # request's text half plus write_outputs' "## Corpus shown" trailer, and that
+    # trailer says "the prompt above is the text half" — sending it to the model
+    # would have both arms answering a prompt that was never sent, and telling them
+    # about twenty images they cannot see.
+    prompts = {
+        d: (REPO_ROOT / "prompts" / f"{d}.md").read_text().split(CORPUS_MARKER)[0].rstrip() + "\n"
+        for d in dates
+    }
     facts = json.loads((REPO_ROOT / "facts.json").read_text())
 
-    with_corpus = corpus_dates(prompts)
+    with_corpus = corpus_dates(
+        {d: (REPO_ROOT / "prompts" / f"{d}.md").read_text() for d in dates}
+    )
     if with_corpus:
         print(f"model_ab: NOTE — {TEXT_ONLY_NOTICE}.")
         for d in with_corpus:

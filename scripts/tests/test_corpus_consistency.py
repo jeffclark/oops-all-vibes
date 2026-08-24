@@ -188,12 +188,49 @@ def test_the_classifier_is_told_nothing_about_who_wrote_the_verdicts(tmp_path):
     assert client.calls[0]["model"] == "claude-haiku-4-5"
 
 
+def _code_only(src: str) -> str:
+    """Source with comments and docstrings removed.
+
+    Written with ast rather than a regex: the first attempt used
+    `re.sub(r'#.*|\"\"\".*?\"\"\"', '', src, flags=re.S)`, and re.S makes `.` match
+    newlines, so the greedy `#.*` branch ate everything from the first comment to
+    the end of the file. The assertion below then examined 398 characters of a
+    10k-character module and passed no matter what the module did.
+    """
+    import ast, io, tokenize
+
+    tree = ast.parse(src)
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)):
+            if (node.body and isinstance(node.body[0], ast.Expr)
+                    and isinstance(node.body[0].value, ast.Constant)
+                    and isinstance(node.body[0].value.value, str)):
+                node.body.pop(0)
+    out = []
+    for tok in tokenize.generate_tokens(io.StringIO(ast.unparse(tree)).readline):
+        if tok.type != tokenize.COMMENT:
+            out.append(tok.string)
+    return " ".join(out)
+
+
 def test_no_blind_retest_was_reintroduced():
-    """An earlier draft slipped a judged frame back in unannounced. It is gone."""
+    """An earlier draft slipped a judged frame back into rotation unannounced.
+
+    This module reads the record and reports. It must never reach selection or the
+    prompt, in either direction.
+    """
     src = (REPO_ROOT / "scripts" / "corpus" / "consistency.py").read_text()
-    # this module only reads; it must never touch selection or the prompt
-    assert "select" not in re.sub(r"#.*|\"\"\".*?\"\"\"", "", src, flags=re.S)
-    assert "assemble_prompt" not in src
+    code = _code_only(src)
+    assert len(code) > 3000, "the comment stripper ate the module; the test proves nothing"
+    for forbidden in ("select_for_date", "assemble_prompt", "run_georgia", "manifest"):
+        assert forbidden not in code, forbidden
+
+
+def test_the_comment_stripper_actually_strips_and_actually_keeps():
+    stripped = _code_only('"""doc with assemble_prompt in it."""\n# assemble_prompt\nx = 1\n')
+    assert "assemble_prompt" not in stripped
+    assert "x" in stripped
+    assert "select_for_date" in _code_only("select_for_date()\n")
 
 
 def test_select_is_untouched_by_this_story():
@@ -269,7 +306,7 @@ def test_the_stats_page_names_the_most_drifted_anchors(tmp_path):
     assert "b-t1" not in html.split("Most movement")[1][:200]
 
 
-def test_the_stats_page_does_not_editorialise_about_the_outcomes(tmp_path):
+def test_the_stats_page_says_outright_that_this_is_not_a_score(tmp_path):
     rows = [_record("a-t1", "reversed", 200)]
     build_stats_page(repo_root=_stats_repo(tmp_path, rows))
     html = (tmp_path / "stats.html").read_text()
@@ -305,3 +342,116 @@ def test_a_passing_verification_says_so_quietly(tmp_path):
     html = (tmp_path / "stats.html").read_text()
     assert "every file reference resolves" in html
     assert "corpus_verify_failed" not in html
+
+
+def test_each_record_says_which_kind_of_pair_it_is(tmp_path):
+    prefs = write_prefs(tmp_path, [
+        pref("a-t1", "2026-01-01", "e"),
+        pref("a-t1", "2026-02-01", "m"),
+        pref("a-t1", "2026-03-01", "l"),
+    ])
+    out = tmp_path / "consistency.jsonl"
+    consistency.run(FakeClient(["consistent"]), prefs, out)
+    rows = [json.loads(l) for l in out.read_text().splitlines()]
+    kinds = sorted(r["kind"] for r in rows)
+    assert kinds == ["adjacent", "adjacent", "endpoints"]
+
+
+def test_two_entries_produce_one_pair_not_a_duplicate_endpoints_record(tmp_path):
+    """With exactly two entries the adjacent pair and the endpoints pair coincide."""
+    prefs = write_prefs(tmp_path, [
+        pref("a-t1", "2026-01-01", "e"), pref("a-t1", "2026-01-21", "l"),
+    ])
+    out = tmp_path / "consistency.jsonl"
+    client = FakeClient(["consistent"])
+    consistency.run(client, prefs, out)
+    assert len(client.calls) == 1
+    assert json.loads(out.read_text().splitlines()[0])["kind"] == "adjacent"
+
+
+def test_the_stats_page_keeps_only_the_widest_endpoints_pair_per_frame(tmp_path):
+    """Otherwise 'most drifted' ranks frames by how often she mentioned them."""
+    def rec(frame, kind, gap, late):
+        r = _record(frame, "reversed", gap)
+        r["kind"] = kind
+        r["late_date"] = late
+        return r
+
+    rows = [
+        rec("a-t1", "endpoints", 30, "2026-02-01"),
+        rec("a-t1", "endpoints", 60, "2026-03-01"),
+        rec("a-t1", "endpoints", 90, "2026-04-01"),
+        rec("b-t1", "adjacent", 20, "2026-02-01"),
+    ]
+    build_stats_page(repo_root=_stats_repo(tmp_path, rows))
+    html = (tmp_path / "stats.html").read_text()
+    # three endpoints records for a-t1 collapse to one, plus b-t1's adjacent = 2
+    assert ">2</span>" in html.split("pairs compared")[1][:120]
+    assert "a-t1 (1)" in html
+    assert "90d" in html
+
+
+def test_adjacent_records_are_never_collapsed(tmp_path):
+    rows = []
+    for i, late in enumerate(("2026-02-01", "2026-03-01", "2026-04-01")):
+        r = _record("a-t1", "evolved", 30)
+        r["kind"] = "adjacent"
+        r["early_date"] = late
+        r["late_date"] = late
+        rows.append(r)
+    build_stats_page(repo_root=_stats_repo(tmp_path, rows))
+    html = (tmp_path / "stats.html").read_text()
+    assert "a-t1 (3)" in html
+
+
+def test_records_written_before_the_kind_field_still_render(tmp_path):
+    build_stats_page(repo_root=_stats_repo(tmp_path, [_record("a-t1", "consistent", 20)]))
+    assert "pairs compared" in (tmp_path / "stats.html").read_text()
+
+
+# ---------- the three states of a corpus verification ----------
+
+
+def _verify_repo(tmp_path, status):
+    root = _stats_repo(tmp_path)
+    (root / "corpus" / "verify.json").write_text(json.dumps(status))
+    build_stats_page(repo_root=root)
+    return (tmp_path / "stats.html").read_text()
+
+
+def test_a_passing_check_is_the_only_thing_that_gets_the_green_line(tmp_path):
+    html = _verify_repo(tmp_path, {
+        "checked_at": "2026-08-25", "ok": True, "corpus_verify_failed": False,
+        "missing": [], "reason": "",
+    })
+    assert "every file reference resolves" in html
+
+
+def test_dead_frames_are_shouted_about(tmp_path):
+    html = _verify_repo(tmp_path, {
+        "checked_at": "2026-08-25", "ok": False, "corpus_verify_failed": True,
+        "missing": ["bd-2014-t152"], "reason": "",
+    })
+    assert "corpus_verify_failed" in html
+    assert "bd-2014-t152" in html
+    assert "every file reference resolves" not in html
+
+
+def test_a_check_that_could_not_run_is_not_reported_as_a_pass(tmp_path):
+    """The fix for a stale green light must not install a live one."""
+    html = _verify_repo(tmp_path, {
+        "checked_at": "2026-08-25", "ok": False, "corpus_verify_failed": False,
+        "missing": [], "reason": "check did not complete: AuthenticationError",
+    })
+    assert "every file reference resolves" not in html
+    assert "Corpus not verified" in html
+    assert "AuthenticationError" in html
+
+
+def test_a_corpus_that_was_never_published_is_not_reported_as_a_pass(tmp_path):
+    html = _verify_repo(tmp_path, {
+        "checked_at": "2026-08-25", "ok": False, "corpus_verify_failed": False,
+        "missing": [], "reason": "no corpus published yet",
+    })
+    assert "every file reference resolves" not in html
+    assert "no corpus published yet" in html

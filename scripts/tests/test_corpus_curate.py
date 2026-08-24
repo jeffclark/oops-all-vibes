@@ -401,3 +401,24 @@ def test_a_failed_round_leaves_no_curation_file_behind(tmp_path):
 
 def test_round_2_asks_her_what_the_cap_took():
     assert "sorry to lose" in curate.ROUND_2_TASK
+
+
+def test_a_field_pool_too_small_to_shortlist_from_is_refused_before_paying(tmp_path):
+    """Round 1 could not succeed, so both attempts would be spent discovering that."""
+    make_show(tmp_path, field_times=TIMES[:20])
+    with pytest.raises(CurationError, match="only 20 field frames"):
+        happy(tmp_path, client=ExplodingClient())
+
+
+def test_the_refusal_says_to_re_ingest_rather_than_lower_the_cap(tmp_path):
+    make_show(tmp_path, field_times=TIMES[:20])
+    with pytest.raises(CurationError) as exc:
+        happy(tmp_path, client=ExplodingClient())
+    assert "denser interval_s" in str(exc.value)
+    assert "do not lower the shortlist" in str(exc.value)
+
+
+def test_exactly_twenty_five_field_frames_is_allowed(tmp_path):
+    make_show(tmp_path, field_times=TIMES[:25])
+    client = FakeClient([shortlist_reply(TIMES[:25]), keepers_reply(TIMES[:10])])
+    assert len(happy(tmp_path, client=client).shortlist) == 25

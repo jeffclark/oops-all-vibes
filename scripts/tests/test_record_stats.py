@@ -317,3 +317,54 @@ def test_token_counts_default_to_zero_on_a_failed_run(tmp_path):
     line = json.loads((tmp_path / "stats.jsonl").read_text().splitlines()[-1])
     assert line["input_tokens"] == 0
     assert line["output_tokens"] == 0
+
+
+# ---------- corpus warnings (stories 016/017) ----------
+
+
+def _corpus_repo(tmp_path):
+    (tmp_path / "corpus").mkdir(parents=True, exist_ok=True)
+    return tmp_path
+
+
+def test_corpus_warnings_are_persisted_in_the_stats_line(tmp_path):
+    import time as _time
+
+    record_stats(
+        "2026-08-25", 1, [], 0, True, _time.monotonic(),
+        repo_root=_corpus_repo(tmp_path),
+        corpus_warnings=["corpus_dropped: NotFoundError: File file_x not found."],
+    )
+    line = json.loads((tmp_path / "stats.jsonl").read_text().splitlines()[-1])
+    assert line["corpus_warnings"] == ["corpus_dropped: NotFoundError: File file_x not found."]
+
+
+def test_a_run_with_no_corpus_warnings_records_an_empty_list(tmp_path):
+    import time as _time
+
+    record_stats("2026-08-25", 1, [], 0, True, _time.monotonic(), repo_root=_corpus_repo(tmp_path))
+    line = json.loads((tmp_path / "stats.jsonl").read_text().splitlines()[-1])
+    assert line["corpus_warnings"] == []
+
+
+def test_corpus_warnings_reach_the_stats_page(tmp_path):
+    import time as _time
+
+    record_stats(
+        "2026-08-25", 1, [], 0, True, _time.monotonic(),
+        repo_root=_corpus_repo(tmp_path),
+        corpus_warnings=["corpus_dropped: the shelf went dark"],
+    )
+    html = (tmp_path / "stats.html").read_text()
+    assert "corpus_dropped" in html
+
+
+def test_a_corpus_warning_counts_toward_runs_with_warnings(tmp_path):
+    import time as _time
+
+    root = _corpus_repo(tmp_path)
+    record_stats("2026-08-25", 1, [], 0, True, _time.monotonic(), repo_root=root,
+                 corpus_warnings=["corpus_dropped: x"])
+    html = (tmp_path / "stats.html").read_text()
+    block = html.split("runs with warnings")[1][:80]
+    assert ">1</span>" in block

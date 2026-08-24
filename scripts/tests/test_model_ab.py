@@ -210,3 +210,25 @@ def test_viewer_shows_validation_outcome(tmp_path):
     assert "passes validation" in html
     assert "would have triggered a retry" in html
     assert "too small (12 bytes)" in html
+
+
+def test_the_corpus_appendix_is_stripped_before_replay(tmp_path, monkeypatch):
+    """prompts/<date>.md is the text half plus an archive annotation. Replaying the
+    annotation would have both arms answering a prompt that was never sent, and
+    would tell them about twenty images they cannot see."""
+    import scripts.model_ab as mod
+
+    archived = (
+        "You are Georgia. Build the site.\n"
+        "\n"
+        f"{mod.CORPUS_MARKER}\n"
+        "\n"
+        "- bd-2014-t152\n"
+        "\n"
+        "Manifest version: 1\n"
+    )
+    stripped = archived.split(mod.CORPUS_MARKER)[0].rstrip() + "\n"
+    assert stripped == "You are Georgia. Build the site.\n"
+    assert mod.CORPUS_MARKER not in stripped
+    assert mod.corpus_dates({"2026-08-24": archived}) == ["2026-08-24"]
+    assert mod.corpus_dates({"2026-08-24": stripped}) == []

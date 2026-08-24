@@ -164,3 +164,51 @@ def test_returns_the_token_counts_from_usage():
     result = call_model("prompt", client=client)
     assert result.input_tokens == 60_000
     assert result.output_tokens == 14_000
+
+
+# ---------- <taste> parsing and the content-block path (stories 016/017) ----------
+
+
+def test_taste_is_parsed_out_of_the_response():
+    client = _mock_client(
+        "<site>html</site><log>diary</log>\n"
+        '<taste>\n{"frame_id": "bd-2014-t152", "verdict": "v", "confidence": 3}\n</taste>'
+    )
+    result = call_model("prompt", client=client)
+    assert '"frame_id": "bd-2014-t152"' in result.taste
+    assert result.taste.startswith("{")
+
+
+def test_a_response_with_no_taste_block_still_returns_cleanly():
+    client = _mock_client("<site>html</site><log>diary</log>")
+    result = call_model("prompt", client=client)
+    assert result.taste == ""
+    assert result.html == "html"
+
+
+def test_a_missing_taste_block_is_never_an_error():
+    """<taste> is fail-soft by design; only <site> and <log> can fail a day."""
+    client = _mock_client("<site>html</site><log>diary</log>")
+    call_model("prompt", client=client)  # must not raise
+
+
+def test_content_blocks_are_passed_through_as_a_list():
+    client = _mock_client("<site>html</site><log>diary</log>")
+    blocks = [
+        {"type": "text", "text": "[bd-2014-t152]"},
+        {"type": "image", "source": {"type": "file", "file_id": "file_abc"}},
+        {"type": "text", "text": "THE PROMPT"},
+    ]
+    call_model(blocks, client=client)
+    sent = client.beta.messages.stream.call_args.kwargs["messages"][0]["content"]
+    assert isinstance(sent, list)
+    assert sent == blocks
+    assert sent[1]["source"]["file_id"] == "file_abc"
+
+
+def test_a_generator_of_blocks_is_materialised_not_stringified():
+    client = _mock_client("<site>html</site><log>diary</log>")
+    blocks = [{"type": "text", "text": "a"}, {"type": "text", "text": "b"}]
+    call_model(iter(blocks), client=client)
+    sent = client.beta.messages.stream.call_args.kwargs["messages"][0]["content"]
+    assert sent == blocks

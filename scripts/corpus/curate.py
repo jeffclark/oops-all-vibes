@@ -244,6 +244,14 @@ def check_ready(show_dir: Path, data: dict[str, Any]) -> list[int]:
             f"{show_dir.name}: ingest.json reports {len(shown)} field frames but no "
             "field_* sheet is on disk. Re-run ingest for this show."
         )
+    if len(shown) < SHORTLIST_N:
+        # Round 1 cannot succeed, so both attempts would be spent discovering that.
+        # Refuse before the first call rather than after the second.
+        raise CurationError(
+            f"{show_dir.name}: only {len(shown)} field frames, and round 1 shortlists "
+            f"{SHORTLIST_N}. Re-ingest with a denser interval_s — do not lower the "
+            "shortlist, the cap is the mechanism."
+        )
     return shown
 
 

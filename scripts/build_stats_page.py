@@ -124,6 +124,38 @@ def _read_jsonl(path: Path) -> list[dict]:
     return out
 
 
+def _gap_days(record: dict) -> int:
+    try:
+        return int(record.get("gap_days") or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _dedupe_endpoint_pairs(records: list[dict]) -> list[dict]:
+    """Keep one earliest-vs-latest record per frame, the widest one.
+
+    consistency.py records both each adjacent pair and the earliest-vs-latest
+    pair, as story_018 specifies. The endpoints pair's later half advances every
+    time she writes about that frame again, so each run legitimately adds a new
+    one — they are different comparisons, not duplicates, and the idempotence
+    rule is not violated. But left un-collapsed they pile up on the frames she
+    writes about most, and "which anchors have drifted most" would then rank
+    frames by how often she mentioned them rather than by how much she moved.
+    Only the widest baseline per frame is kept for the counts.
+    """
+    widest: dict[str, dict] = {}
+    out: list[dict] = []
+    for r in records:
+        if r.get("kind") != "endpoints":
+            out.append(r)
+            continue
+        frame = str(r.get("frame_id", ""))
+        current = widest.get(frame)
+        if current is None or _gap_days(r) > _gap_days(current):
+            widest[frame] = r
+    return out + list(widest.values())
+
+
 def _verify_line(root: Path) -> str:
     """What the last corpus verification found, if one has ever run."""
     path = root / "corpus" / "verify.json"
@@ -133,6 +165,8 @@ def _verify_line(root: Path) -> str:
         status = json.loads(path.read_text())
     except (OSError, json.JSONDecodeError):
         return ""
+    if not isinstance(status, dict):
+        return ""
     when = escape(str(status.get("checked_at", "")))
     if status.get("corpus_verify_failed"):
         missing = ", ".join(escape(str(m)) for m in (status.get("missing") or []))
@@ -140,6 +174,16 @@ def _verify_line(root: Path) -> str:
             f'<p class="note warnline"><strong>corpus_verify_failed</strong> ({when}): '
             f"these frames no longer resolve — {missing}. The site still ships; the "
             "day they are needed it runs text-only.</p>"
+        )
+    if not status.get("ok"):
+        # Three states, not two. "The check ran and everything resolved" is the only
+        # one that earns the green line — a check that could not run, or a corpus
+        # that was never published, is not a pass, and printing one here would be a
+        # live false all-clear rather than merely a stale one.
+        reason = escape(str(status.get("reason") or "reason not recorded"))
+        return (
+            f'<p class="note warnline">Corpus not verified ({when}): {reason}. '
+            "Nothing is known to be broken; nothing has been confirmed working.</p>"
         )
     return f'<p class="note">Corpus verified {when}: every file reference resolves.</p>'
 
@@ -152,9 +196,9 @@ def _drift_block(root: Path) -> str:
     thing on this page. Interpreting it is Georgia's job, on the site, not the
     pipeline's.
     """
-    records = _read_jsonl(root / "corpus" / "consistency.jsonl")
+    records = _dedupe_endpoint_pairs(_read_jsonl(root / "corpus" / "consistency.jsonl"))
     counts = {o: sum(1 for r in records if r.get("classification") == o) for o in DRIFT_OUTCOMES}
-    longest = max((int(r.get("gap_days") or 0) for r in records), default=0)
+    longest = max((_gap_days(r) for r in records), default=0)
 
     drifted: dict[str, int] = {}
     for r in records:

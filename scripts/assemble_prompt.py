@@ -313,8 +313,13 @@ def load_preferences(path: Path) -> list[dict[str, Any]]:
         except json.JSONDecodeError:
             _warn(f"preferences.jsonl line {n} is not JSON; skipping")
             continue
-        if isinstance(entry, dict) and entry.get("frame_id"):
+        # frame_id has to be a string: build_taste_block tests it for set
+        # membership, and an unhashable one would raise straight through
+        # assemble_prompt and cost the day before the model is even called.
+        if isinstance(entry, dict) and isinstance(entry.get("frame_id"), str):
             entries.append(entry)
+        elif isinstance(entry, dict):
+            _warn(f"preferences.jsonl line {n} has no usable frame_id; skipping")
     return entries
 
 
@@ -344,7 +349,7 @@ def build_taste_block(
     if not entries:
         return DAY_1_TASTE_SENTINEL
 
-    shown = set(shown_frame_ids)
+    shown = {f for f in shown_frame_ids if isinstance(f, str)}
     cutoff = run_date - timedelta(days=window_days)
     selected = [
         e for e in entries

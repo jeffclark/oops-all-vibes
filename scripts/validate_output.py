@@ -210,8 +210,12 @@ def validate_taste(
             warnings.append(f"<taste> line {n} is not a JSON object; skipped.")
             continue
 
+        # The type check is load-bearing, not defensive dressing. `x in some_set`
+        # raises TypeError for an unhashable x, and a model that emitted
+        # {"frame_id": ["a", "b"]} would take the whole day down here — after
+        # validation has already passed and run_georgia has recorded committed.
         frame_id = parsed.get("frame_id")
-        if frame_id not in shown:
+        if not isinstance(frame_id, str) or frame_id not in shown:
             warnings.append(
                 f"<taste> line {n} names frame_id {frame_id!r}, which was not shown "
                 "today; dropped."

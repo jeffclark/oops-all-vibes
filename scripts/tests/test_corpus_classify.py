@@ -297,3 +297,17 @@ def test_classify_is_never_imported_outside_the_corpus_package():
         if re.search(r"^\s*(import|from).*\bclassify\b", py.read_text(), re.M):
             offenders.append(py.name)
     assert not offenders, offenders
+
+
+def test_a_corrupt_verdict_file_is_an_actionable_message_not_a_traceback(tmp_path):
+    show_dir = make_show(tmp_path, [0, 8])
+    (show_dir / classify.CLASSIFIED_FILENAME).write_text("{ truncated")
+    with pytest.raises(IngestError, match="not valid JSON"):
+        classify.classify_show("pr-2003", out_root=tmp_path, client=FakeClient([]))
+
+
+def test_that_corrupt_file_exits_two_rather_than_crashing(tmp_path, capsys):
+    show_dir = make_show(tmp_path, [0, 8])
+    (show_dir / classify.CLASSIFIED_FILENAME).write_text("{ truncated")
+    assert classify.main(["--show", "pr-2003", "--out", str(tmp_path)]) == 2
+    assert "--force" in capsys.readouterr().err

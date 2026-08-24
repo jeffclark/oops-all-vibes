@@ -133,7 +133,13 @@ def assign_anchors(
     frame while any show has contributed fewer than two — the pass structure gives
     that for free rather than by a separate check.
     """
-    deepest = max((len(c.get("keepers") or []) for c in curations.values()), default=0)
+    # From the rank values, not from how many keepers there are: a curation file
+    # with non-contiguous ranks would otherwise stop the passes early and quietly
+    # under-fill the anchor set.
+    deepest = max(
+        (int(k.get("rank") or 0) for c in curations.values() for k in (c.get("keepers") or [])),
+        default=0,
+    )
     anchors: list[str] = []
     for rank in range(1, deepest + 1):
         for show_id in order:
@@ -342,14 +348,30 @@ def check_manifest(payload: dict[str, Any], live: set[str]) -> list[str]:
     return [label for label, fid in manifest_file_ids(payload) if fid not in live]
 
 
-def write_verify_status(path: Path, ok: bool, missing: Sequence[str], checked_at: date) -> None:
+def write_verify_status(
+    path: Path,
+    ok: bool,
+    missing: Sequence[str],
+    checked_at: date,
+    *,
+    failed: bool | None = None,
+    reason: str = "",
+) -> None:
+    """Record what the last verification found.
+
+    `failed` is separate from `not ok` on purpose: "there is no manifest yet" and
+    "the check could not run" are both not-ok, but neither is the thing
+    corpus_verify_failed is meant to shout about, which is frames that used to
+    resolve and have stopped.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".json.tmp")
     tmp.write_text(json.dumps({
         "checked_at": checked_at.isoformat(),
         "ok": ok,
-        "corpus_verify_failed": not ok,
+        "corpus_verify_failed": (not ok) if failed is None else failed,
         "missing": list(missing),
+        "reason": reason,
     }, indent=2) + "\n")
     tmp.replace(path)
 
@@ -365,10 +387,26 @@ def verify_only(
     if payload is None:
         _log(f"no manifest at {manifest_path} — nothing to verify")
         print("::warning title=Corpus::no corpus manifest to verify")
-        write_verify_status(status_path, False, ["<no manifest>"], run_date)
+        write_verify_status(
+            status_path, False, [], run_date,
+            failed=False, reason="no corpus published yet",
+        )
         return 1
 
-    missing = check_manifest(payload, live_file_ids(client))
+    try:
+        live = live_file_ids(client)
+    except Exception as exc:  # noqa: BLE001 — a check that did not run is not a pass
+        # Without this the previous run's "everything resolves" line stays on the
+        # stats page and a corpus could rot behind a stale green light.
+        _log(f"verification did not complete ({exc})")
+        print(f"::warning title=Corpus::corpus verification did not run: {exc}")
+        write_verify_status(
+            status_path, False, [], run_date,
+            failed=False, reason=f"check did not complete: {exc}",
+        )
+        return 1
+
+    missing = check_manifest(payload, live)
     write_verify_status(status_path, not missing, missing, run_date)
     if missing:
         named = ", ".join(missing)

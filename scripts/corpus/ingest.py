@@ -607,6 +607,16 @@ def ingest_show(entry: dict[str, Any], out_root: Path = RAW_ROOT, force: bool = 
     for lo, hi, count in framing.histogram(scores):
         if count:
             _log(f"  field {lo:.1f}-{hi:.1f}  {'#' * min(count, 50)} {count}")
+    if mechanism != "heuristic":
+        # The cells are still labelled with the green fraction, because that is what
+        # story_013's AC asks for and it stays a useful diagnostic. But on a
+        # classifier-split show it is NOT what decided the pile, and a reader
+        # checking the split against the images needs to know that before they
+        # conclude the labels contradict the partition.
+        _log(
+            f"{show_id}: cell labels show the green-fraction score, which is "
+            "diagnostic only — this show was split by the vision classifier"
+        )
     if field_paths and len(field_paths) < 60:
         _log(
             f"{show_id}: only {len(field_paths)} field frames — round 1 shortlists 25, "

@@ -1,9 +1,18 @@
-# Offline corpus tooling (stories 013-014). Runs on Jeff's machine, never in CI.
+# Offline corpus tooling (stories 013, 013a, 014, 015, 018). Runs on Jeff's
+# machine; the daily GitHub Actions run must never install any of it.
 #
-# Deliberately separate from requirements.txt: the daily GitHub Actions run must
-# not install librosa. Nothing listed here may be imported by any module under
-# scripts/ outside scripts/corpus/ — scripts/tests/test_corpus_ingest.py enforces
-# that with a source scan.
+# Deliberately separate from requirements.txt. The boundary is no longer simply
+# "scripts/corpus/ is offline": two modules in that package are on the daily path
+# and must stay importable with requirements.txt alone —
+#
+#   scripts/corpus/select.py   imported by scripts/run_georgia.py
+#   scripts/corpus/publish.py  run by the workflow's --verify-only step
+#
+# Both read JSON and build dicts, and nothing else in the package may leak into
+# their module-scope import graph. scripts/tests/test_corpus_ingest.py scans the
+# top-level sources, and test_corpus_select.py imports each of those two entry
+# points in a subprocess and fails if numpy, Pillow, librosa, matplotlib or
+# yt-dlp ends up in sys.modules.
 #
 # Also requires ffmpeg and ffprobe on PATH (system packages, not pip).
 yt-dlp>=2024.1.0

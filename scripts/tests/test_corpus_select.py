@@ -151,15 +151,44 @@ def test_shapes_are_dropped_before_rotating_frames():
     assert sel.image_count <= select.MAX_IMAGE_BLOCKS
 
 
+def _pinned_manifest(anchors: int, rotating_ranks):
+    """A manifest with an exactly-known rotating pool, so the drop order is testable."""
+    frames = [
+        {"frame_id": f"anchor-{i:02d}-t8", "file_id": f"file_a{i}", "show_id": f"anchor-{i:02d}",
+         "corps": "A", "year": 2014, "t": 8, "url": "u", "axis_tags": [],
+         "role": "anchor", "curation_rank": 1}
+        for i in range(anchors)
+    ]
+    frames += [
+        {"frame_id": f"rot-{r:02d}-t{r}", "file_id": f"file_r{r}", "show_id": f"rot-{r:02d}",
+         "corps": "R", "year": 2014, "t": r, "url": "u", "axis_tags": [],
+         "role": "rotating", "curation_rank": r}
+        for r in rotating_ranks
+    ]
+    return {"version": 1, "frames": frames, "shapes": []}
+
+
 def test_lowest_ranked_rotating_frames_go_before_higher_ranked_ones():
-    m = manifest(shows=19, keepers=10, anchors=18)  # 18 anchors leaves room for 2
+    """Reversing the drop order in select.py must fail this test.
+
+    The whole rotating pool is exactly six frames with ranks 2..7, and 16 anchors
+    leave room for four of them. The four that survive must be her four best —
+    ranks 2, 3, 4, 5 — not her four worst.
+    """
+    m = _pinned_manifest(anchors=16, rotating_ranks=[2, 3, 4, 5, 6, 7])
     sel = select.select_for_date(DAY, m)
     by_id = {f["frame_id"]: f for f in m["frames"]}
-    kept = [by_id[fid]["curation_rank"] for fid in sel.rotating_ids]
-    assert len(kept) == 2
-    # what survived is better-ranked than what a full six would have contained
-    full = select.select_for_date(DAY, manifest(19, 10, 10)).rotating_ids
-    assert max(kept) <= max(by_id[f]["curation_rank"] for f in full)
+    kept = sorted(by_id[fid]["curation_rank"] for fid in sel.rotating_ids)
+    assert kept == [2, 3, 4, 5]
+    assert sel.image_count == select.MAX_IMAGE_BLOCKS
+
+
+def test_dropping_one_rotating_frame_drops_the_single_worst():
+    # 16 anchors + a five-frame rotating pool is 21 blocks: exactly one too many.
+    m = _pinned_manifest(anchors=16, rotating_ranks=[2, 3, 4, 5, 9])
+    sel = select.select_for_date(DAY, m)
+    by_id = {f["frame_id"]: f for f in m["frames"]}
+    assert sorted(by_id[fid]["curation_rank"] for fid in sel.rotating_ids) == [2, 3, 4, 5]
 
 
 def test_an_anchor_is_never_dropped():
@@ -281,3 +310,57 @@ def test_the_daily_pipeline_never_pulls_in_a_corpus_dependency():
     )
     assert out.returncode == 0, out.stderr
     assert out.stdout.strip() == "", f"daily pipeline imported {out.stdout.strip()}"
+
+
+def test_a_shows_odds_of_getting_its_shape_plot_do_not_depend_on_its_name():
+    """Six rotating frames, at most four shape plots — so which four is a real choice.
+
+    Taking them in display order (show_id, curation_rank) rather than in rotation
+    order makes the audio shape an alphabetical privilege. Measured over 200 days
+    against a 19-show manifest, drawing from rotation order gives every show a
+    P(shape | rotating) between 0.60 and 0.77; drawing from display order gives
+    show-01 0.94 and show-18 0.08, a clean monotone gradient down the alphabet.
+    The ratio is the discriminator: ~1.3 when it is right, ~12 when it is not.
+    """
+    m = manifest()
+    rotated: dict[str, int] = {}
+    shaped: dict[str, int] = {}
+    start = date(2026, 8, 25).toordinal()
+    for i in range(200):
+        sel = select.select_for_date(date.fromordinal(start + i), m)
+        for fid in sel.rotating_ids:
+            show = fid.rsplit("-t", 1)[0]
+            rotated[show] = rotated.get(show, 0) + 1
+        for show in sel.shape_show_ids:
+            shaped[show] = shaped.get(show, 0) + 1
+
+    assert len(rotated) == 19, "every show should reach the rotation over 200 days"
+    rates = {s: shaped.get(s, 0) / n for s, n in rotated.items()}
+    assert min(rates.values()) > 0.4, f"a show is being starved of its shape plot: {rates}"
+    assert max(rates.values()) / min(rates.values()) < 2.0, (
+        f"shape plots are not evenly distributed across shows: {rates}"
+    )
+
+
+def test_shape_shows_still_only_come_from_todays_rotating_set():
+    for i in range(30):
+        sel = select.select_for_date(date.fromordinal(date(2026, 8, 25).toordinal() + i), manifest())
+        rotating_shows = {fid.rsplit("-t", 1)[0] for fid in sel.rotating_ids}
+        assert set(sel.shape_show_ids) <= rotating_shows
+
+
+def test_publish_verify_only_never_pulls_in_a_corpus_dependency():
+    """The daily workflow runs this step with requirements.txt installed and nothing else."""
+    import subprocess
+
+    code = (
+        "import sys; sys.path.insert(0, r'%s');\n"
+        "import scripts.corpus.publish\n"
+        "bad = [m for m in ('librosa','matplotlib','numpy','PIL','yt_dlp') if m in sys.modules]\n"
+        "print(','.join(bad))\n" % REPO_ROOT
+    )
+    out = subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True, cwd=REPO_ROOT
+    )
+    assert out.returncode == 0, out.stderr
+    assert out.stdout.strip() == "", f"publish --verify-only would need {out.stdout.strip()}"

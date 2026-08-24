@@ -10,8 +10,14 @@ at test time.
 **Fail open, always.** Site and diary are hard requirements; the corpus is
 additive. A missing manifest, malformed JSON, an empty frame list or anything
 unexpected returns an empty selection and the day ships text-only with a warning
-on stderr. Nothing in here may raise into the caller — the one exception is the
-image-cap assertion, which run_georgia catches with everything else.
+on stderr.
+
+`selection_for_date` is the entry point the daily run uses and it cannot raise:
+its bare `except Exception` swallows everything, including the image-cap
+assertion, and degrades to an empty selection. `select_for_date` — the pure
+function underneath — *can* raise that assertion, deliberately, so tests can see
+an over-cap manifest for what it is. Call the wrapper from anything on the daily
+path; run_georgia does not guard this call itself.
 
 **The shape of a day**: every anchor in the manifest, plus 6 rotating frames, plus
 up to 4 show-shape plots, capped at 20 image blocks.
@@ -147,8 +153,12 @@ def select_for_date(
     rotating = sorted(chosen, key=lambda f: (f["show_id"], f.get("curation_rank", 0)))
 
     shapes_by_show = {s["show_id"]: s["file_id"] for s in manifest.get("shapes", []) if s.get("file_id")}
+    # Which shows get a shape plot is drawn from the rotation order, not the display
+    # order. Taking the first four of a show_id-sorted list would hand the audio
+    # shape to alphabetically-early shows almost every day and to `star-1993` almost
+    # never, which is a bias the rotation was specifically built not to have.
     shape_shows: list[str] = []
-    for f in rotating:
+    for f in chosen:
         show = f["show_id"]
         if show in shapes_by_show and show not in shape_shows:
             shape_shows.append(show)

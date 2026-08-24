@@ -441,3 +441,144 @@ def test_a_validation_retry_keeps_the_corpus_attached(monkeypatch, tmp_path):
     run_module.run(TODAY, FACTS, tmp_path, no_commit=True)
     assert isinstance(calls[1], list)
     assert any(b["type"] == "image" for b in calls[1])
+
+
+# --------------------------------------- hostile input that must not cost a day
+#
+# Everything below is a shape Georgia could emit, or a file could contain, that
+# would take the site down if it reached an unguarded `x in some_set`.
+
+
+@pytest.mark.parametrize("hostile", [
+    {"frame_id": ["a", "b"], "verdict": "v", "confidence": 3},
+    {"frame_id": {"a": 1}, "verdict": "v", "confidence": 3},
+    {"frame_id": 152, "verdict": "v", "confidence": 3},
+    {"frame_id": None, "verdict": "v", "confidence": 3},
+])
+def test_an_unhashable_or_non_string_frame_id_is_dropped_not_raised(hostile):
+    entries, warnings = validate_taste(json.dumps(hostile), SHOWN, TODAY)
+    assert entries == []
+    assert any("not shown today" in w for w in warnings)
+
+
+def test_a_preference_line_with_a_list_frame_id_cannot_poison_tomorrow(tmp_path, capsys):
+    """One bad line would otherwise raise inside assemble_prompt, every day, forever."""
+    path = tmp_path / "preferences.jsonl"
+    path.write_text(
+        json.dumps({"frame_id": ["oops"], "verdict": "v", "date": "2026-08-20"}) + "\n"
+        + json.dumps(pref(SHOWN[0], "2026-08-20", verdict="good line")) + "\n"
+    )
+    entries = load_preferences(path)
+    assert [e["frame_id"] for e in entries] == [SHOWN[0]]
+    block = build_taste_block(entries, SHOWN, DAY)
+    assert "good line" in block
+
+
+def test_a_non_string_id_in_todays_selection_does_not_raise():
+    build_taste_block([pref(SHOWN[0], "2026-08-20")], [SHOWN[0], ["bad"]], DAY)
+
+
+def test_write_outputs_actually_writes_the_corpus_record(tmp_path):
+    """The archive-honesty contract, end to end through the real function."""
+    for sub in ("archive", "log", "prompts", "corpus"):
+        (tmp_path / sub).mkdir(parents=True)
+    entries = [pref(SHOWN[0], TODAY, verdict="first"), pref(SHOWN[1], TODAY, verdict="second")]
+
+    wo.write_outputs(
+        TODAY, "<html><body>x</body></html>", _diary(), "THE PROMPT",
+        no_commit=True, repo_root=tmp_path,
+        frame_ids=SHOWN, manifest_version=1, shape_show_ids=["bd-2014"],
+        taste_entries=entries,
+    )
+
+    archived = (tmp_path / "prompts" / f"{TODAY}.md").read_text()
+    assert "THE PROMPT" in archived
+    assert "## Corpus shown" in archived
+    for f in SHOWN:
+        assert f"- {f}" in archived
+    assert "Manifest version: 1" in archived
+
+    written = [json.loads(l) for l in (tmp_path / "corpus" / "preferences.jsonl").read_text().splitlines()]
+    assert [e["verdict"] for e in written] == ["first", "second"]
+
+
+def test_a_text_only_day_writes_no_corpus_section_and_no_preferences(tmp_path):
+    for sub in ("archive", "log", "prompts"):
+        (tmp_path / sub).mkdir(parents=True)
+    wo.write_outputs(
+        TODAY, "<html><body>x</body></html>", _diary(), "THE PROMPT",
+        no_commit=True, repo_root=tmp_path,
+    )
+    assert (tmp_path / "prompts" / f"{TODAY}.md").read_text() == "THE PROMPT"
+    assert not (tmp_path / "corpus" / "preferences.jsonl").exists()
+
+
+def test_a_malformed_corpus_file_cannot_stop_a_run(tmp_path):
+    """The readers are hardened, so this passes on its own merits."""
+    from scripts.record_stats import record_stats
+    import time as _time
+
+    (tmp_path / "corpus").mkdir()
+    (tmp_path / "corpus" / "verify.json").write_text("[]")            # not an object
+    (tmp_path / "corpus" / "consistency.jsonl").write_text("{ nope\n")
+    record_stats(TODAY, 1, [], 0, True, _time.monotonic(), repo_root=tmp_path)
+    assert (tmp_path / "stats.jsonl").exists()
+    assert (tmp_path / "stats.html").exists()
+
+
+def test_a_stats_page_that_raises_anyway_still_cannot_stop_a_run(monkeypatch, tmp_path):
+    """The outer guard, pinned independently of the hardened readers.
+
+    record_stats runs on every exit path — including the success path, *after*
+    run_georgia has set committed=True and *before* write_outputs runs. Anything
+    that escapes build_stats_page there means the stats line claims a site shipped
+    that never did. Hardening each reader is the first line; this is the second,
+    and it has to be tested separately or a future reader can quietly reintroduce
+    the hazard.
+    """
+    import scripts.record_stats as rs
+    import time as _time
+
+    def explode(**kwargs):
+        raise RuntimeError("a future corpus file the stats page cannot read")
+
+    monkeypatch.setattr(rs, "build_stats_page", explode)
+    rs.record_stats(TODAY, 1, [], 0, True, _time.monotonic(), repo_root=tmp_path)
+    assert (tmp_path / "stats.jsonl").exists()
+
+
+def test_the_corpus_drop_retry_keeps_an_earlier_validation_hint(monkeypatch, tmp_path):
+    """Rebuilding the prompt for a dark shelf must not lose what attempt 1 learned.
+
+    Compound but reachable: attempt 1 fails validation, the retry carries the hint,
+    and *that* call is the one that hits a dead file_id. The reasons are about the
+    site and the diary, so they stay valid once the corpus is gone.
+    """
+    hints: list[str] = []
+    monkeypatch.setattr(run_module.corpus_select, "selection_for_date", lambda *a, **k: _selection(SHOWN))
+    monkeypatch.setattr(
+        run_module, "assemble_prompt",
+        lambda run_date, repo_root=None, shown_frame_ids=None: f"PROMPT[{len(shown_frame_ids or [])}]",
+    )
+    monkeypatch.setattr(run_module, "record_stats", lambda *a, **k: None)
+    monkeypatch.setattr(run_module, "write_outputs", MagicMock())
+
+    calls: list = []
+
+    def flaky(request):
+        calls.append(request)
+        text = request if isinstance(request, str) else request[-1]["text"]
+        hints.append(text)
+        if len(calls) == 1:
+            return ModelResult("too short", _diary(), 1, 1)      # fails validation
+        if len(calls) == 2:
+            raise APIError(message="file gone", request=MagicMock(), body=None)
+        return ModelResult(_html(), _diary(), 1000, 2000, taste="")
+
+    monkeypatch.setattr(run_module, "call_model", flaky)
+    assert run_module.run(TODAY, FACTS, tmp_path, no_commit=True) == 0
+
+    assert len(calls) == 3
+    assert "[validation-failure]" in hints[1], "attempt 2 should carry the hint"
+    assert "[validation-failure]" in hints[2], "the text-only retry dropped the hint"
+    assert hints[2].startswith("PROMPT[0]"), "the retry should still describe a dark shelf"

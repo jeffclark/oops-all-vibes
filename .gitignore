@@ -11,3 +11,6 @@ model-ab/
 # Corpus working files — video and frames never enter the repo.
 # Regenerate with `python -m scripts.corpus.ingest`.
 corpus/raw/
+# and the same path as a symlink: a trailing slash matches directories only,
+# and this is 3GB of video and copyrighted frames in a public repo.
+corpus/raw

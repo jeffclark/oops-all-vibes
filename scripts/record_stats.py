@@ -27,6 +27,7 @@ failed run — not a free one. Older lines predate both keys.
 from __future__ import annotations
 
 import json
+import sys
 import time
 from pathlib import Path
 
@@ -69,4 +70,21 @@ def record_stats(
     stats_file.parent.mkdir(parents=True, exist_ok=True)
     with stats_file.open("a") as f:
         f.write(json.dumps(line) + "\n")
-    build_stats_page(repo_root=root)
+    _safe_build_stats_page(root)
+
+
+def _safe_build_stats_page(root: Path) -> None:
+    """Rebuild stats.html, but a bad input file can never cost a day of site.
+
+    record_stats runs on every exit path, including the success path *after*
+    run_georgia has recorded committed=True and before write_outputs runs. Since
+    the corpus stories the stats page now reads two corpus-owned files
+    (corpus/verify.json, corpus/consistency.jsonl), a malformed one of those would
+    otherwise be a way for a corpus problem to take the site down — the exact
+    thing the corpus is not allowed to do. Same reasoning as
+    run_georgia.safe_verify and write_outputs._safe_normalize_links.
+    """
+    try:
+        build_stats_page(repo_root=root)
+    except Exception as exc:  # noqa: BLE001 — a stats page must never cost a day
+        print(f"record_stats: could not rebuild stats.html ({exc})", file=sys.stderr)

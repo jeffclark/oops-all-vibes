@@ -140,6 +140,12 @@ def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) ->
                 )
                 selection = corpus_select.EMPTY
                 prompt = assemble_prompt(run_date, repo_root=repo_root, shown_frame_ids=[])
+                if validation_failures:
+                    # Reassembling from scratch is what makes the shelf read as dark,
+                    # but it also drops any hint an earlier failed attempt earned.
+                    # Those reasons are about the site and the diary and stay valid
+                    # with the corpus gone, so put them back.
+                    prompt = add_retry_hint(prompt, validation_failures[-1])
                 request = prompt
                 continue
             record_stats(

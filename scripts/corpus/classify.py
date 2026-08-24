@@ -206,7 +206,13 @@ def classify_show(
     dest = show_dir / CLASSIFIED_FILENAME
     if dest.exists() and not force:
         _log(f"{show_id}: already classified ({dest.name}); use --force to redo")
-        return json.loads(dest.read_text())
+        try:
+            return json.loads(dest.read_text())
+        except json.JSONDecodeError as exc:
+            raise IngestError(
+                f"{show_id}: {dest} is not valid JSON ({exc}). Delete it or pass "
+                "--force to re-classify."
+            ) from None
 
     data = load_ingest(show_dir)
     times: list[int] = list(data.get("frame_times") or [])

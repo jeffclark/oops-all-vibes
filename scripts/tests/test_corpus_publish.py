@@ -421,12 +421,34 @@ def test_verify_only_with_no_manifest_reports_rather_than_crashing(tmp_path):
 # -------------------------------------------------------------------- wiring
 
 
-def test_the_workflow_verifies_the_corpus_without_ever_blocking_the_day():
-    import re
+def _workflow_steps():
+    """The daily job's steps, parsed rather than window-sliced.
 
-    wf = (REPO_ROOT / ".github/workflows/daily-georgia.yml").read_text()
-    assert "--verify-only" in wf
-    step = wf[wf.index("--verify-only") - 700:wf.index("--verify-only") + 200]
-    assert "continue-on-error: true" in step
-    # and it runs before Georgia, so a warning lands on the same run
-    assert wf.index("--verify-only") < wf.index("scripts.run_georgia")
+    The first version of this test read a 700-character window before the
+    --verify-only match and asserted continue-on-error appeared in it. That passes
+    only because the comment above the step happens to be long; add a paragraph
+    and it starts reading the *previous* step's continue-on-error instead.
+    """
+    import yaml
+
+    wf = yaml.safe_load((REPO_ROOT / ".github/workflows/daily-georgia.yml").read_text())
+    return wf["jobs"]["run"]["steps"]
+
+
+def test_the_workflow_verifies_the_corpus_without_ever_blocking_the_day():
+    steps = _workflow_steps()
+    verify = [s for s in steps if "--verify-only" in str(s.get("run", ""))]
+    assert len(verify) == 1, "expected exactly one corpus verification step"
+    assert verify[0].get("continue-on-error") is True
+
+    georgia = [i for i, s in enumerate(steps) if "scripts.run_georgia" in str(s.get("run", ""))]
+    assert georgia, "no Georgia step in the workflow"
+    # before Georgia, so a warning lands on the same run
+    assert steps.index(verify[0]) < georgia[0]
+
+
+def test_the_georgia_step_itself_is_not_continue_on_error():
+    """A failing Georgia run must still fail the workflow — only verify is exempt."""
+    for step in _workflow_steps():
+        if "scripts.run_georgia" in str(step.get("run", "")):
+            assert step.get("continue-on-error") is not True

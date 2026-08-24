@@ -20,6 +20,15 @@ more signal than one re-test every ten days, over a much longer baseline.
 at 90 days may be the most interesting thing on the page. Nothing here
 editorialises — that is hers, on the site, if she notices.
 
+**The frame itself is deliberately not sent.** story_018's implementation note says
+to feed the classifier both verdicts and the frame. It gets only the verdicts, so
+that this module stays decoupled from the manifest and from the Files API and
+cannot be a route by which an offline analysis job touches anything the daily run
+depends on. The question being asked is about the relationship between two pieces
+of prose — whether the second agrees with the first — and the image is not needed
+to answer it. If the classifications ever look untrustworthy, adding the frame is
+the first thing to try.
+
 Offline. Runs on Jeff's machine or as a separate job; it must never be able to
 affect the daily site run, and nothing in the daily pipeline imports it.
 """
@@ -100,6 +109,13 @@ class Pair:
     early_verdict: str
     late_verdict: str
     gap_days: int
+    # "adjacent" or "endpoints". Recorded because the two behave differently over
+    # time: adjacent pairs are fixed once written, while the endpoints pair's later
+    # half advances every time she writes about that frame again, so a frame
+    # accumulates one endpoints record per new entry. Those are genuinely different
+    # comparisons, but the stats page collapses them to the widest one per frame so
+    # "most drifted" ranks by movement rather than by how often she mentioned it.
+    kind: str = "adjacent"
 
     @property
     def key(self) -> tuple[str, str, str]:
@@ -150,9 +166,9 @@ def eligible_pairs(entries: Sequence[dict[str, Any]], min_gap: int = MIN_GAP_DAY
         rows.sort(key=lambda r: (r[0], str(r[1].get("verdict"))))
         if len(rows) < 2:
             continue
-        candidates = list(zip(rows, rows[1:]))          # adjacent
-        candidates.append((rows[0], rows[-1]))          # endpoints
-        for (early_when, early), (late_when, late) in candidates:
+        candidates = [(a, b, "adjacent") for a, b in zip(rows, rows[1:])]
+        candidates.append((rows[0], rows[-1], "endpoints"))
+        for (early_when, early), (late_when, late), kind in candidates:
             gap = (late_when - early_when).days
             if gap < min_gap:
                 continue
@@ -163,8 +179,11 @@ def eligible_pairs(entries: Sequence[dict[str, Any]], min_gap: int = MIN_GAP_DAY
                 early_verdict=str(early.get("verdict", "")).strip(),
                 late_verdict=str(late.get("verdict", "")).strip(),
                 gap_days=gap,
+                kind=kind,
             )
-            pairs[pair.key] = pair
+            # An endpoints pair that coincides with an adjacent one is the same
+            # comparison; keep the adjacent label rather than paying for it twice.
+            pairs.setdefault(pair.key, pair)
     return sorted(pairs.values(), key=lambda p: (p.frame_id, p.early_date, p.late_date))
 
 
@@ -201,6 +220,7 @@ def classify_pair(client: Any, pair: Pair) -> dict[str, Any]:
         "gap_days": pair.gap_days,
         "early_verdict": pair.early_verdict,
         "late_verdict": pair.late_verdict,
+        "kind": pair.kind,
         "classification": classification,
         "note": str(payload.get("note", "")).strip(),
     }
@@ -235,29 +255,6 @@ def run(
             written += 1
     _log(f"wrote {written} classification(s) to {out_path.name}")
     return 0
-
-
-# ------------------------------------------------------------------- summary
-
-
-def summarize(records: Sequence[dict[str, Any]]) -> dict[str, Any]:
-    """The numbers the stats page shows. Pure — no model, no I/O."""
-    counts = {outcome: 0 for outcome in OUTCOMES}
-    for r in records:
-        if r.get("classification") in counts:
-            counts[r["classification"]] += 1
-
-    drift: dict[str, int] = {}
-    for r in records:
-        if r.get("classification") in ("reversed", "evolved"):
-            drift[r.get("frame_id", "?")] = drift.get(r.get("frame_id", "?"), 0) + 1
-
-    return {
-        "pairs": len(records),
-        "counts": counts,
-        "longest_gap_days": max((int(r.get("gap_days") or 0) for r in records), default=0),
-        "most_drifted": sorted(drift.items(), key=lambda kv: (-kv[1], kv[0]))[:5],
-    }
 
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
