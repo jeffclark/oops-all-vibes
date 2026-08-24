@@ -1076,9 +1076,8 @@ Script must check for both at startup and exit with a clear message if missing.
 - **`multi-cam`** — a broadcast cut that alternates between a high angle and
   field-level or close-up shots. **Accepted**, but sampled every **6 s** instead of 8,
   because a meaningful share of the frames will land on a close-up and be useless for
-  drill. No automatic detection of which frames are which — **curation is already the
-  filter.** The contact sheets show everything; Georgia simply won't shortlist the
-  close-ups, and what she declines to pick is itself a preference worth recording.
+  drill. Candidates are **scored and partitioned** into field and non-field sheets —
+  see the field-score section below.
 - **`field-level`** — **rejected with a loud error, not a warning.** Footage shot
   entirely from the stands shows a wall of backs, contributes nothing about drill,
   and would silently poison the corpus with frames she cannot form a real preference
@@ -1106,6 +1105,35 @@ pool of at least **2.5×** the shortlist target, so
 usable on a sheet, set an override. Do **not** instead lower the shortlist target —
 shrinking the cap to fit a thin pool removes exactly the pressure the cap exists to
 create.
+
+**Field scoring — a reversal.** This story originally said "no automatic detection of
+which frames are which; curation is already the filter." That was right while
+close-ups were a modest minority. Madison at 3 s still runs about one-third
+field-shots, and at that ratio the claim stops holding: declining a close-up of a boot
+is a category judgement, not a preference. Making Georgia work through ~135
+irrelevant frames to reach ~65 real candidates spends her attention on sorting rather
+than on choosing.
+
+So `scripts/corpus/framing.py` scores each frame by the fraction of it that reads as
+playing surface — a high-angle drill shot is mostly lit turf with small figures; a
+close-up is skin, uniform and crowd. Blunt and domain-specific on purpose.
+
+Three things keep this honest:
+
+- **Nothing is deleted.** Frames are partitioned into `field_NN.jpg` and
+  `other_NN.jpg` sheets and every candidate still appears in exactly one cell. The
+  score is recorded per frame in `ingest.json`.
+- **Every cell is labelled with its score**, so the split can be checked against the
+  actual images rather than trusted on faith.
+- **If nothing clears the threshold it falls back** to unpartitioned sheets and says
+  so. A heavily tarped field — common in modern shows — can legitimately defeat a
+  turf detector.
+
+`FIELD_THRESHOLD` and the HSV bounds are **provisional and unvalidated against real
+broadcast footage.** One constant already bit: at a value floor of 40 a hornline in
+dark green serge scored as turf, because uniform green and turf green share a hue
+band. Madison wears green. The floor is now 100, separating lit turf from serge, and
+it is the first thing to revisit if dim tape starts reading as all-close-up.
 
 **Behavior** — `ingest_show(entry: dict, out_dir: Path) -> ShowIngest`:
 
@@ -1166,6 +1194,10 @@ Curating a bad show wastes the slot and, worse, silently pollutes the corpus. Fi
 - [ ] A per-show `interval_s` overrides the angle default and reaches extraction, `ingest.json` and the frame timestamps
 - [ ] `interval_s` outside 2–30, or not an int, is rejected naming the field
 - [ ] `mad-1995` in the real sources file carries an override denser than the multi-cam default
+- [ ] Candidates are partitioned into `field_*` and `other_*` sheets, together covering every frame exactly once
+- [ ] Each cell is labelled with its field score; `ingest.json` records a score for every candidate
+- [ ] When no frame clears the threshold, unpartitioned sheets are still emitted and a warning explains why
+- [ ] A frame of dark green uniform does not score as playing field
 - [ ] A URL containing `&list=` downloads exactly one video, not a playlist
 - [ ] Every emitted frame is exactly 1024×576
 - [ ] An entry with `"angle": "field-level"` is rejected with a non-zero exit and an explicit message; no download occurs

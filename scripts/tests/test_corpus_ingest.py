@@ -319,8 +319,11 @@ def faked_shell(monkeypatch):
             vf = cmd[cmd.index("-vf") + 1]
             interval = int(re.search(r"fps=1/(\d+)", vf).group(1))
             count = int(state["duration"] // interval) + 1
+            # Every third frame is turf-green (a drill shot); the rest are warm
+            # close-up tones, so partitioning has something real to split.
             for i in range(1, count + 1):
-                Image.new("RGB", (1024, 576), (i % 256, 30, 60)).save(out / f"seq{i:05d}.jpg")
+                colour = (60, 150, 60) if i % 3 == 0 else (170, 120, 95)
+                Image.new("RGB", (1024, 576), colour).save(out / f"seq{i:05d}.jpg")
             return subprocess.CompletedProcess(cmd, 0, "", "")
         if exe == "ffmpeg":  # audio
             Path(cmd[-1]).write_bytes(b"RIFF")
@@ -356,8 +359,12 @@ def test_ingest_show_end_to_end(tmp_path, faked_shell):
     assert meta["frame_count"] == expected
     assert meta["interval_s"] == 8
     assert meta["url"] == "https://www.youtube.com/watch?v=6TuKic5Lj5k"
-    n_sheets = -(-expected // ingest.SHEET_CELLS)
-    assert meta["sheets"] == [f"sheets/sheet_{i:02d}.jpg" for i in range(1, n_sheets + 1)]
+    # Sheets are now partitioned by field score, so the field group covers only the
+    # drill shots; the two groups together must still cover every candidate.
+    n_field = -(-meta["field_frame_count"] // ingest.SHEET_CELLS)
+    assert meta["sheets"] == [f"sheets/field_{i:02d}.jpg" for i in range(1, n_field + 1)]
+    n_other = -(-(expected - meta["field_frame_count"]) // ingest.SHEET_CELLS)
+    assert meta["other_sheets"] == [f"sheets/other_{i:02d}.jpg" for i in range(1, n_other + 1)]
     for rel in meta["sheets"]:
         assert (d / rel).exists()
 
@@ -482,3 +489,43 @@ def test_override_reaches_extraction(tmp_path, faked_shell):
     assert res.frame_times[:3] == [0, 3, 6]
     meta = json.loads((tmp_path / "dense" / "ingest.json").read_text())
     assert meta["interval_s"] == 3
+
+
+# --------------------------------------------------------- field/other partition
+
+
+def test_ingest_partitions_sheets_and_records_scores(tmp_path, faked_shell):
+    res = ingest.ingest_show(entry(), out_root=tmp_path)
+    d = tmp_path / "cav-2004"
+
+    assert res.field_times, "some fake frames are turf-green; expected a field split"
+    assert len(res.field_times) < len(res.frame_times), "expected a non-trivial split"
+    assert all(name.startswith("sheets/field_") for name in res.sheets)
+    assert all(name.startswith("sheets/other_") for name in res.other_sheets)
+    for rel in res.sheets + res.other_sheets:
+        assert (d / rel).exists()
+
+    meta = json.loads((d / "ingest.json").read_text())
+    assert meta["field_frame_count"] == len(res.field_times)
+    assert set(meta["field_scores"]) == {f"t{t:05d}" for t in res.frame_times}
+    assert all(0.0 <= v <= 1.0 for v in meta["field_scores"].values())
+
+
+def test_every_frame_lands_in_exactly_one_group(tmp_path, faked_shell):
+    res = ingest.ingest_show(entry(), out_root=tmp_path)
+    field = set(res.field_times)
+    assert field.issubset(res.frame_times)
+    # field + other must account for the whole candidate set, with no overlap.
+    other = [t for t in res.frame_times if t not in field]
+    assert len(field) + len(other) == len(res.frame_times)
+
+
+def test_falls_back_to_unpartitioned_sheets_when_nothing_scores_as_field(tmp_path, faked_shell, monkeypatch):
+    """A heavily tarped field can defeat the scorer; ingest must not produce zero sheets."""
+    monkeypatch.setattr(ingest.framing, "field_score", lambda p: 0.0)
+    res = ingest.ingest_show(entry(), out_root=tmp_path)
+    assert res.field_times == []
+    assert res.other_sheets == []
+    assert res.sheets, "must still emit sheets covering every candidate"
+    n_sheets = -(-len(res.frame_times) // ingest.SHEET_CELLS)
+    assert len(res.sheets) == n_sheets

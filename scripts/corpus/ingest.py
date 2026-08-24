@@ -34,6 +34,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Sequence
 
+from scripts.corpus import framing
+
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 SOURCES_PATH = REPO_ROOT / "corpus" / "sources.json"
 RAW_ROOT = REPO_ROOT / "corpus" / "raw"
@@ -102,6 +104,9 @@ class ShowIngest:
     interval_s: int
     frame_times: list[int]
     sheets: list[str]
+    field_scores: dict[str, float] = field(default_factory=dict)
+    field_times: list[int] = field(default_factory=list)
+    other_sheets: list[str] = field(default_factory=list)
     axis_tags: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
@@ -116,6 +121,10 @@ class ShowIngest:
             "frame_count": len(self.frame_times),
             "frame_times": self.frame_times,
             "sheets": self.sheets,
+            "other_sheets": self.other_sheets,
+            "field_frame_count": len(self.field_times),
+            "field_times": self.field_times,
+            "field_scores": self.field_scores,
             "axis_tags": self.axis_tags,
         }
 
@@ -443,20 +452,31 @@ def _label_font(size: int):
         return ImageFont.load_default()
 
 
-def build_sheets(frame_paths: Sequence[Path], out_dir: Path, title: str = "") -> list[Path]:
+def build_sheets(
+    frame_paths: Sequence[Path],
+    out_dir: Path,
+    title: str = "",
+    prefix: str = "sheet",
+    scores: dict[str, float] | None = None,
+    clean: bool = True,
+) -> list[Path]:
     """Compose candidates into labelled contact sheets, 20 cells each.
 
-    Every candidate appears in exactly one cell — a sheet that quietly dropped
-    frames would hide part of the show from the person checking the camera angle,
-    which is the entire reason the sheets exist.
+    Every candidate appears in exactly one cell of its own group — a sheet that
+    quietly dropped frames would hide part of the show from the person checking the
+    camera angle, which is the entire reason the sheets exist.
+
+    When `scores` is given each cell is labelled with its field score, so the
+    partition can be eyeballed against the actual images before anything is trusted
+    to it.
     """
     from PIL import Image, ImageDraw
 
     if not frame_paths:
         raise IngestError("no frames to build sheets from")
-    if out_dir.exists():
+    if clean and out_dir.exists():
         shutil.rmtree(out_dir)
-    out_dir.mkdir(parents=True)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     font = _label_font(20)
     cell_h = CELL_H + LABEL_H
@@ -474,19 +494,17 @@ def build_sheets(frame_paths: Sequence[Path], out_dir: Path, title: str = "") ->
             with Image.open(fp) as im:
                 sheet.paste(im.convert("RGB").resize((CELL_W, CELL_H), Image.LANCZOS), (x, y))
             secs = int(fp.stem.lstrip("t"))
-            draw.text(
-                (x + 8, y + CELL_H + 4),
-                f"t={secs}s  ({secs // 60}:{secs % 60:02d})",
-                fill="#cccccc",
-                font=font,
-            )
+            label = f"t={secs}s  ({secs // 60}:{secs % 60:02d})"
+            if scores is not None and fp.stem in scores:
+                label += f"   field={scores[fp.stem]:.2f}"
+            draw.text((x + 8, y + CELL_H + 4), label, fill="#cccccc", font=font)
 
-        dest = out_dir / f"sheet_{n:02d}.jpg"
+        dest = out_dir / f"{prefix}_{n:02d}.jpg"
         sheet.save(dest, quality=88)
         sheets.append(dest)
 
     if title:
-        _log(f"{title}: {len(sheets)} sheet(s), {len(frame_paths)} candidates")
+        _log(f"{title}: {len(sheets)} {prefix} sheet(s), {len(frame_paths)} frames")
     return sheets
 
 
@@ -514,7 +532,39 @@ def ingest_show(entry: dict[str, Any], out_root: Path = RAW_ROOT, force: bool = 
         shape = analyze_audio(wav)
     render_shape(shape, frame_times, title, show_dir / "shape.png")
 
-    sheets = build_sheets(frame_paths, show_dir / "sheets", title=show_id)
+    # Score every candidate for how much playing field it shows, then split the
+    # sheets. Nothing is discarded — `other` sheets are written too, so the
+    # partition can be checked against the images before it is trusted.
+    scores = framing.score_frames(frame_paths)
+    field_paths, other_paths = framing.partition(frame_paths, scores)
+
+    sheets = build_sheets(
+        field_paths or frame_paths, show_dir / "sheets",
+        title=show_id, prefix="field", scores=scores,
+    )
+    other_sheets: list[Path] = []
+    if field_paths and other_paths:
+        other_sheets = build_sheets(
+            other_paths, show_dir / "sheets",
+            title=show_id, prefix="other", scores=scores, clean=False,
+        )
+
+    keep = len(field_paths) / len(frame_paths) if frame_paths else 0.0
+    _log(f"{show_id}: field-shot rate {keep:.0%} ({len(field_paths)}/{len(frame_paths)})")
+    for lo, hi, count in framing.histogram(scores):
+        if count:
+            _log(f"  field {lo:.1f}-{hi:.1f}  {'#' * min(count, 50)} {count}")
+    if field_paths and len(field_paths) < 60:
+        _log(
+            f"{show_id}: only {len(field_paths)} field frames — round 1 shortlists 25, "
+            "so consider a denser interval_s for this show."
+        )
+    if not field_paths:
+        _log(
+            f"{show_id}: NO frame cleared the field threshold. Either the angle is "
+            "wrong or the scorer is defeated by this footage (a heavily tarped field "
+            "will do it). Falling back to unpartitioned sheets — check them."
+        )
 
     result = ShowIngest(
         show_id=show_id,
@@ -526,10 +576,16 @@ def ingest_show(entry: dict[str, Any], out_root: Path = RAW_ROOT, force: bool = 
         interval_s=interval,
         frame_times=frame_times,
         sheets=[str(p.relative_to(show_dir)) for p in sheets],
+        other_sheets=[str(p.relative_to(show_dir)) for p in other_sheets],
+        field_scores=scores,
+        field_times=[int(p.stem.lstrip("t")) for p in field_paths],
         axis_tags=entry["axis_tags"],
     )
     (show_dir / "ingest.json").write_text(json.dumps(result.to_dict(), indent=2) + "\n")
-    _log(f"{show_id}: {len(frame_times)} candidates, {len(sheets)} sheets — open them before curating")
+    _log(
+        f"{show_id}: {len(frame_times)} candidates, {len(sheets)} field sheet(s), "
+        f"{len(other_sheets)} other — open the field sheets before curating"
+    )
     return result
 
 
