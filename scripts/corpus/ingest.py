@@ -52,6 +52,21 @@ SHAPE_W, SHAPE_H = 1024, 384
 SAMPLE_INTERVAL_S = {"high": 8, "press-box": 8, "multi-cam": 6}
 REJECTED_ANGLES = {"field-level"}
 
+# A per-show `interval_s` in sources.json overrides the angle default. The angle
+# alone turned out to be too coarse: what matters is not whether a broadcast cuts
+# around but what fraction of the cut sits on the field, and that varies per show.
+# Madison 1995 runs about a third high-angle, so at 6s only ~32 of 100 candidates
+# were usable — and round 1 asks Georgia to shortlist 25. Picking 25 of 32 is not
+# forced choice, and forced choice is the only thing that makes this taste rather
+# than appreciation. Sample denser until the usable pool is comfortably larger
+# than the shortlist.
+#
+# Rule of thumb from a sheet: usable cells per sheet / 20 = keep rate. Aim for a
+# usable pool of at least ~2.5x the shortlist target, so:
+#     interval = default_interval * keep_rate * 2.5   (rounded down, floor 2)
+MIN_INTERVAL_S = 2
+MAX_INTERVAL_S = 30
+
 # A show shorter than this isn't a full show and its arc won't mean anything;
 # longer than this and something other than a competitive run was linked.
 MIN_DURATION_S = 240.0
@@ -156,6 +171,16 @@ def validate_entry(entry: Any) -> dict[str, Any]:
             "the source with high-angle footage, or drop the show."
         )
     interval = sample_interval(angle)
+    if "interval_s" in entry:
+        override = entry["interval_s"]
+        if not isinstance(override, int) or isinstance(override, bool):
+            raise IngestError(f"{show_id}: interval_s must be an int, got {override!r}")
+        if not MIN_INTERVAL_S <= override <= MAX_INTERVAL_S:
+            raise IngestError(
+                f"{show_id}: interval_s {override} outside "
+                f"{MIN_INTERVAL_S}-{MAX_INTERVAL_S}s"
+            )
+        interval = override
 
     year = entry["year"]
     if not isinstance(year, int) or isinstance(year, bool) or not 1970 <= year <= 2100:

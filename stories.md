@@ -1076,8 +1076,7 @@ Script must check for both at startup and exit with a clear message if missing.
 - **`multi-cam`** — a broadcast cut that alternates between a high angle and
   field-level or close-up shots. **Accepted**, but sampled every **6 s** instead of 8,
   because a meaningful share of the frames will land on a close-up and be useless for
-  drill. The larger pool keeps enough high-angle candidates to shortlist 25 from.
-  No automatic detection of which frames are which — **curation is already the
+  drill. No automatic detection of which frames are which — **curation is already the
   filter.** The contact sheets show everything; Georgia simply won't shortlist the
   close-ups, and what she declines to pick is itself a preference worth recording.
 - **`field-level`** — **rejected with a loud error, not a warning.** Footage shot
@@ -1085,9 +1084,28 @@ Script must check for both at startup and exit with a clear message if missing.
   and would silently poison the corpus with frames she cannot form a real preference
   about.
 
-An earlier draft of this story allowed only the first value. Six of the fifteen
+An earlier draft of this story allowed only the first value. Eight of the nineteen
 supplied shows are `multi-cam`, several of them the most interesting ones in the set,
 so rejecting the category would have cost more than it protected.
+
+**Per-show `interval_s` override.** The angle alone turned out to be too coarse.
+Ingesting Madison Scouts 1995 at 6 s produced roughly **32 usable drill frames out of
+100** — the broadcast spends most of its time on faces, the pit and the crowd, which
+for that corps may genuinely be where the show lives. Round 1 asks Georgia to
+shortlist 25. Picking 25 out of 32 is not forced choice, and forced choice is the only
+thing separating taste from appreciation. The frames themselves were fine; the *ratio*
+was what broke.
+
+So `sources.json` accepts an optional integer `interval_s` (2–30) that overrides the
+angle default for one show. Madison is set to 3, restoring a usable pool near 65
+against a shortlist of 25.
+
+Sizing rule, from one contact sheet: `keep_rate = usable cells / 20`. Aim for a usable
+pool of at least **2.5×** the shortlist target, so
+`interval ≈ default_interval × keep_rate × 2.5`, floored at 2. Under roughly 50 %
+usable on a sheet, set an override. Do **not** instead lower the shortlist target —
+shrinking the cap to fit a thin pool removes exactly the pressure the cap exists to
+create.
 
 **Behavior** — `ingest_show(entry: dict, out_dir: Path) -> ShowIngest`:
 
@@ -1145,6 +1163,9 @@ Curating a bad show wastes the slot and, worse, silently pollutes the corpus. Fi
 - [ ] With `ffmpeg` absent from PATH: exits non-zero with a message naming ffmpeg, before downloading anything
 - [ ] A valid `high` entry produces `source.mp4`, ≥30 frames at 1024×576, `shape.png`, and `ingest.json`
 - [ ] A `multi-cam` entry is accepted and sampled at 6 s, yielding more candidates than the same-length `high` show
+- [ ] A per-show `interval_s` overrides the angle default and reaches extraction, `ingest.json` and the frame timestamps
+- [ ] `interval_s` outside 2–30, or not an int, is rejected naming the field
+- [ ] `mad-1995` in the real sources file carries an override denser than the multi-cam default
 - [ ] A URL containing `&list=` downloads exactly one video, not a playlist
 - [ ] Every emitted frame is exactly 1024×576
 - [ ] An entry with `"angle": "field-level"` is rejected with a non-zero exit and an explicit message; no download occurs

@@ -34,7 +34,8 @@
       "era:1990s",
       "class:dci-world",
       "org:madison-scouts"
-    ]
+    ],
+    "interval_s": 3
   },
   {
     "show_id": "lhs-1998",

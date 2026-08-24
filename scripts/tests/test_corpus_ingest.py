@@ -111,7 +111,8 @@ def test_real_sources_file_is_valid():
     assert len({e["show_id"] for e in entries}) == len(entries)
     for e in entries:
         assert re.fullmatch(r"https://www\.youtube\.com/watch\?v=[\w-]+", e["url"])
-        assert e["interval_s"] in (6, 8)
+        # Angle sets a default; a per-show interval_s may override it downward.
+        assert ingest.MIN_INTERVAL_S <= e["interval_s"] <= ingest.SAMPLE_INTERVAL_S[e["angle"]]
 
 
 def test_duplicate_show_id_rejected(tmp_path):
@@ -434,3 +435,50 @@ def test_heavy_imports_are_lazy():
 
     assert "scripts.corpus.ingest" in sys.modules
     assert "librosa" not in sys.modules
+
+
+# ------------------------------------------------------- per-show interval override
+
+
+def test_interval_override_beats_the_angle_default():
+    got = ingest.validate_entry(entry(angle="multi-cam", interval_s=3))
+    assert got["interval_s"] == 3
+
+
+def test_interval_override_applies_to_high_angle_too():
+    assert ingest.validate_entry(entry(angle="high", interval_s=4))["interval_s"] == 4
+
+
+def test_absent_override_keeps_the_angle_default():
+    assert ingest.validate_entry(entry(angle="multi-cam"))["interval_s"] == 6
+    assert ingest.validate_entry(entry(angle="high"))["interval_s"] == 8
+
+
+@pytest.mark.parametrize("bad", [0, 1, 31, 600, -4])
+def test_interval_override_bounds(bad):
+    with pytest.raises(IngestError, match="interval_s"):
+        ingest.validate_entry(entry(interval_s=bad))
+
+
+@pytest.mark.parametrize("bad", ["6", 6.0, True, None])
+def test_interval_override_must_be_an_int(bad):
+    with pytest.raises(IngestError, match="interval_s"):
+        ingest.validate_entry(entry(interval_s=bad))
+
+
+def test_madison_is_sampled_denser_than_the_multicam_default():
+    """The show that was ~32% usable at 6s needs a denser sample, not a smaller cap."""
+    entries = {e["show_id"]: e for e in ingest.load_sources(REPO_ROOT / "corpus" / "sources.json")}
+    mad = entries["mad-1995"]
+    assert mad["angle"] == "multi-cam"
+    assert mad["interval_s"] == 3
+    assert mad["interval_s"] < ingest.SAMPLE_INTERVAL_S["multi-cam"]
+
+
+def test_override_reaches_extraction(tmp_path, faked_shell):
+    res = ingest.ingest_show(entry(show_id="dense", angle="multi-cam", interval_s=3), out_root=tmp_path)
+    assert res.interval_s == 3
+    assert len(res.frame_times) == int(660 // 3) + 1
+    assert res.frame_times[:3] == [0, 3, 6]
+    meta = json.loads((tmp_path / "dense" / "ingest.json").read_text())
+    assert meta["interval_s"] == 3
