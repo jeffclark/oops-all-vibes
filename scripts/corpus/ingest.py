@@ -108,6 +108,11 @@ class ShowIngest:
     field_times: list[int] = field(default_factory=list)
     other_sheets: list[str] = field(default_factory=list)
     axis_tags: list[str] = field(default_factory=list)
+    # Which mechanism decided the field/other split — "heuristic" (the green
+    # fraction in framing.py) or "classifier" (story_013a's vision pass). Recorded
+    # so the corpus does not quietly become two differently-judged halves with no
+    # record of which show was judged how.
+    split_mechanism: str = "heuristic"
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -126,6 +131,7 @@ class ShowIngest:
             "field_times": self.field_times,
             "field_scores": self.field_scores,
             "axis_tags": self.axis_tags,
+            "split_mechanism": self.split_mechanism,
         }
 
 
@@ -322,6 +328,11 @@ def extract_frames(src: Path, out_dir: Path, interval_s: int) -> list[int]:
     return times
 
 
+def _frame_seconds(path: Path) -> int:
+    """The source timestamp encoded in a frame filename (t00152.jpg -> 152)."""
+    return int(path.stem.lstrip("t"))
+
+
 def extract_audio(src: Path, dest: Path) -> Path:
     _run(
         ["ffmpeg", "-nostdin", "-y", "-i", str(src), "-vn",
@@ -511,6 +522,45 @@ def build_sheets(
 # ---------------------------------------------------------------- orchestration
 
 
+def partition_candidates(
+    show_dir: Path,
+    frame_paths: Sequence[Path],
+    scores: dict[str, float],
+) -> tuple[str, list[Path], list[Path]]:
+    """Split candidates into (mechanism, field, other).
+
+    Prefers story_013a's vision verdicts when that show has been classified, and
+    falls back to the green-fraction heuristic otherwise. A verdict file that does
+    not cover every current candidate is stale — the show was re-sampled at a
+    different interval_s underneath it — so it is ignored rather than half-applied,
+    which would silently mix two mechanisms inside one show.
+
+    Nothing is deleted under either mechanism. The verdict only decides which
+    contact sheet a frame lands on.
+    """
+    # Local import: classify imports this module for RAW_ROOT/IngestError/_log,
+    # so importing it at module scope would be circular.
+    from scripts.corpus import classify
+
+    verdicts = classify.load_classified(show_dir)
+    if verdicts is not None:
+        uncovered = [p for p in frame_paths if _frame_seconds(p) not in verdicts]
+        if uncovered:
+            _log(
+                f"{show_dir.name}: {classify.CLASSIFIED_FILENAME} does not cover "
+                f"{len(uncovered)} of {len(frame_paths)} current candidates — it "
+                "predates this interval_s. Using the heuristic; re-run classify "
+                "with --force to refresh it."
+            )
+        else:
+            field_paths = [p for p in frame_paths if verdicts[_frame_seconds(p)]]
+            other_paths = [p for p in frame_paths if not verdicts[_frame_seconds(p)]]
+            return classify.MECHANISM_CLASSIFIER, field_paths, other_paths
+
+    field_paths, other_paths = framing.partition(frame_paths, scores)
+    return classify.MECHANISM_HEURISTIC, field_paths, other_paths
+
+
 def ingest_show(entry: dict[str, Any], out_root: Path = RAW_ROOT, force: bool = False) -> ShowIngest:
     entry = validate_entry(entry)
     show_id = entry["show_id"]
@@ -536,7 +586,7 @@ def ingest_show(entry: dict[str, Any], out_root: Path = RAW_ROOT, force: bool = 
     # sheets. Nothing is discarded — `other` sheets are written too, so the
     # partition can be checked against the images before it is trusted.
     scores = framing.score_frames(frame_paths)
-    field_paths, other_paths = framing.partition(frame_paths, scores)
+    mechanism, field_paths, other_paths = partition_candidates(show_dir, frame_paths, scores)
 
     sheets = build_sheets(
         field_paths or frame_paths, show_dir / "sheets",
@@ -550,7 +600,10 @@ def ingest_show(entry: dict[str, Any], out_root: Path = RAW_ROOT, force: bool = 
         )
 
     keep = len(field_paths) / len(frame_paths) if frame_paths else 0.0
-    _log(f"{show_id}: field-shot rate {keep:.0%} ({len(field_paths)}/{len(frame_paths)})")
+    _log(
+        f"{show_id}: field-shot rate {keep:.0%} ({len(field_paths)}/{len(frame_paths)}) "
+        f"by {mechanism}"
+    )
     for lo, hi, count in framing.histogram(scores):
         if count:
             _log(f"  field {lo:.1f}-{hi:.1f}  {'#' * min(count, 50)} {count}")
@@ -561,9 +614,12 @@ def ingest_show(entry: dict[str, Any], out_root: Path = RAW_ROOT, force: bool = 
         )
     if not field_paths:
         _log(
-            f"{show_id}: NO frame cleared the field threshold. Either the angle is "
-            "wrong or the scorer is defeated by this footage (a heavily tarped field "
-            "will do it). Falling back to unpartitioned sheets — check them."
+            f"{show_id}: NO frame was judged a field shot by the {mechanism}. Either "
+            "the angle is wrong or the split is defeated by this footage — a tarped "
+            "field will do it, and so will tape whose turf is not green enough to "
+            "measure. Falling back to unpartitioned sheets: open them, and if the "
+            "drill really is in there run `python -m scripts.corpus.classify --show "
+            f"{show_id}` (story_013a) and ingest again."
         )
 
     result = ShowIngest(
@@ -578,8 +634,9 @@ def ingest_show(entry: dict[str, Any], out_root: Path = RAW_ROOT, force: bool = 
         sheets=[str(p.relative_to(show_dir)) for p in sheets],
         other_sheets=[str(p.relative_to(show_dir)) for p in other_sheets],
         field_scores=scores,
-        field_times=[int(p.stem.lstrip("t")) for p in field_paths],
+        field_times=[_frame_seconds(p) for p in field_paths],
         axis_tags=entry["axis_tags"],
+        split_mechanism=mechanism,
     )
     (show_dir / "ingest.json").write_text(json.dumps(result.to_dict(), indent=2) + "\n")
     _log(

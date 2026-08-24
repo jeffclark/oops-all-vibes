@@ -17,7 +17,7 @@
     "url": "https://www.youtube.com/watch?v=Kvn-D8aEHfo",
     "corps": "Star of Indiana",
     "year": 1993,
-    "angle": "high",
+    "angle": "multi-cam",
     "axis_tags": [
       "era:1990s",
       "class:dci-world",
@@ -59,7 +59,8 @@
       "era:1990s",
       "class:high-school",
       "org:plymouth-canton"
-    ]
+    ],
+    "interval_s": 4
   },
   {
     "show_id": "pr-2003",
@@ -162,7 +163,8 @@
       "class:dci-world",
       "org:carolina-crown",
       "pair:carolina-crown"
-    ]
+    ],
+    "interval_s": 4
   },
   {
     "show_id": "scv-2018",
