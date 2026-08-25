@@ -1,0 +1,157 @@
+{
+  "date": "2026-08-25",
+  "fetched_at": "2026-08-25T07:45:23+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: Irrigation ditch on Scottsbluff Farmsteads, FSA (Farm Security Administration) project. North Platte River Valley, Nebraska]",
+        "date": "1941-01-01",
+        "location": [
+          "nebraska",
+          "scottsbluff",
+          "scotts bluff county",
+          "united states"
+        ],
+        "subject": [
+          "nebraska",
+          "united states",
+          "scotts bluff county",
+          "safety film negatives",
+          "scottsbluff"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8c16000/8c16100/8c16167v.jpg#h=1024&w=794",
+        "image_width": 794,
+        "item_url": "http://www.loc.gov/item/2017808773/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171074
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-23",
+        "total_cases": 278,
+        "distinct_types": 20,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 130
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 52
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 19
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 16
+          },
+          {
+            "case": "Sign Repair",
+            "n": 13
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 12
+          }
+        ],
+        "only_one_of": [
+          "Building Inspection Request",
+          "General Traffic Engineering Request",
+          "Missing Sign",
+          "Pavement Marking Inspection",
+          "Requests for Traffic Signal Studies or Reviews",
+          "Unsafe/Dangerous Conditions",
+          "Unsatisfactory Living Conditions"
+        ],
+        "resolved": [
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "South End",
+            "note": "No syringe at location jc"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Roxbury",
+            "note": "2 syringes 4 dt recovered from area search jc"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Jamaica Plain",
+            "note": "Searched area near trash can no syringe recovered. Lollipop stick in shape of syringe jc"
+          }
+        ]
+      }
+    },
+    "surplus": {
+      "label": "Something a government is selling off",
+      "data": {
+        "name": "Bobcat walk-behind mower",
+        "url": "https://municibid.com/Listing/Details/85104817",
+        "description": "Bobcat (Textron) commercial-style walk-behind rotary lawn mower featuring a robust green heavy-duty steel deck. Equipped with a reliable pull-start gas engine and an adjustable cutting height deck for versatile lawn care. Please note, the mower has not been used in 5 years and its condition is unspecified. Sold AS IS, WHERE IS.",
+        "seller": "Hazlet Township",
+        "price": "31.00",
+        "currency": "USD",
+        "listings_on_page": 20
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 9
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-08-24",
+        "published_that_day": 84,
+        "sampled_from": 84,
+        "title": "International Pacific Halibut Commission Appointments",
+        "type": "Notice",
+        "agencies": [
+          "Commerce Department",
+          "National Oceanic and Atmospheric Administration"
+        ],
+        "abstract": "NOAA is soliciting nominations for a resident of Alaska to serve as a United States Commissioner to the International Pacific Halibut Commission (IPHC). This action is necessary to ensure that the interests of the United States and all of its stakeholders in the Pacific halibut fishery are adequately represented. The intended effect of this solicitation is to ensure stakeholder participation in the process of filling a vacant Commissioner position.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/08/24/2026-17192/international-pacific-halibut-commission-appointments"
+      }
+    }
+  },
+  "failures": {},
+  "rotation": {
+    "builds_this_cycle": 3,
+    "builds_until_retirement": 27,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
