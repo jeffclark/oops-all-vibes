@@ -1,0 +1,133 @@
+{
+  "date": "2026-08-26",
+  "fetched_at": "2026-08-26T07:51:50+00:00",
+  "inputs": {
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-24",
+        "total_cases": 397,
+        "distinct_types": 33,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 187
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 53
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 33
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 18
+          },
+          {
+            "case": "Sign Repair",
+            "n": 17
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 10
+          }
+        ],
+        "only_one_of": [
+          "Abandoned Building",
+          "CMC         Unsatisfactory Living Conditions",
+          "Chronic Dampness/Mold",
+          "Construction Debris",
+          "Contractors Complaint",
+          "Electrical",
+          "General Traffic Engineering Request",
+          "Illegal Rooming House"
+        ],
+        "resolved": [
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Boston",
+            "note": "1 syringe recovered"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Boston",
+            "note": "6 syringes 5 dt recovered jc"
+          },
+          {
+            "case": "Unsanitary Conditions - Food",
+            "neighborhood": "Boston",
+            "note": "An Miscellaneous inspection was conducted. The establishment has voluntarily discarded all foods affected by an isolated sprinkler pipe burst inside produce walkin cooler. Isd building inspector Joe Depina responded. No closure per JD as Johnson controls already on site making necessary repairs."
+          }
+        ]
+      }
+    },
+    "surplus": {
+      "label": "Something a government is selling off",
+      "data": {
+        "name": "Toro Sand Pro 5040",
+        "url": "https://municibid.com/Listing/Details/85097281",
+        "description": "It was used to groom baseball and softball fields in the parks. It has a bad engine",
+        "seller": "Scotch Plains Fire Department",
+        "price": "31.00",
+        "currency": "USD",
+        "listings_on_page": 20
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 8
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-08-25",
+        "published_that_day": 90,
+        "sampled_from": 90,
+        "title": "Change in Bank Control Notices; Acquisitions of Shares of a Bank or Bank Holding Company",
+        "type": "Notice",
+        "agencies": [
+          "Federal Reserve System"
+        ],
+        "abstract": null,
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/08/25/2026-17310/change-in-bank-control-notices-acquisitions-of-shares-of-a-bank-or-bank-holding-company"
+      }
+    }
+  },
+  "failures": {
+    "fsa": "ValueError: page 208: ChunkedEncodingError"
+  },
+  "rotation": {
+    "builds_this_cycle": 4,
+    "builds_until_retirement": 26,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
