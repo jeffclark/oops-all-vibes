@@ -13,7 +13,13 @@ name: Daily Georgia
 
 on:
   schedule:
-    - cron: '0 7 * * *'  # ≈3am EST / 2am EDT — acceptable drift
+    # NOT on the hour. GitHub's scheduler is best-effort and queues hardest at
+    # :00, which is where this used to sit: every run for weeks started 30-58
+    # minutes late, and on 2026-08-27 the event was dropped outright — no run,
+    # no failure, just a missing day on a site whose whole premise is daily.
+    # An odd minute is the documented mitigation. It does not make delivery
+    # guaranteed; nothing does.
+    - cron: '23 7 * * *'  # ≈3:23am EDT / 2:23am EST
   workflow_dispatch:
     inputs:
       dry_run:
