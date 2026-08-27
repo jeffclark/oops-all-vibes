@@ -1,0 +1,157 @@
+{
+  "date": "2026-08-27",
+  "fetched_at": "2026-08-27T11:28:04+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Worker in feed mill taking up an armload of fodder which will be ground for feed. Taylor, Texas",
+        "date": "1939-01-01",
+        "location": [
+          "taylor",
+          "united states",
+          "williamson county",
+          "texas"
+        ],
+        "subject": [
+          "williamson county",
+          "united states",
+          "safety film negatives",
+          "taylor",
+          "texas"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b23000/8b23200/8b23232v.jpg#h=761&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017784696/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171074
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-25",
+        "total_cases": 415,
+        "distinct_types": 30,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 192
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 39
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 37
+          },
+          {
+            "case": "Sign Repair",
+            "n": 22
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 22
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 19
+          }
+        ],
+        "only_one_of": [
+          "Chronic Dampness/Mold",
+          "Contractors Complaint",
+          "Electrical",
+          "New Sign  Crosswalk or Pavement Marking",
+          "No Utilities Residential - Water",
+          "Overflowing or Un-kept Dumpster",
+          "Traffic Signal Repair",
+          "Unsanitary Conditions - Food"
+        ],
+        "resolved": [
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "Beacon Hill",
+            "note": "Cleared out thanks for submitting."
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Boston",
+            "note": "Df recovered 20"
+          },
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "Roxbury",
+            "note": "The violator(s) at this location was/were ticketed. Reported at 6:30 pm"
+          }
+        ]
+      }
+    },
+    "surplus": {
+      "label": "Something a government is selling off",
+      "data": {
+        "name": "Heavy-Duty Hydraulic Commercial Floor Jack",
+        "url": "https://municibid.com/Listing/Details/85110056",
+        "description": "Heavy-duty, commercial-grade hydraulic floor jack. Features a solid steel frame design with a long pumping handle, steel front wheels, and a large diamond-shaped swivel lift saddle. Sold AS IS, WHERE IS.",
+        "seller": "Hazlet Township",
+        "price": "8.00",
+        "currency": "USD",
+        "listings_on_page": 20
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 7
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-08-26",
+        "published_that_day": 92,
+        "sampled_from": 92,
+        "title": "Agency Information Collection Activities: Request for Comment Regarding Common Disclosure Forms for the Biographical Sketch and Current and Pending (Other) Support",
+        "type": "Notice",
+        "agencies": [
+          "National Science Foundation"
+        ],
+        "abstract": "The National Science Foundation (NSF) is announcing plans to renew this collection. In accordance with the requirements of the Paperwork Reduction Act of 1995, we are providing opportunity for public comments on this action. After obtaining and considering public comments, NSF will prepare the submission requesting Office of Management and Budget (OMB) clearance of this collection for no longer than 3 years.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/08/26/2026-17415/agency-information-collection-activities-request-for-comment-regarding-common-disclosure-forms-for"
+      }
+    }
+  },
+  "failures": {},
+  "rotation": {
+    "builds_this_cycle": 5,
+    "builds_until_retirement": 25,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}

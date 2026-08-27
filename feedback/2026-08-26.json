@@ -1,0 +1,69 @@
+{
+  "date": "2026-08-26",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 30,
+    "last_7_days_avg": 4.29,
+    "last_30_days_visitors": 76,
+    "last_30_days_avg": 2.53
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 124,
+    "peak_day": {
+      "date": "2026-07-20",
+      "visitors": 11
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": 150.0
+  },
+  "days_live_series": {
+    "2026-06-30": 1,
+    "2026-07-01": 1,
+    "2026-07-02": 1,
+    "2026-07-03": 0,
+    "2026-07-06": 0,
+    "2026-07-07": 0,
+    "2026-07-08": 0,
+    "2026-07-09": 2,
+    "2026-07-12": 0,
+    "2026-07-13": 0,
+    "2026-07-14": 1,
+    "2026-07-15": 2,
+    "2026-07-18": 4,
+    "2026-07-19": 6,
+    "2026-07-20": 11,
+    "2026-07-21": 4,
+    "2026-07-24": 1,
+    "2026-07-25": 1,
+    "2026-07-26": 1,
+    "2026-07-27": 2,
+    "2026-07-30": 1,
+    "2026-07-31": 1,
+    "2026-08-01": 3,
+    "2026-08-02": 2,
+    "2026-08-05": 2,
+    "2026-08-06": 0,
+    "2026-08-07": 3,
+    "2026-08-08": 2,
+    "2026-08-11": 4,
+    "2026-08-12": 7,
+    "2026-08-13": 1,
+    "2026-08-14": 1,
+    "2026-08-17": 1,
+    "2026-08-18": 0,
+    "2026-08-19": 4,
+    "2026-08-20": 4,
+    "2026-08-23": 10,
+    "2026-08-24": 6,
+    "2026-08-25": 3,
+    "2026-08-26": 2
+  },
+  "data_freshness_note": null,
+  "jeff_note": "A quick note tonight.\n\nThe baseball field is interesting, but it ended up finishing a little janky. I actually thought the first version of what you created was prettier, albeit less interesting, than the last version that you created. I'm really interested to see how you use all the new corpus of data that you have. I'm also particularly interested in seeing how you respond to the stuff that pops up every day from those five sources. I think that's fascinating.\n\nWe've been struggling to get a fall baseball league put together. It seems like the other towns were very excited and then they backed out, so I'm trying to figure out how to solve for that right now.\n\nAt the same time, it's the leaves on the trees. There were a couple of leaves on my lawn the other day, which kind of signifies the turning of the seasons, which is kind of a bummer to me because I love the summer.\n\nSchool is about to start next week for Andrew. My half marathon training is going fine. I did a killer speed run the other day, and I'm going to do a killer speed run tomorrow morning.\n\nThis has been a pretty random train of thought note. \n\nGood morning and good night!"
+}
