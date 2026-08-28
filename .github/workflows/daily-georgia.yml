@@ -13,12 +13,15 @@ name: Daily Georgia
 
 on:
   schedule:
-    # NOT on the hour. GitHub's scheduler is best-effort and queues hardest at
-    # :00, which is where this used to sit: every run for weeks started 30-58
-    # minutes late, and on 2026-08-27 the event was dropped outright — no run,
-    # no failure, just a missing day on a site whose whole premise is daily.
-    # An odd minute is the documented mitigation. It does not make delivery
-    # guaranteed; nothing does.
+    # Off the hour, but do not read much into that. This moved from :00 on
+    # 2026-08-27 on the theory that top-of-hour contention explained the delays
+    # (every run for weeks landed 30-58 minutes late). The evidence since says
+    # the slot is not the story: georgia-heartbeat sits at :47 and its first run
+    # landed 9h27m late, and the build event produced no run at all on either
+    # 2026-08-27 or 2026-08-28, with GitHub reporting Actions fully operational.
+    # `schedule` is best-effort and this repo gets poor effort. An odd minute is
+    # cheap and may help at the margin; it is not a fix, and nothing available
+    # inside GitHub's scheduler is.
     - cron: '23 7 * * *'  # ≈3:23am EDT / 2:23am EST
   workflow_dispatch:
     inputs:

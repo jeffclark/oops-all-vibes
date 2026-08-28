@@ -1,30 +1,37 @@
-# Did Georgia build today?
+# Is the site current?
 #
-# `schedule` is best-effort. On 2026-08-27 the Daily Georgia event was never
-# delivered — no run, no failure, no notification, just a missing day on a site
-# whose entire premise is that it regenerates daily. Nothing noticed. The way
-# it surfaced was Jeff looking at the site.
+# `schedule` is best-effort, and for this repo "best effort" is worse than it
+# looks. Measured: Daily Georgia's event has landed anywhere from 31 minutes to
+# 3h43m after its cron time, this workflow's own first run landed 9h27m late,
+# and on 2026-08-27 and 2026-08-28 the build event produced no run at all. The
+# way a miss surfaced both times was Jeff looking at the site.
 #
 # This closes that gap and nothing else. It does NOT dispatch a build: deciding
-# to publish is Jeff's, and an alert that silently fixes things trains you to
-# stop reading it. It opens an issue and stops.
+# to publish is Jeff's, and an alarm that quietly fixes things is one you stop
+# reading. It opens an issue and stops.
 #
-# The check is archive/<date>.html, the file write_outputs commits at the end of
-# a successful build. Asking "did today's page land" rather than "did the run
-# succeed" is deliberate — it catches a dropped event and a green-but-empty run
-# with the same question, and it is the question a reader of the site would ask.
+# It asks how stale the archive is rather than whether one specific file exists.
+# The obvious version — test `archive/$(date -u +%F).html` — is wrong here: this
+# workflow is itself scheduled, so it inherits the same unbounded delay, and a
+# slip past midnight UTC would have it demand a date that was never due.
 #
-# This workflow is itself scheduled, so it can be dropped too. It is a smoke
-# alarm, not a guarantee.
+# For the same reason it takes TWO missing days to open an issue. One day is
+# genuinely ambiguous: a build delayed past this check looks identical to a build
+# that never came, and given a measured 9h27m delay that is not hypothetical. A
+# one-day gap gets a warning in the log; two days is unambiguous however late
+# anything ran, so that is what is allowed to file. An alarm that cries wolf is
+# one you stop reading, which is the failure this is here to prevent.
+#
+# This workflow is scheduled too, so it can be dropped like anything else. It is
+# a smoke alarm, not a guarantee.
 
 name: Georgia heartbeat
 
 on:
   schedule:
-    # 13:47 UTC ≈ 9:47am EDT. Daily Georgia is nominally 07:23 UTC and takes
-    # ~10-15 minutes, so this leaves hours of slack for a late-but-delivered
-    # event before it calls the day missing. Off the hour, for the same reason
-    # the build itself is.
+    # 13:47 UTC ≈ 9:47am EDT, hours after Daily Georgia's 07:23. The margin is
+    # for a build that is merely late; it is not load-bearing, because the
+    # staleness check below is correct whenever it happens to run.
     - cron: '47 13 * * *'
   workflow_dispatch:
 
@@ -38,62 +45,102 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Look for today's archive entry
+      - name: Measure how stale the archive is
         id: check
         run: |
-          TODAY="$(date -u +%F)"
-          echo "date=$TODAY" >> "$GITHUB_OUTPUT"
-          if [ -f "archive/$TODAY.html" ]; then
-            echo "missing=false" >> "$GITHUB_OUTPUT"
-            echo "archive/$TODAY.html is present — Georgia built today."
-          else
-            echo "missing=true" >> "$GITHUB_OUTPUT"
-            echo "::warning::archive/$TODAY.html is missing — no build landed for $TODAY."
+          set -euo pipefail
+
+          # Newest archive/<date>.html, by name. index.html is the generated
+          # listing, not a day, so it is excluded.
+          NEWEST="$(ls archive/ \
+            | sed -n 's/^\([0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}\)\.html$/\1/p' \
+            | sort | tail -1)"
+
+          if [ -z "$NEWEST" ]; then
+            echo "No dated entries in archive/ at all. That is a different and worse"
+            echo "problem than a missed build, and not one this alarm should guess at."
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
-      - name: Open an issue if she didn't
-        if: steps.check.outputs.missing == 'true'
+          TODAY="$(date -u +%F)"
+          GAP=$(( ( $(date -u -d "$TODAY" +%s) - $(date -u -d "$NEWEST" +%s) ) / 86400 ))
+
+          echo "newest=$NEWEST" >> "$GITHUB_OUTPUT"
+          echo "today=$TODAY"   >> "$GITHUB_OUTPUT"
+          echo "gap=$GAP"       >> "$GITHUB_OUTPUT"
+          # The first day with no page: what the issue is named for, so one
+          # outage keeps one issue however many days it runs.
+          echo "first_missing=$(date -u -d "$NEWEST + 1 day" +%F)" >> "$GITHUB_OUTPUT"
+
+          if [ "$GAP" -ge 2 ]; then
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::Newest archive entry is $NEWEST; today is $TODAY. The site is $GAP days stale."
+          elif [ "$GAP" -eq 1 ]; then
+            # Could be a miss, could be a build running late — indistinguishable
+            # from here. Say so in the log; do not file on it.
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::No page for $TODAY yet (newest is $NEWEST). Not filing — a delayed build looks the same from here. If it is still missing tomorrow, that is unambiguous and an issue opens."
+          else
+            echo "stale=false" >> "$GITHUB_OUTPUT"
+            echo "Newest archive entry is $NEWEST — current."
+          fi
+
+      - name: Open an issue if it is
+        if: steps.check.outputs.stale == 'true'
         uses: actions/github-script@v7
         env:
-          MISSING_DATE: ${{ steps.check.outputs.date }}
+          NEWEST: ${{ steps.check.outputs.newest }}
+          TODAY: ${{ steps.check.outputs.today }}
+          GAP: ${{ steps.check.outputs.gap }}
+          FIRST_MISSING: ${{ steps.check.outputs.first_missing }}
         with:
           script: |
-            const date = process.env.MISSING_DATE;
-            const title = `Georgia did not build: ${date}`;
+            const { NEWEST, TODAY, GAP, FIRST_MISSING } = process.env;
+            const title = `Georgia did not build: ${FIRST_MISSING}`;
 
-            // One issue per missing date. This runs daily and a gap can persist
-            // for days; re-opening the same issue every morning would bury the
-            // signal under itself.
-            const existing = await github.rest.issues.listForRepo({
+            // Named for the first missing day, not today, so a gap that runs for
+            // days keeps updating one issue instead of opening a fresh one each
+            // morning and burying the signal under itself.
+            const existing = await github.paginate(github.rest.issues.listForRepo, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
               per_page: 100,
             });
-            if (existing.data.some(i => i.title === title)) {
-              core.info(`Already open: "${title}" — nothing to do.`);
-              return;
-            }
+            const open = existing.find(i => i.title === title);
 
             const runs = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/daily-georgia.yml`;
             const body = [
-              `\`archive/${date}.html\` does not exist on \`${context.ref}\`, so no build landed for ${date}.`,
+              `The newest entry in \`archive/\` is **${NEWEST}**. Today is ${TODAY}, so the site is **${GAP} days stale** and nothing has been published since ${FIRST_MISSING}.`,
               ``,
-              `This checks the committed artifact rather than the run's exit status, so it fires for either cause:`,
+              `This checks the committed artifact rather than any run's exit status, so it covers both causes:`,
               ``,
-              `- **The scheduled event was never delivered.** GitHub's \`schedule\` trigger is best-effort. There will be no run at all — not a failed one. Check the [run history](${runs}) for a gap.`,
-              `- **The run happened and did not produce a page.** There will be a run to read.`,
+              `- **The scheduled event was never delivered.** GitHub's \`schedule\` trigger is best-effort and this repo sees it badly: delays from 31 minutes to over 9 hours, and outright misses. There will be no run at all — not a failed one. Check the [run history](${runs}) for a gap.`,
+              `- **A run happened and published nothing.** There will be a run to read.`,
               ``,
-              `Nothing has been dispatched. To publish the missing day, run **Daily Georgia** manually with \`dry_run: false\`.`,
+              `Nothing has been dispatched. To publish, run **Daily Georgia** manually with \`dry_run: false\`. It builds today's page; the skipped days stay skipped, which is the honest record.`,
               ``,
               `---`,
               `_Generated by [Claude Code](https://claude.ai/code)_`,
             ].join('\n');
 
-            await github.rest.issues.create({
+            if (open) {
+              // Same outage, more days. Refresh the count rather than pile on.
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: open.number,
+                body,
+              });
+              core.info(`Updated #${open.number} — now ${GAP} day(s) stale.`);
+              return;
+            }
+
+            const created = await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title,
               body,
             });
-            core.info(`Opened: "${title}"`);
+            core.info(`Opened #${created.data.number}: "${title}"`);
