@@ -15,12 +15,18 @@
 # workflow is itself scheduled, so it inherits the same unbounded delay, and a
 # slip past midnight UTC would have it demand a date that was never due.
 #
-# For the same reason it takes TWO missing days to open an issue. One day is
-# genuinely ambiguous: a build delayed past this check looks identical to a build
-# that never came, and given a measured 9h27m delay that is not hypothetical. A
-# one-day gap gets a warning in the log; two days is unambiguous however late
-# anything ran, so that is what is allowed to file. An alarm that cries wolf is
-# one you stop reading, which is the failure this is here to prevent.
+# A ONE-day gap has to be enough to file, because that is the actual failure
+# mode: the archive has 125 entries across a 127-day span, and the two misses
+# before this week (2026-06-18, 2026-07-27) were single days a month apart. A
+# two-day threshold would have caught neither. The scheduler here is reliable,
+# not flaky — which is exactly why a single missing day is worth saying out loud.
+#
+# The catch is that a one-day gap is only unambiguous if the build was actually
+# due by the time we look. So a single day files only when the check runs at or
+# after 12:00 UTC — comfortably past the 07:23 build and its observed delays
+# (31m to 3h43m), and false at 00:30 if this check slipped past midnight, which
+# is the one case where "yesterday is newest" is perfectly normal. Two or more
+# days is unambiguous whenever you look, so it files unconditionally.
 #
 # This workflow is scheduled too, so it can be dropped like anything else. It is
 # a smoke alarm, not a guarantee.
@@ -73,14 +79,19 @@ jobs:
           # outage keeps one issue however many days it runs.
           echo "first_missing=$(date -u -d "$NEWEST + 1 day" +%F)" >> "$GITHUB_OUTPUT"
 
+          HOUR="$(date -u +%H)"
+
           if [ "$GAP" -ge 2 ]; then
             echo "stale=true" >> "$GITHUB_OUTPUT"
             echo "::warning::Newest archive entry is $NEWEST; today is $TODAY. The site is $GAP days stale."
+          elif [ "$GAP" -eq 1 ] && [ "$((10#$HOUR))" -ge 12 ]; then
+            echo "stale=true" >> "$GITHUB_OUTPUT"
+            echo "::warning::No page for $TODAY (newest is $NEWEST), and it is ${HOUR}:00 UTC — well past the build window."
           elif [ "$GAP" -eq 1 ]; then
-            # Could be a miss, could be a build running late — indistinguishable
-            # from here. Say so in the log; do not file on it.
+            # Before noon UTC a one-day gap is normal: this check has slipped past
+            # midnight and today's build is not due yet. Next run settles it.
             echo "stale=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::No page for $TODAY yet (newest is $NEWEST). Not filing — a delayed build looks the same from here. If it is still missing tomorrow, that is unambiguous and an issue opens."
+            echo "Newest entry is $NEWEST and it is only ${HOUR}:00 UTC — today's build is not due yet. Not filing."
           else
             echo "stale=false" >> "$GITHUB_OUTPUT"
             echo "Newest archive entry is $NEWEST — current."
@@ -112,11 +123,11 @@ jobs:
 
             const runs = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/workflows/daily-georgia.yml`;
             const body = [
-              `The newest entry in \`archive/\` is **${NEWEST}**. Today is ${TODAY}, so the site is **${GAP} days stale** and nothing has been published since ${FIRST_MISSING}.`,
+              `The newest entry in \`archive/\` is **${NEWEST}**. Today is ${TODAY}, so no page exists for ${FIRST_MISSING} onward — the site is **${GAP} day(s) stale**.`,
               ``,
               `This checks the committed artifact rather than any run's exit status, so it covers both causes:`,
               ``,
-              `- **The scheduled event was never delivered.** GitHub's \`schedule\` trigger is best-effort and this repo sees it badly: delays from 31 minutes to over 9 hours, and outright misses. There will be no run at all — not a failed one. Check the [run history](${runs}) for a gap.`,
+              `- **The scheduled event was never delivered.** GitHub's \`schedule\` trigger is best-effort; this repo misses roughly one day a month that way. There will be no run at all — not a failed one. Check the [run history](${runs}) for a gap.`,
               `- **A run happened and published nothing.** There will be a run to read.`,
               ``,
               `Nothing has been dispatched. To publish, run **Daily Georgia** manually with \`dry_run: false\`. It builds today's page; the skipped days stay skipped, which is the honest record.`,
