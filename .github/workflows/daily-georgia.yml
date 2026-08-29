@@ -14,11 +14,24 @@ name: Daily Georgia
 on:
   schedule:
     # NOT on the hour. GitHub's scheduler is best-effort and queues hardest at
-    # :00, which is where this used to sit: every run for weeks started 30-58
-    # minutes late, and on 2026-08-27 the event was dropped outright — no run,
-    # no failure, just a missing day on a site whose whole premise is daily.
-    # An odd minute is the documented mitigation. It does not make delivery
-    # guaranteed; nothing does.
+    # :00, which is where this used to sit. An odd minute is the documented
+    # mitigation. It does not make delivery guaranteed; nothing does.
+    #
+    # What the run history actually shows, corrected 2026-08-29 — the earlier
+    # note here said "30-58 minutes late", which understated the tail by about
+    # 4x and made this look more fixed than it is:
+    #
+    #   '0 7'  (25 scheduled fires, 08-02..08-26): delivered +31m to +3h44m,
+    #          then dropped outright on 08-27.
+    #   '23 7' (since 08-27): two opportunities. 08-28 delivered +12h06m,
+    #          08-29 not delivered at all.
+    #
+    # The delay is upstream of run creation, not runner acquisition: across all
+    # 30 runs sampled, created_at == run_started_at to the second. GitHub
+    # creates the run late. Nothing in this repo can influence that, so moving
+    # the minute is a lottery ticket, not a fix — the fix is to stop depending
+    # on one delivery. See run_georgia's already-built guard, which is what
+    # makes additional windows safe to add.
     - cron: '23 7 * * *'  # ≈3:23am EDT / 2:23am EST
   workflow_dispatch:
     inputs:
