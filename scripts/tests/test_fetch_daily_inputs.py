@@ -459,3 +459,63 @@ def test_fsa_does_not_retry_into_a_rate_limit():
     with pytest.raises(ValueError, match="rate limited"):
         fdi.fetch_fsa(_S(), __import__("random").Random(0))
     assert len(calls) == 1, f"retried into a 429 {len(calls)} times"
+
+
+# ---------- the countdown counts days, not invocations ----------
+#
+# This step runs before run_georgia, so it sits outside that script's
+# already-built guard. On 2026-08-28 two builds landed on one date and
+# builds_this_cycle went 5 -> 7, moving the retirement demand a day early.
+
+
+def _drive_main(monkeypatch, tmp_path, roster_file, run_date: str) -> dict:
+    """Run main() for one date with the network and output paths stubbed out."""
+    monkeypatch.setattr(fdi, "ROSTER_FILE", roster_file)
+    monkeypatch.setattr(fdi, "INPUTS_DIR", tmp_path / "inputs")
+    monkeypatch.setattr(
+        fdi, "load_roster", lambda *a, **k: json.loads(roster_file.read_text())
+    )
+    monkeypatch.setattr(
+        fdi, "fetch_all", lambda *a, **k: {"inputs": {"fsa": {}}, "failures": {}}
+    )
+    assert fdi.main(["--date", run_date]) == 0
+    return json.loads(roster_file.read_text())
+
+
+def test_a_second_build_on_the_same_date_does_not_tick_the_countdown(
+    monkeypatch, tmp_path
+):
+    f = _roster(tmp_path, builds_this_cycle=5, overdue_builds=0)
+
+    first = _drive_main(monkeypatch, tmp_path, f, "2026-08-28")
+    assert first["builds_this_cycle"] == 6
+
+    second = _drive_main(monkeypatch, tmp_path, f, "2026-08-28")
+    assert second["builds_this_cycle"] == 6, "a re-dispatch burned a build"
+
+
+def test_the_next_day_still_ticks_it(monkeypatch, tmp_path):
+    """The guard is per-date, not a one-shot latch."""
+    f = _roster(tmp_path, builds_this_cycle=5, overdue_builds=0)
+
+    _drive_main(monkeypatch, tmp_path, f, "2026-08-28")
+    _drive_main(monkeypatch, tmp_path, f, "2026-08-28")
+    third = _drive_main(monkeypatch, tmp_path, f, "2026-08-29")
+    assert third["builds_this_cycle"] == 7
+
+
+def test_the_counted_date_round_trips_through_the_roster_file(monkeypatch, tmp_path):
+    f = _roster(tmp_path, builds_this_cycle=5, overdue_builds=0)
+    state = _drive_main(monkeypatch, tmp_path, f, "2026-08-28")
+    assert state["last_counted_date"] == "2026-08-28"
+
+
+def test_a_rebuild_does_not_double_count_an_overdue_retirement(monkeypatch, tmp_path):
+    """At the cap, the overdue counter is the thing that escalates. Once per day."""
+    f = _roster(tmp_path, builds_this_cycle=30, overdue_builds=2)
+
+    first = _drive_main(monkeypatch, tmp_path, f, "2026-08-28")
+    assert first["overdue_builds"] == 3
+
+    second = _drive_main(monkeypatch, tmp_path, f, "2026-08-28")
+    assert second["overdue_builds"] == 3, "a re-dispatch escalated the demand twice"

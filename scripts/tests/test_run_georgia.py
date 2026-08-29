@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import sys
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -405,3 +405,84 @@ def test_failed_run_records_no_tokens(monkeypatch, tmp_path):
     assert run_module.run(TODAY, FACTS, tmp_path) == 1
     _args, kwargs = sink[0]
     assert kwargs.get("output_tokens", 0) == 0
+
+
+# ---------- one page per day ----------
+#
+# 2026-08-28 was built twice: a manual dispatch at 11:17 UTC and that day's
+# scheduled event, delivered at 19:29 UTC. The second run overwrote the first
+# everywhere and double-counted everywhere it couldn't overwrite.
+
+
+def _archive_page(repo_root: Path, day: str = None) -> Path:
+    page = repo_root / "archive" / f"{day or TODAY}.html"
+    page.parent.mkdir(parents=True, exist_ok=True)
+    page.write_text("<html>the page that already shipped</html>")
+    return page
+
+
+def test_an_already_built_date_is_a_no_op_not_a_failure(monkeypatch, tmp_path):
+    """Exit 0: a duplicate trigger is nothing to do, not something that broke."""
+    sink = _patch_common(monkeypatch, tmp_path)
+    monkeypatch.setattr(run_module, "call_model", MagicMock())
+    _archive_page(tmp_path)
+
+    assert run_module.run(TODAY, FACTS, tmp_path) == 0
+    run_module.call_model.assert_not_called()  # no second Opus call
+    run_module.write_outputs.assert_not_called()
+    assert sink == []  # no second stats.jsonl row
+
+
+def test_the_already_shipped_page_is_left_byte_identical(monkeypatch, tmp_path):
+    """write_outputs really does overwrite; the guard has to run before it."""
+    _patch_common(monkeypatch, tmp_path)
+    monkeypatch.setattr(
+        run_module, "call_model", lambda prompt: _result(_valid_html(), _valid_diary())
+    )
+    page = _archive_page(tmp_path)
+    before = page.read_bytes()
+    monkeypatch.setattr(
+        run_module,
+        "write_outputs",
+        lambda *a, **k: page.write_text("<html>the rebuild that clobbered it</html>"),
+    )
+
+    run_module.run(TODAY, FACTS, tmp_path)
+    assert page.read_bytes() == before
+
+
+def test_force_rebuilds_a_date_that_already_shipped(monkeypatch, tmp_path):
+    _patch_common(monkeypatch, tmp_path)
+    monkeypatch.setattr(
+        run_module, "call_model", lambda prompt: _result(_valid_html(), _valid_diary())
+    )
+    _archive_page(tmp_path)
+
+    assert run_module.run(TODAY, FACTS, tmp_path, force=True) == 0
+    run_module.write_outputs.assert_called_once()
+
+
+def test_a_dry_run_still_works_on_an_already_built_date(monkeypatch, tmp_path):
+    """workflow_dispatch defaults dry_run=true; the smoke test must keep working."""
+    _patch_common(monkeypatch, tmp_path)
+    monkeypatch.setattr(
+        run_module, "call_model", lambda prompt: _result(_valid_html(), _valid_diary())
+    )
+    _archive_page(tmp_path)
+
+    assert run_module.run(TODAY, FACTS, tmp_path, no_commit=True) == 0
+    run_module.write_outputs.assert_called_once()
+
+
+def test_the_guard_is_scoped_to_the_run_date_not_the_archive(monkeypatch, tmp_path):
+    """Yesterday's page existing must not stop today's build."""
+    sink = _patch_common(monkeypatch, tmp_path)
+    monkeypatch.setattr(
+        run_module, "call_model", lambda prompt: _result(_valid_html(), _valid_diary())
+    )
+    yesterday = date.fromisoformat(TODAY) - timedelta(days=1)
+    _archive_page(tmp_path, yesterday.isoformat())
+
+    assert run_module.run(TODAY, FACTS, tmp_path) == 0
+    run_module.write_outputs.assert_called_once()
+    assert len(sink) == 1

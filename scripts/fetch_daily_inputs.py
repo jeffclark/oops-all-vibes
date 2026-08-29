@@ -777,13 +777,26 @@ def main(argv: list[str] | None = None) -> int:
         # actually applied (apply_retirement resets the counter), so if she is
         # asked to retire something and doesn't, the demand stands tomorrow and
         # the day after. The countdown is a commitment, not a reminder.
-        state["builds_this_cycle"] = min(
-            int(state.get("builds_this_cycle", 0)) + 1, every
-        )
-        overdue = int(state.get("overdue_builds", 0))
-        if state["builds_this_cycle"] >= every:
-            overdue += 1
-        state["overdue_builds"] = overdue if state["builds_this_cycle"] >= every else 0
+        #
+        # Counted once per date, not once per invocation. This step runs before
+        # run_georgia and so sits outside its already-built guard: a re-dispatch,
+        # or a scheduled event delivered late enough to race a manual one, would
+        # otherwise tick the countdown twice for one day's page. That is what
+        # happened on 2026-08-28 — two builds, one date, and builds_this_cycle
+        # went 5 → 7. apply_retirement has carried the same one-per-date rule
+        # for the retirement itself since story_016; this is the counter that
+        # gates it finally keeping the same promise.
+        if state.get("last_counted_date") != run_date.isoformat():
+            state["builds_this_cycle"] = min(
+                int(state.get("builds_this_cycle", 0)) + 1, every
+            )
+            state["last_counted_date"] = run_date.isoformat()
+            overdue = int(state.get("overdue_builds", 0))
+            if state["builds_this_cycle"] >= every:
+                overdue += 1
+            state["overdue_builds"] = (
+                overdue if state["builds_this_cycle"] >= every else 0
+            )
 
         payload["rotation"] = {
             "builds_this_cycle": state["builds_this_cycle"],

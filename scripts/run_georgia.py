@@ -151,7 +151,43 @@ def add_retry_hint(prompt: str, reasons: list[str]) -> str:
     )
 
 
-def run(today: str, facts: dict, repo_root: Path, *, no_commit: bool = False) -> int:
+def run(
+    today: str,
+    facts: dict,
+    repo_root: Path,
+    *,
+    no_commit: bool = False,
+    force: bool = False,
+) -> int:
+    # One page per day. `schedule` is best-effort in both directions: an event can
+    # be dropped, and it can be delivered hours late — on 2026-08-28 a dispatch at
+    # 11:17 UTC and the day's scheduled event at 19:29 UTC both built the same
+    # date. The second build overwrote the first everywhere it could
+    # (index.html, archive/, log/, prompts/, inputs/) and appended everywhere it
+    # couldn't: a second stats.jsonl row that skewed the rolling window, six extra
+    # corpus/preferences.jsonl verdicts, and a roster tick that moved the
+    # retirement countdown a day early. It also paid for a second Opus call.
+    #
+    # apply_retirement already refuses to fire twice on one date. This is the same
+    # guard one level up, and it is what makes it safe to add more schedule
+    # windows: the first delivered event of the day wins, the rest cost nothing.
+    #
+    # Exit 0, not 1. A duplicate trigger is a no-op, not a failure, and a workflow
+    # that goes red on a normal Tuesday trains you to stop reading the run list.
+    #
+    # --no-commit is exempt on purpose: workflow_dispatch defaults dry_run to
+    # true, and a dry run against an already-built day is exactly the smoke test
+    # that should keep working.
+    if not no_commit and not force:
+        built = repo_root / "archive" / f"{today}.html"
+        if built.exists():
+            print(
+                f"run_georgia: {today} is already built ({built.relative_to(repo_root)}) "
+                "— nothing to do. Pass --force to rebuild it anyway.",
+                file=sys.stderr,
+            )
+            return 0
+
     start = time.monotonic()
     attempts = 0
     validation_failures: list[list[str]] = []
@@ -356,12 +392,23 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Write files but skip git commit and push. Useful for local smoke tests.",
     )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Rebuild a date that already has an archive page, overwriting it.",
+    )
     args = parser.parse_args(argv)
 
     today_date = args.run_date or datetime.now(timezone.utc).date()
     today = today_date.isoformat()
     facts = json.loads((REPO_ROOT / "facts.json").read_text())
-    return run(today=today, facts=facts, repo_root=REPO_ROOT, no_commit=args.no_commit)
+    return run(
+        today=today,
+        facts=facts,
+        repo_root=REPO_ROOT,
+        no_commit=args.no_commit,
+        force=args.force,
+    )
 
 
 if __name__ == "__main__":
