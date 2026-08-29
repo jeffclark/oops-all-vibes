@@ -7,7 +7,7 @@
     "register"
   ],
   "retire_every_builds": 30,
-  "builds_this_cycle": 7,
+  "builds_this_cycle": 8,
   "retired": [],
   "overdue_builds": 0,
   "full_roster_size": 5

@@ -1,0 +1,159 @@
+{
+  "date": "2026-08-29",
+  "fetched_at": "2026-08-29T13:13:17+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Gainesville, Georgia, showing the destruction of buildings resulting from the April 6 tornado which came very close to the Resettlement Administration project at Tupelo, Mississippi",
+        "date": "1936-01-01",
+        "location": [
+          "hale county",
+          "georgia",
+          "united states",
+          "gainesville"
+        ],
+        "subject": [
+          "hale county",
+          "georgia",
+          "nitrate negatives",
+          "united states",
+          "gainesville",
+          "cities, towns"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b28000/8b28900/8b28927v.jpg#h=751&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017761615/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171074
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-27",
+        "total_cases": 408,
+        "distinct_types": 28,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 242
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 48
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 27
+          },
+          {
+            "case": "Sign Repair",
+            "n": 18
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 12
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 9
+          }
+        ],
+        "only_one_of": [
+          "Contractors Complaint",
+          "Egress",
+          "Exceeding Terms of Permit",
+          "General Traffic Engineering Request",
+          "Illegal Posting of Signs",
+          "Illegal Rooming House",
+          "Mice Infestation - Residential",
+          "Missing Sign"
+        ],
+        "resolved": [
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Roxbury",
+            "note": "6 needles 12 dt recovered. JT"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "South End",
+            "note": "Df recovered 2"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "South End",
+            "note": "Needle recovered. JT DF"
+          }
+        ]
+      }
+    },
+    "surplus": {
+      "label": "Something a government is selling off",
+      "data": {
+        "name": "750 Gal Oil Tank Trailer",
+        "url": "https://municibid.com/Listing/Details/85054974",
+        "description": "Approx. 750 gallon twin axle trailer used to haul waste oil Sold AS-IS.",
+        "seller": "Village of Kirkland Public Works",
+        "price": "100.00",
+        "currency": "USD",
+        "listings_on_page": 20
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 5
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-08-28",
+        "published_that_day": 111,
+        "sampled_from": 100,
+        "title": "Safety Zone; Hurricanes, Tropical Storms, and Severe Weather Events in the Sector Mobile Captain of the Port Zone",
+        "type": "Rule",
+        "agencies": [
+          "Homeland Security Department",
+          "Coast Guard"
+        ],
+        "abstract": "The Coast Guard is establishing a safety zone in the navigable waters within the Sector Mobile Captain of the Port (COTP) zone, to be enforced in the event of hurricanes, tropical storms, and other severe weather events. This regulation establishes requirements for industry and vessel operators in the Mobile COTP zone, to ensure the safety of the ports and waters within the zone prior to, during and immediately following these events.",
+        "pages": 3,
+        "url": "https://www.federalregister.gov/documents/2026/08/28/2026-17627/safety-zone-hurricanes-tropical-storms-and-severe-weather-events-in-the-sector-mobile-captain-of-the"
+      }
+    }
+  },
+  "failures": {},
+  "rotation": {
+    "builds_this_cycle": 8,
+    "builds_until_retirement": 22,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
