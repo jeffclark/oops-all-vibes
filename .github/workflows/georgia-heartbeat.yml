@@ -1,21 +1,30 @@
-# Did Georgia build today?
+# Did Georgia build on the last day she owed a page?
 #
 # `schedule` is best-effort. On 2026-08-27 the Daily Georgia event was never
 # delivered — no run, no failure, no notification, just a missing day on a site
 # whose entire premise is that it regenerates daily. Nothing noticed. The way
-# it surfaced was Jeff looking at the site.
+# it surfaced was Jeff looking at the site. It happened again on 2026-08-29,
+# and again the way it surfaced was Jeff looking at the site: this alarm has
+# never once beaten him to it.
 #
 # This closes that gap and nothing else. It does NOT dispatch a build: deciding
 # to publish is Jeff's, and an alert that silently fixes things trains you to
 # stop reading it. It opens an issue and stops.
 #
 # The check is archive/<date>.html, the file write_outputs commits at the end of
-# a successful build. Asking "did today's page land" rather than "did the run
+# a successful build. Asking "did that day's page land" rather than "did the run
 # succeed" is deliberate — it catches a dropped event and a green-but-empty run
 # with the same question, and it is the question a reader of the site would ask.
 #
+# The date audited is the last build slot whose deadline has passed, derived
+# from a fixed deadline rather than from the runner's clock. See the check step:
+# this workflow rides the same unreliable scheduler it is watching, and reading
+# `date -u +%F` at execution made it wrong in both directions once it slipped
+# past midnight UTC.
+#
 # This workflow is itself scheduled, so it can be dropped too. It is a smoke
-# alarm, not a guarantee.
+# alarm, not a guarantee — and it cannot detect the case where GitHub Actions
+# itself is the fault, because that takes this workflow down with the build.
 
 name: Georgia heartbeat
 
@@ -38,17 +47,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Look for today's archive entry
+      - name: Look for the archive entry of the last day that should have shipped
         id: check
         run: |
-          TODAY="$(date -u +%F)"
-          echo "date=$TODAY" >> "$GITHUB_OUTPUT"
-          if [ -f "archive/$TODAY.html" ]; then
+          # The audited date is the most recent build slot whose deadline has
+          # passed — NOT the runner's wall-clock date at execution.
+          #
+          # This workflow is itself on `schedule`, best-effort in both
+          # directions. Its first two runs fired at 23:13:59Z and 23:13:19Z
+          # against a nominal 13:47Z: 46 minutes short of midnight UTC. One more
+          # slip and `date -u +%F` returns tomorrow. The old check then asked for
+          # archive/<tomorrow>.html, which cannot exist yet — filing a false
+          # "Georgia did not build: <tomorrow>" while never looking at the day it
+          # was actually dispatched for. One slip, a false positive and a false
+          # negative together, and nothing here ever closes an issue.
+          #
+          # DEADLINE is this workflow's own nominal slot. Before it, today's page
+          # still has time to land (Daily Georgia is nominally 07:23Z and has
+          # been delivered as late as +12h06m), so the honest thing to audit is
+          # yesterday. After it, today is fair to call.
+          DEADLINE_MIN=$((13 * 60 + 47))
+          # 10# forces base 10: without it, `date +%H` returns 08 and 09, which
+          # bash reads as invalid octal and the arithmetic dies.
+          NOW_MIN=$(( 10#$(date -u +%H) * 60 + 10#$(date -u +%M) ))
+          if [ "$NOW_MIN" -ge "$DEADLINE_MIN" ]; then
+            AUDIT="$(date -u +%F)"
+          else
+            AUDIT="$(date -u -d 'yesterday' +%F)"
+          fi
+
+          echo "date=$AUDIT" >> "$GITHUB_OUTPUT"
+          echo "Auditing $AUDIT (now $(date -u +%H:%M)Z, deadline 13:47Z)."
+          if [ -f "archive/$AUDIT.html" ]; then
             echo "missing=false" >> "$GITHUB_OUTPUT"
-            echo "archive/$TODAY.html is present — Georgia built today."
+            echo "archive/$AUDIT.html is present — Georgia built that day."
           else
             echo "missing=true" >> "$GITHUB_OUTPUT"
-            echo "::warning::archive/$TODAY.html is missing — no build landed for $TODAY."
+            echo "::warning::archive/$AUDIT.html is missing — no build landed for $AUDIT."
           fi
 
       - name: Open an issue if she didn't
@@ -61,17 +96,23 @@ jobs:
             const date = process.env.MISSING_DATE;
             const title = `Georgia did not build: ${date}`;
 
-            // One issue per missing date. This runs daily and a gap can persist
-            // for days; re-opening the same issue every morning would bury the
-            // signal under itself.
+            // One issue per missing date, ever. This runs daily and a gap can
+            // persist for days; re-opening the same issue every morning would
+            // bury the signal under itself.
+            //
+            // state:'all', not 'open' — a closed issue means Jeff already dealt
+            // with that date, and filing a second one for it is exactly the
+            // noise this dedupe exists to prevent. A multi-day outage is the
+            // case where the alarm matters most and where the old filter was
+            // most likely to re-file a day he had already answered.
             const existing = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              state: 'open',
+              state: 'all',
               per_page: 100,
             });
             if (existing.data.some(i => i.title === title)) {
-              core.info(`Already open: "${title}" — nothing to do.`);
+              core.info(`Already filed: "${title}" — nothing to do.`);
               return;
             }
 
@@ -84,7 +125,11 @@ jobs:
               `- **The scheduled event was never delivered.** GitHub's \`schedule\` trigger is best-effort. There will be no run at all — not a failed one. Check the [run history](${runs}) for a gap.`,
               `- **The run happened and did not produce a page.** There will be a run to read.`,
               ``,
-              `Nothing has been dispatched. To publish the missing day, run **Daily Georgia** manually with \`dry_run: false\`.`,
+              `Nothing has been dispatched — publishing is Jeff's call, and an alarm that silently fixes things trains you to stop reading it.`,
+              ``,
+              `**To publish:** run **Daily Georgia** manually with \`dry_run: false\`. One caveat — the pipeline has no date input and \`run_georgia\` defaults to the current UTC date, so a dispatch publishes *today*, not \`${date}\`. If today's UTC date is still ${date} that is the same thing and you are done. If it has rolled over, the dispatch writes today's page and \`${date}\` stays a gap; backfilling it properly needs \`--date\` threaded through \`fetch_daily_inputs\` and \`fetch_feedback\`, which is not wired up.`,
+              ``,
+              `Re-dispatching is safe against a late scheduled event: \`run_georgia\` refuses a date that already has an archive page and exits 0.`,
               ``,
               `---`,
               `_Generated by [Claude Code](https://claude.ai/code)_`,
