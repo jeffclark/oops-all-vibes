@@ -1,0 +1,148 @@
+{
+  "date": "2026-08-30",
+  "fetched_at": "2026-08-30T13:01:12+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Member of Johnson family churning butter in her home near Black River Falls, Wisconsin",
+        "date": "1937-01-01",
+        "location": [
+          "jackson county",
+          "united states",
+          "black river falls",
+          "wisconsin"
+        ],
+        "subject": [
+          "jackson county",
+          "nitrate negatives",
+          "black river falls",
+          "united states",
+          "farmers of cut-over land",
+          "wisconsin"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b36000/8b36600/8b36607v.jpg#h=770&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017780194/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171074
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-28",
+        "total_cases": 382,
+        "distinct_types": 29,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 194
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 33
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 27
+          },
+          {
+            "case": "Sign Repair",
+            "n": 21
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 16
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 12
+          }
+        ],
+        "only_one_of": [
+          "Illegal Auto Body Shop",
+          "Illegal Occupancy",
+          "Maintenance Complaint - Residential",
+          "Mice Infestation - Residential",
+          "No Utilities Residential - Water",
+          "Pavement Marking Inspection",
+          "Work w/out Permit",
+          "Working Beyond Hours"
+        ],
+        "resolved": [
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Fenway / Kenmore / Audubon Circle / Longwood",
+            "note": "Df recovered 7"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Roxbury",
+            "note": "Duplicate call needles recovered. JT"
+          },
+          {
+            "case": "Rodent Activity",
+            "neighborhood": "Downtown / Financial District",
+            "note": "of Existing Case pwd bcs 00301044"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 4
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-08-28",
+        "published_that_day": 111,
+        "sampled_from": 100,
+        "title": "Submission for OMB Review; Comment Request",
+        "type": "Notice",
+        "agencies": [
+          "Agriculture Department"
+        ],
+        "abstract": null,
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/08/28/2026-17643/submission-for-omb-review-comment-request"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "HTTPError: 404 Client Error: Not Found for url: https://municibid.com/Listing/Search/Results?Page=8"
+  },
+  "rotation": {
+    "builds_this_cycle": 9,
+    "builds_until_retirement": 21,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
