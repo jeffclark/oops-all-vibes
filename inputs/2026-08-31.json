@@ -1,0 +1,147 @@
+{
+  "date": "2026-08-31",
+  "fetched_at": "2026-08-31T14:07:54+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Melrose, Natchitoches Parish, Louisiana. Waiting for cotton fields to dry out for cultivation after weeks of rain in plantation area",
+        "date": "1940-01-01",
+        "location": [
+          "melrose",
+          "natchitoches parish",
+          "louisiana",
+          "united states"
+        ],
+        "subject": [
+          "melrose",
+          "safety film negatives",
+          "louisiana",
+          "natchitoches parish",
+          "united states"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8c12000/8c12600/8c12667v.jpg#h=1024&w=793",
+        "image_width": 793,
+        "item_url": "http://www.loc.gov/item/2017803960/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171074
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-28",
+        "total_cases": 382,
+        "distinct_types": 29,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 194
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 33
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 27
+          },
+          {
+            "case": "Sign Repair",
+            "n": 21
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 16
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 12
+          }
+        ],
+        "only_one_of": [
+          "Illegal Auto Body Shop",
+          "Illegal Occupancy",
+          "Maintenance Complaint - Residential",
+          "Mice Infestation - Residential",
+          "No Utilities Residential - Water",
+          "Pavement Marking Inspection",
+          "Work w/out Permit",
+          "Working Beyond Hours"
+        ],
+        "resolved": [
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "Fenway / Kenmore / Audubon Circle / Longwood",
+            "note": "The violator(s) at this location was/were ticketed. Reported at 3:59 pm"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Roxbury",
+            "note": "Duplicate call needles recovered. JT"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Roxbury",
+            "note": "Df recovered 1"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 3
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-08-28",
+        "published_that_day": 111,
+        "sampled_from": 100,
+        "title": "Sunshine Act Meetings",
+        "type": "Notice",
+        "agencies": [
+          "Securities and Exchange Commission"
+        ],
+        "abstract": null,
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/08/28/2026-17591/sunshine-act-meetings"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "HTTPError: 404 Client Error: Not Found for url: https://municibid.com/Listing/Search/Results?Page=7"
+  },
+  "rotation": {
+    "builds_this_cycle": 10,
+    "builds_until_retirement": 20,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}

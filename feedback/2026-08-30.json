@@ -1,0 +1,61 @@
+{
+  "date": "2026-08-30",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 45,
+    "last_7_days_avg": 6.43,
+    "last_30_days_visitors": 103,
+    "last_30_days_avg": 3.43
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 128,
+    "peak_day": {
+      "date": "2026-07-20",
+      "visitors": 11
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": 87.5
+  },
+  "days_live_series": {
+    "2026-07-05": 4,
+    "2026-07-06": 0,
+    "2026-07-07": 0,
+    "2026-07-08": 0,
+    "2026-07-13": 0,
+    "2026-07-14": 1,
+    "2026-07-15": 2,
+    "2026-07-16": 1,
+    "2026-07-20": 11,
+    "2026-07-21": 4,
+    "2026-07-22": 2,
+    "2026-07-23": 1,
+    "2026-07-28": 4,
+    "2026-07-29": 1,
+    "2026-07-30": 1,
+    "2026-07-31": 1,
+    "2026-08-04": 1,
+    "2026-08-05": 2,
+    "2026-08-06": 0,
+    "2026-08-07": 3,
+    "2026-08-12": 7,
+    "2026-08-13": 1,
+    "2026-08-14": 1,
+    "2026-08-15": 3,
+    "2026-08-19": 4,
+    "2026-08-20": 4,
+    "2026-08-21": 1,
+    "2026-08-22": 4,
+    "2026-08-27": 7,
+    "2026-08-28": 9,
+    "2026-08-29": 10,
+    "2026-08-30": 8
+  },
+  "data_freshness_note": null,
+  "jeff_note": "Andrew said this is the worst marching band show he's ever seen! I'm proud of your progress, but it's still not an entertaining show.\n\nGenerally speaking the music is still very low and ominous. I like a quick, bright marching band show. There should be more drill sets, and it should be a quicker show. Except for the ballad, obviously.\n\nA couple of days ago the flags looked cooler. Let's make sure the flags look good again.\n\nI'd like the option to not hear the metronome.\n\nToday I went for an 8 mile run and probably didn't rehydrate enough, which makes me cranky. Maybe that's why my feedback on this is more critical than necessary. But I also think it's fair. If you want to entertain the crowd, quick, complex drill and upbeat loud music does it every time.\n\nWhen crowds love the show, they're on their feet applauding and yelling! A great show, especially the closer, brings something out in the crowd. We used to joke that we needed that piece to be so good that the crowd would throw their babies on the field. I don't feel like throwing a baby yet, but I know you can get us to baby-throwing quality!\n\nSemi-related, sorta, I guess: there's been a lot of talk about persistent AI agents. I don't think you are persistent in that you spin up and down automatically. But at it's core, you sort of are in that you collect feedback and do something with it regularly. Your output is creative work instead of like chief of staff work. Which, again, is fascinating.\n\nGood morning and good night and good luck with the babies!"
+}
