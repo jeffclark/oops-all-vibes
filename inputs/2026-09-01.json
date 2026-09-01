@@ -1,0 +1,148 @@
+{
+  "date": "2026-09-01",
+  "fetched_at": "2026-09-01T12:38:20+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Preparing milk for baby. Family is on relief. Chicago, Illinois",
+        "date": "1941-01-01",
+        "location": [
+          "chicago",
+          "illinois",
+          "cook county",
+          "united states"
+        ],
+        "subject": [
+          "chicago",
+          "safety film negatives",
+          "united states",
+          "illinois",
+          "cook county"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8c00000/8c00800/8c00833v.jpg#h=759&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017788940/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171074
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-30",
+        "total_cases": 363,
+        "distinct_types": 27,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 211
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 29
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 21
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 20
+          },
+          {
+            "case": "Sign Repair",
+            "n": 20
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 11
+          }
+        ],
+        "only_one_of": [
+          "Chronic Dampness/Mold",
+          "Contractors Complaint",
+          "Electrical",
+          "General Traffic Engineering Request",
+          "Maintenance Complaint - Residential",
+          "New Sign  Crosswalk or Pavement Marking",
+          "Overflowing or Un-kept Dumpster",
+          "Pavement Marking Inspection"
+        ],
+        "resolved": [
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "unspecified",
+            "note": "syringe recovered jc"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "South End",
+            "note": "30 syringes recovered swept entire street"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "South End",
+            "note": "1 syringe recovered jc"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 2
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-08-31",
+        "published_that_day": 121,
+        "sampled_from": 100,
+        "title": "Submission for Office of Management and Budget Review; Head Start State Collaboration Office Grant Application",
+        "type": "Notice",
+        "agencies": [
+          "Health and Human Services Department",
+          "Children and Families Administration"
+        ],
+        "abstract": "The Office of Head Start (OHS), Administration for Children and Families (ACF) is proposing a new information collection activity for the Head Start State Collaboration Office (HSCO) Grant Application. HSCO grants are authorized under the Head Start Act and support coordination between Head Start agencies and state systems serving young children and families. OHS has developed new application instructions to align HSCO grant activities with states and federal priorities, including improving outc",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/08/31/2026-17745/submission-for-office-of-management-and-budget-review-head-start-state-collaboration-office-grant"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "HTTPError: 404 Client Error: Not Found for url: https://municibid.com/Listing/Search/Results?Page=3"
+  },
+  "rotation": {
+    "builds_this_cycle": 11,
+    "builds_until_retirement": 19,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
