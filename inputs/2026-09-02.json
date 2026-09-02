@@ -1,0 +1,145 @@
+{
+  "date": "2026-09-02",
+  "fetched_at": "2026-09-02T11:18:01+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: Grocery store and delicatessen off Lincoln Highway, Franklin Township, Bound Brook, New Jersey]",
+        "date": "1936-01-01",
+        "location": [
+          "united states",
+          "bound brook",
+          "new jersey"
+        ],
+        "subject": [
+          "new jersey",
+          "nitrate negatives",
+          "bound brook",
+          "united states"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a01000/8a01100/8a01191v.jpg#h=756&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017715015/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171075
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-08-31",
+        "total_cases": 500,
+        "distinct_types": 37,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 251
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 39
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 33
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 27
+          },
+          {
+            "case": "Sign Repair",
+            "n": 20
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 17
+          }
+        ],
+        "only_one_of": [
+          "Boston Bikes: Bike Lanes; Complaint",
+          "Directional or Roadway Changes",
+          "Food Alert - Unconfirmed",
+          "Illegal Occupancy",
+          "Item Price Missing",
+          "Mice Infestation - Residential",
+          "Plumbing",
+          "Poor Conditions of Property"
+        ],
+        "resolved": [
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "neighborhood": "Roslindale",
+            "note": "Scheduled for 9/8/26"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Back Bay",
+            "note": "Walked alley only trash found at location please resubmit with picture of syringe for recovery jc"
+          },
+          {
+            "case": "Unsanitary Conditions - Establishment",
+            "neighborhood": "Hyde Park",
+            "note": "An onsite inspection was conducted no flies were observed the establishment pest control 2 x a month no grease on the floor air curtains are intact letter grade is posted at the entrance door window outward spoke with manager regarding complaint she stated 2 employees were dismissed last week."
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 16,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 1
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-01",
+        "published_that_day": 116,
+        "sampled_from": 100,
+        "title": "New Postal Products",
+        "type": "Notice",
+        "agencies": [
+          "Postal Regulatory Commission"
+        ],
+        "abstract": "The Commission is noticing a recent Postal Service filing for the Commission's consideration concerning a negotiated service agreement. This notice informs the public of the filing, invites public comment, and takes other administrative steps.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/09/01/2026-17855/new-postal-products"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "HTTPError: 404 Client Error: Not Found for url: https://municibid.com/Listing/Search/Results?Page=4"
+  },
+  "rotation": {
+    "builds_this_cycle": 12,
+    "builds_until_retirement": 18,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
