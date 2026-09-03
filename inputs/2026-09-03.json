@@ -1,0 +1,145 @@
+{
+  "date": "2026-09-03",
+  "fetched_at": "2026-09-03T12:09:55+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Oil fields. Kern County, California",
+        "date": "1938-01-01",
+        "location": [
+          "california",
+          "united states",
+          "kern county"
+        ],
+        "subject": [
+          "united states",
+          "kern county",
+          "nitrate negatives",
+          "oil",
+          "california"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b32000/8b32600/8b32671v.jpg#h=795&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017770979/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171075
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-01",
+        "total_cases": 467,
+        "distinct_types": 28,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 247
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 48
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 34
+          },
+          {
+            "case": "Sign Repair",
+            "n": 27
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 26
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 16
+          }
+        ],
+        "only_one_of": [
+          "Chronic Dampness/Mold",
+          "Contractors Complaint",
+          "No Price on Gas/Wrong Price",
+          "Overcrowding",
+          "Requests for Traffic Signal Studies or Reviews",
+          "Unsanitary Conditions - Food"
+        ],
+        "resolved": [
+          {
+            "case": "Traffic Signal Inspection",
+            "neighborhood": "South Boston / South Boston Waterfront",
+            "note": "Replace new pedestrian module working properly."
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "neighborhood": "Fenway / Kenmore / Audubon Circle / Longwood",
+            "note": "Signal repaired"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Boston",
+            "note": "1 syringe 3 dt recovered jc"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-27 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 26,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 0
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-02",
+        "published_that_day": 85,
+        "sampled_from": 85,
+        "title": "30-Day Notice for the \u201cArts Basic Survey\u201d; Proposed Collection; Comment Request",
+        "type": "Notice",
+        "agencies": [
+          "National Foundation on the Arts and the Humanities",
+          "National Endowment for the Arts"
+        ],
+        "abstract": "The National Endowment for the Arts (NEA), as part of its continuing effort to reduce paperwork and respondent burden, conducts a preclearance consultation program to provide the general public and Federal agencies with an opportunity to comment on proposed and/or continuing collections of information in accordance with the Paperwork Reduction Act of 1995. This program helps to ensure that requested data can be provided in the desired format, reporting burden (time and financial resources) is mi",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/09/02/2026-17974/30-day-notice-for-the-arts-basic-survey-proposed-collection-comment-request"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "HTTPError: 404 Client Error: Not Found for url: https://municibid.com/Listing/Search/Results?Page=3"
+  },
+  "rotation": {
+    "builds_this_cycle": 13,
+    "builds_until_retirement": 17,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "date": "2026-09-02",
+  "yesterday": {
+    "visitors": null,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 71,
+    "last_7_days_avg": 10.14,
+    "last_30_days_visitors": 134,
+    "last_30_days_avg": 4.47
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 131,
+    "peak_day": {
+      "date": "2026-08-31",
+      "visitors": 18
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": null,
+    "week_over_week_pct": 136.7
+  },
+  "days_live_series": {
+    "2026-07-09": 2,
+    "2026-07-10": 8,
+    "2026-07-11": 1,
+    "2026-07-12": 0,
+    "2026-07-17": 11,
+    "2026-07-18": 4,
+    "2026-07-19": 6,
+    "2026-07-20": 11,
+    "2026-07-26": 1,
+    "2026-07-27": 2,
+    "2026-07-28": 4,
+    "2026-07-29": 1,
+    "2026-08-03": 1,
+    "2026-08-04": 1,
+    "2026-08-05": 2,
+    "2026-08-06": 0,
+    "2026-08-12": 7,
+    "2026-08-13": 1,
+    "2026-08-14": 1,
+    "2026-08-15": 3,
+    "2026-08-20": 4,
+    "2026-08-21": 1,
+    "2026-08-22": 4,
+    "2026-08-23": 10,
+    "2026-08-28": 9,
+    "2026-08-29": 10,
+    "2026-08-30": 8,
+    "2026-08-31": 18
+  },
+  "data_freshness_note": null,
+  "jeff_note": "really great job with the marching band show! this is the kind of fun I was hoping for when asking you to pick a creative project and work on it for a week. It just so turns out that I love marching bands, so that was super fun.\n\nI'm excited to see what your next project is!\n\nGood morning and good night and good job!"
+}
