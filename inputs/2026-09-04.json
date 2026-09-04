@@ -1,0 +1,145 @@
+{
+  "date": "2026-09-04",
+  "fetched_at": "2026-09-04T11:18:59+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Prefabricated defense housing under construction near airport, Hartford, Connecticut. Constructed and managed by FSA (Farm Security Administration)",
+        "date": "1941-01-01",
+        "location": [
+          "united states",
+          "connecticut",
+          "hartford"
+        ],
+        "subject": [
+          "united states",
+          "connecticut",
+          "hartford",
+          "nitrate negatives"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a44000/8a44100/8a44185v.jpg#h=715&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017757884/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171075
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-02",
+        "total_cases": 502,
+        "distinct_types": 34,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 261
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 46
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 32
+          },
+          {
+            "case": "Sign Repair",
+            "n": 29
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 27
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 26
+          }
+        ],
+        "only_one_of": [
+          "Bed Bugs",
+          "Boston Bikes: Bike Racks; Maintenance",
+          "Exceeding Terms of Permit",
+          "Illegal Auto Body Shop",
+          "Lead",
+          "Mice Infestation - Residential",
+          "Missing Sign",
+          "New Sign  Crosswalk or Pavement Marking"
+        ],
+        "resolved": [
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "Allston / Brighton",
+            "note": "Cleared out thanks for submitting."
+          },
+          {
+            "case": "Food Alert - Confirmed",
+            "neighborhood": "Back Bay",
+            "note": "A foodborne illness investigation was conducted. No immediately apparent contributory factors to food illness were observed."
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "neighborhood": "East Boston",
+            "note": "Inspection Scheduled for Thursday September 10 2026. CMC"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "0-0",
+        "games_played": 0,
+        "games_scheduled": 26,
+        "last_result": null,
+        "next_game": {
+          "date": "2026-09-10",
+          "opponent": "MD2 University of Arkansas",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 6
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-03",
+        "published_that_day": 108,
+        "sampled_from": 100,
+        "title": "Welded Line Pipe From South Korea and Turkey; Scheduling of Expedited Five-Year Reviews",
+        "type": "Notice",
+        "agencies": [
+          "International Trade Commission"
+        ],
+        "abstract": "The Commission hereby gives notice of the scheduling of expedited reviews pursuant to the Tariff Act of 1930 (\"the Act\") to determine whether revocation of the antidumping duty orders on welded line pipe from South Korea and Turkey and the countervailing duty order on welded line pipe from Turkey would be likely to lead to continuation or recurrence of material injury within a reasonably foreseeable time.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/09/03/2026-18005/welded-line-pipe-from-south-korea-and-turkey-scheduling-of-expedited-five-year-reviews"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "HTTPError: 404 Client Error: Not Found for url: https://municibid.com/Listing/Search/Results?Page=10"
+  },
+  "rotation": {
+    "builds_this_cycle": 14,
+    "builds_until_retirement": 16,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
