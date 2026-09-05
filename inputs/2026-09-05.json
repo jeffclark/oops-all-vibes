@@ -1,0 +1,156 @@
+{
+  "date": "2026-09-05",
+  "fetched_at": "2026-09-05T11:19:08+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: 500 pea pickers in field of large-scale Sinclair ranch, newly planted to peas. Near Calipatria, California]",
+        "date": "1939-01-01",
+        "location": [
+          "imperial county",
+          "calipatria",
+          "california",
+          "united states"
+        ],
+        "subject": [
+          "imperial county",
+          "nitrate negatives",
+          "peas",
+          "united states",
+          "california",
+          "calipatria"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b33000/8b33100/8b33198v.jpg#h=787&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017771539/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171075
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-03",
+        "total_cases": 505,
+        "distinct_types": 41,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 253
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 53
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 28
+          },
+          {
+            "case": "Sign Repair",
+            "n": 27
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 23
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 22
+          }
+        ],
+        "only_one_of": [
+          "Boston Bikes: Bike Racks; Repair",
+          "Chronic Dampness/Mold",
+          "Exceeding Terms of Permit",
+          "Fire in Food Establishment",
+          "Food Alert - Confirmed",
+          "Illegal Occupancy",
+          "Maintenance - Homeowner",
+          "Missing Sign"
+        ],
+        "resolved": [
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "South End",
+            "note": "1 syringe recovered"
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "neighborhood": "West Roxbury",
+            "note": "Case Referred to External Agency dcr bcs 00309191"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Downtown / Financial District",
+            "note": "Please resubmit with more information on the location of the needles df recovered 0 1pic"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "1-0",
+        "games_played": 1,
+        "games_scheduled": 26,
+        "last_result": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 11,
+          "them": 3,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-09-10",
+          "opponent": "MD2 University of Arkansas",
+          "home": true,
+          "us": 0,
+          "them": 0,
+          "status": "8:00 pm CDT"
+        },
+        "days_until_next_game": 5
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-04",
+        "published_that_day": 83,
+        "sampled_from": 83,
+        "title": "Gulf Fishery Management Council; Public Meeting",
+        "type": "Notice",
+        "agencies": [
+          "Commerce Department",
+          "National Oceanic and Atmospheric Administration"
+        ],
+        "abstract": "The Gulf Fishery Management Council (Gulf Council) will hold a 2-day in-person meeting of its Standing Scientific and Statistical Committee (SSC).",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/09/04/2026-18100/gulf-fishery-management-council-public-meeting"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "HTTPError: 404 Client Error: Not Found for url: https://municibid.com/Listing/Search/Results?Page=5"
+  },
+  "rotation": {
+    "builds_this_cycle": 15,
+    "builds_until_retirement": 15,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
