@@ -1,0 +1,155 @@
+{
+  "date": "2026-09-11",
+  "fetched_at": "2026-09-11T13:22:58+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Auctioneer at livestock auction at San Angelo, Texas, is removing slip which tells the auctioneer clerk which animal is being sent in for auction",
+        "date": "1939-01-01",
+        "location": [
+          "texas",
+          "united states",
+          "tom green county",
+          "san angelo"
+        ],
+        "subject": [
+          "safety film negatives",
+          "texas",
+          "tom green county",
+          "san angelo",
+          "united states"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b23000/8b23600/8b23604v.jpg#h=784&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017785074/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171074
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-08",
+        "total_cases": 490,
+        "distinct_types": 39,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 242
+          },
+          {
+            "case": "Needle Pickup",
+            "n": 50
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 42
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 23
+          },
+          {
+            "case": "Sign Repair",
+            "n": 21
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 15
+          }
+        ],
+        "only_one_of": [
+          "Boston Bikes: Bikes - General; Request",
+          "Code Enforcement",
+          "Cross Metering - Sub-Metering",
+          "Electrical",
+          "Exceeding Terms of Permit",
+          "Food Alert - Confirmed",
+          "Food Alert - Unconfirmed",
+          "Illegal Occupancy"
+        ],
+        "resolved": [
+          {
+            "case": "Rodent Activity",
+            "neighborhood": "East Boston",
+            "note": "Abatement issued"
+          },
+          {
+            "case": "Needle Pickup",
+            "neighborhood": "Boston",
+            "note": "Syringe recovered AD"
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "neighborhood": "Downtown / Financial District",
+            "note": "This location is still under the Haymarket Garage Project. The move you are talking about is people coming off the off Ramp from the Sumner Tunnel and making a U Turn going back into the tunnel for I-93 SB."
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "1-0",
+        "games_played": 1,
+        "games_scheduled": 28,
+        "last_result": {
+          "date": "2026-09-03",
+          "opponent": "MD1 University of Oklahoma",
+          "home": true,
+          "us": 11,
+          "them": 3,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-09-11",
+          "opponent": "MD2 University of Arkansas",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:30 pm CDT"
+        },
+        "days_until_next_game": 0
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-10",
+        "published_that_day": 119,
+        "sampled_from": 100,
+        "title": "Foreign-Trade Zone (FTZ) 183, Notification of Proposed Production Activity; Dongjin Semichem Texas, Inc.; (Semiconductor-Grade Photoresist Thinner); Killeen, Texas",
+        "type": "Notice",
+        "agencies": [
+          "Commerce Department",
+          "Foreign-Trade Zones Board"
+        ],
+        "abstract": null,
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/09/10/2026-18490/foreign-trade-zone-ftz-183-notification-of-proposed-production-activity-dongjin-semichem-texas-inc"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 10"
+  },
+  "rotation": {
+    "builds_this_cycle": 19,
+    "builds_until_retirement": 11,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
