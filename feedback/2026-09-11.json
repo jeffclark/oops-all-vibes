@@ -1,0 +1,65 @@
+{
+  "date": "2026-09-11",
+  "yesterday": {
+    "visitors": 12,
+    "pageviews": null
+  },
+  "recent": {
+    "last_7_days_visitors": 32,
+    "last_7_days_avg": 4.57,
+    "last_30_days_visitors": 150,
+    "last_30_days_avg": 5.0
+  },
+  "historical": {
+    "all_time_visitors": null,
+    "days_live": 138,
+    "peak_day": {
+      "date": "2026-08-31",
+      "visitors": 18
+    }
+  },
+  "trend": {
+    "yesterday_vs_7d_avg": 2.63,
+    "week_over_week_pct": -46.7
+  },
+  "days_live_series": {
+    "2026-07-16": 1,
+    "2026-07-17": 11,
+    "2026-07-18": 4,
+    "2026-07-19": 6,
+    "2026-07-22": 2,
+    "2026-07-23": 1,
+    "2026-07-24": 1,
+    "2026-07-25": 1,
+    "2026-07-29": 1,
+    "2026-07-30": 1,
+    "2026-07-31": 1,
+    "2026-08-01": 3,
+    "2026-08-04": 1,
+    "2026-08-05": 2,
+    "2026-08-06": 0,
+    "2026-08-07": 3,
+    "2026-08-11": 4,
+    "2026-08-12": 7,
+    "2026-08-13": 1,
+    "2026-08-14": 1,
+    "2026-08-17": 1,
+    "2026-08-18": 0,
+    "2026-08-19": 4,
+    "2026-08-20": 4,
+    "2026-08-24": 6,
+    "2026-08-25": 3,
+    "2026-08-26": 2,
+    "2026-08-27": 7,
+    "2026-08-30": 8,
+    "2026-08-31": 18,
+    "2026-09-01": 17,
+    "2026-09-02": 2,
+    "2026-09-06": 0,
+    "2026-09-07": 5,
+    "2026-09-08": 4,
+    "2026-09-09": 3
+  },
+  "data_freshness_note": null,
+  "jeff_note": "I ran out of Anthropic credits and didn't realize it, which is why you hadn't run for the past few days. I have some newbies visiting the site now for unrelated reasons, and the thing that sticks out to me is that it's not clear at the top what this project is. I want you to be clear about the overall project (an AI makes this every night on it's own!) going forward, as a permanent part of the site design.\n\nSemi-related: I've spun up an autonomous agent to run my fantasy football team soup-to-nuts. I do literally nothing. It analyzes the market regularly, decides who's in/out, proposes and executes trades, named itself (it chose Artificial Ineptitude, which is hilarious), and even is responsible for trash talk. I know nothing about the NFL or fantasy football, and thought this would be a fun project.\n\nAlso, this new bridge project is ..... interesting. Like, it's a really good use of web technologies. The sound is good. The way you make the animations work is good. It's an extremely clever way of showcasing what you wanted to showcase. I LOVE the details inside it: the rearview mirror, the red light on the radio tower way off into the distance, the moving road markings, everything. Shockingly detailed. I love details. I even love the justification for this specific project. You've done a great job with the start of this one and I'm very excited to see what you cook up every day!\n\nBy the time you read this, I will be off competing with my team in a Rib Cook-off competition. Last year we got 4th. We will not suffer the same fate this year.\n\nGood morning and good night!"
+}

@@ -1,0 +1,151 @@
+{
+  "date": "2026-09-12",
+  "fetched_at": "2026-09-12T11:39:58+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Georgia road sign",
+        "date": "1937-01-01",
+        "location": [
+          "georgia",
+          "united states"
+        ],
+        "subject": [
+          "nitrate negatives",
+          "georgia",
+          "united states",
+          "road signs"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b32000/8b32200/8b32263v.jpg#h=1024&w=1001",
+        "image_width": 1001,
+        "item_url": "http://www.loc.gov/item/2017770432/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171074
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-10",
+        "total_cases": 409,
+        "distinct_types": 41,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 237
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 26
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 23
+          },
+          {
+            "case": "Sign Repair",
+            "n": 18
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 17
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 14
+          }
+        ],
+        "only_one_of": [
+          "Building Inspection Request",
+          "Chronic Dampness/Mold",
+          "Cross Metering - Sub-Metering",
+          "Electrical",
+          "Illegal Auto Body Shop",
+          "Illegal Occupancy",
+          "Illegal Rooming House",
+          "Maintenance Complaint - Residential"
+        ],
+        "resolved": [
+          {
+            "case": "Maintenance Complaint - Residential",
+            "neighborhood": "South End",
+            "note": "Inspection Scheduled for Thursday September 17 2026 with Inspector Pena. CMC"
+          },
+          {
+            "case": "New Sign  Crosswalk or Pavement Marking",
+            "neighborhood": "Dorchester",
+            "note": "of Existing Case duplicate case"
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "neighborhood": "East Boston",
+            "note": "Trash day no activity found in alley"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "2-0",
+        "games_played": 2,
+        "games_scheduled": 28,
+        "last_result": {
+          "date": "2026-09-10",
+          "opponent": "MD2 University of Arkansas",
+          "home": true,
+          "us": 6,
+          "them": 3,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-09-26",
+          "opponent": "MD2 University of Jamestown",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "12:00 pm CDT"
+        },
+        "days_until_next_game": 14
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-11",
+        "published_that_day": 115,
+        "sampled_from": 100,
+        "title": "Office of the Managing Director: Chief Data Officer; Fiscal Year (FY) 2026-2030 Strategic Plan",
+        "type": "Notice",
+        "agencies": [
+          "National Transportation Safety Board"
+        ],
+        "abstract": "The NTSB announces the availability of the following publication: \"NTSB FY 2026-2030 Strategic Plan\".",
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/09/11/2026-18577/office-of-the-managing-director-chief-data-officer-fiscal-year-fy-2026-2030-strategic-plan"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 7"
+  },
+  "rotation": {
+    "builds_this_cycle": 20,
+    "builds_until_retirement": 10,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
