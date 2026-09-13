@@ -1,0 +1,152 @@
+{
+  "date": "2026-09-13",
+  "fetched_at": "2026-09-13T12:46:50+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Abandoned church in cut-over area. Boundary County, Idaho",
+        "date": "1939-01-01",
+        "location": [
+          "united states",
+          "boundary county",
+          "idaho"
+        ],
+        "subject": [
+          "nitrate negatives",
+          "united states",
+          "idaho",
+          "boundary county"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/cph/3c30000/3c30000/3c30300/3c30387v.jpg#h=816&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017774199/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171073
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-11",
+        "total_cases": 399,
+        "distinct_types": 29,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 256
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 28
+          },
+          {
+            "case": "Sign Repair",
+            "n": 21
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 12
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 11
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 10
+          }
+        ],
+        "only_one_of": [
+          "Abandoned Building",
+          "Boston Bikes: Bikes - General; Complaint",
+          "Food Alert - Unconfirmed",
+          "General Traffic Engineering Request",
+          "Insp 9/24/2026   Pest Infestation - Residential",
+          "Missing Sign",
+          "Plumbing",
+          "Protection of Adjoining Property"
+        ],
+        "resolved": [
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "South Boston / South Boston Waterfront",
+            "note": "The vehicle has a South Boston Resident Parking Permit"
+          },
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "South Boston / South Boston Waterfront",
+            "note": "This location is \"All Clear\" of violators. Reported at 4:55 pm"
+          },
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "West Roxbury",
+            "note": "This location is \"All Clear\" of violators. Reported at 8:03 pm"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "2-0",
+        "games_played": 2,
+        "games_scheduled": 28,
+        "last_result": {
+          "date": "2026-09-10",
+          "opponent": "MD2 University of Arkansas",
+          "home": true,
+          "us": 6,
+          "them": 3,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-09-26",
+          "opponent": "MD2 University of Jamestown",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "12:00 pm CDT"
+        },
+        "days_until_next_game": 13
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-11",
+        "published_that_day": 115,
+        "sampled_from": 100,
+        "title": "New Postal Products",
+        "type": "Notice",
+        "agencies": [
+          "Postal Regulatory Commission"
+        ],
+        "abstract": "The Commission is noticing a recent Postal Service filing for the Commission's consideration concerning a negotiated service agreement. This notice informs the public of the filing, invites public comment, and takes other administrative steps.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/09/11/2026-18588/new-postal-products"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 3"
+  },
+  "rotation": {
+    "builds_this_cycle": 21,
+    "builds_until_retirement": 9,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
