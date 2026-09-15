@@ -1,0 +1,149 @@
+{
+  "date": "2026-09-15",
+  "fetched_at": "2026-09-15T12:45:08+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Coming home from school on a rainy day in Norwich, Connecticut",
+        "date": "1940-01-01",
+        "location": [
+          "connecticut",
+          "united states",
+          "norwich"
+        ],
+        "subject": [
+          "connecticut",
+          "united states",
+          "norwich",
+          "nitrate negatives"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a34000/8a34700/8a34775v.jpg#h=719&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017748531/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171073
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-13",
+        "total_cases": 212,
+        "distinct_types": 18,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 146
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 10
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 10
+          },
+          {
+            "case": "Sign Repair",
+            "n": 10
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 7
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 5
+          }
+        ],
+        "only_one_of": [
+          "Boston Bikes: Bike Racks; Repair",
+          "Contractors Complaint",
+          "General Traffic Engineering Request",
+          "No Utilities Residential - Water",
+          "Unsanitary Conditions - Food"
+        ],
+        "resolved": [
+          {
+            "case": "Abandoned Vehicles",
+            "neighborhood": "Dorchester",
+            "note": "Remaking case"
+          },
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "Hyde Park",
+            "note": "Const. called back vehicle has moved"
+          },
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "South Boston / South Boston Waterfront",
+            "note": "car moved"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "3-0",
+        "games_played": 3,
+        "games_scheduled": 28,
+        "last_result": {
+          "date": "2026-09-11",
+          "opponent": "MD2 University of Arkansas",
+          "home": false,
+          "us": 5,
+          "them": 2,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-09-26",
+          "opponent": "MD2 University of Jamestown",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "12:00 pm CDT"
+        },
+        "days_until_next_game": 11
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-14",
+        "published_that_day": 156,
+        "sampled_from": 100,
+        "title": "Clean Data Determination; 1997 8-Hour Ozone Standards; California; Sacramento Metro Area",
+        "type": "Proposed Rule",
+        "agencies": [
+          "Environmental Protection Agency"
+        ],
+        "abstract": "The U.S. Environmental Protection Agency (EPA or \"Agency\") is proposing to issue a clean data determination (CDD) for the Sacramento Metro, California nonattainment area to reflect our finding that the area is attaining the 1997 8-hour ozone national ambient air quality standards (NAAQS or \"standards\"). This finding is based on quality-assured and certified ambient air quality monitoring data from 2023 through 2025. If we finalize this CDD, certain Clean Air Act (CAA) requirements that apply to ",
+        "pages": 7,
+        "url": "https://www.federalregister.gov/documents/2026/09/14/2026-18755/clean-data-determination-1997-8-hour-ozone-standards-california-sacramento-metro-area"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "HTTPError: 403 Client Error: Forbidden for url: https://municibid.com/listing/search/results?Page=12"
+  },
+  "rotation": {
+    "builds_this_cycle": 23,
+    "builds_until_retirement": 7,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
