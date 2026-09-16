@@ -1,0 +1,153 @@
+{
+  "date": "2026-09-16",
+  "fetched_at": "2026-09-16T12:39:59+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: Abandoned farm. Madison County, Montana]",
+        "date": "1939-01-01",
+        "location": [
+          "montana",
+          "madison county",
+          "united states"
+        ],
+        "subject": [
+          "farms, drought areas",
+          "safety film negatives",
+          "montana",
+          "madison county",
+          "united states"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b17000/8b17700/8b17707v.jpg#h=791&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017777548/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171073
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-14",
+        "total_cases": 449,
+        "distinct_types": 31,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 280
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 22
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 22
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 20
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 18
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 18
+          }
+        ],
+        "only_one_of": [
+          "Boston Bikes: Bike Lanes; Repair",
+          "Cross Metering - Sub-Metering",
+          "Egress",
+          "General Traffic Engineering Request",
+          "No Utilities Residential - Water",
+          "Pavement Marking Inspection",
+          "Plumbing",
+          "Unsatisfactory Utilities - Electrical  Plumbing"
+        ],
+        "resolved": [
+          {
+            "case": "Traffic Signal Inspection",
+            "neighborhood": "Dorchester",
+            "note": "of Existing Case"
+          },
+          {
+            "case": "Requests for Traffic Signal Studies or Reviews",
+            "neighborhood": "South Boston / South Boston Waterfront",
+            "note": "Thank you for the information at this intersection. We have check the light and the light is working as normal"
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "neighborhood": "Back Bay",
+            "note": "narrative unclear photo unclear no contact"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "3-0",
+        "games_played": 3,
+        "games_scheduled": 28,
+        "last_result": {
+          "date": "2026-09-11",
+          "opponent": "MD2 University of Arkansas",
+          "home": false,
+          "us": 5,
+          "them": 2,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-09-26",
+          "opponent": "MD2 University of Jamestown",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "12:00 pm CDT"
+        },
+        "days_until_next_game": 10
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-15",
+        "published_that_day": 121,
+        "sampled_from": 100,
+        "title": "Formations of, Acquisitions by, and Mergers of Bank Holding Companies",
+        "type": "Notice",
+        "agencies": [
+          "Federal Reserve System"
+        ],
+        "abstract": null,
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/09/15/2026-18861/formations-of-acquisitions-by-and-mergers-of-bank-holding-companies"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "HTTPError: 403 Client Error: Forbidden for url: https://municibid.com/listing/search/results?Page=8"
+  },
+  "rotation": {
+    "builds_this_cycle": 24,
+    "builds_until_retirement": 6,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
