@@ -1,0 +1,153 @@
+{
+  "date": "2026-09-17",
+  "fetched_at": "2026-09-17T12:39:24+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: The factory has its own truck, which makes deliveries to its two rooms in New York, Jersey Homesteads]",
+        "date": "1936-01-01",
+        "location": [
+          "united states",
+          "hightstown",
+          "new jersey"
+        ],
+        "subject": [
+          "united states",
+          "hightstown",
+          "nitrate negatives",
+          "new jersey"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a21000/8a21100/8a21167v.jpg#h=723&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017734904/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171073
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-14",
+        "total_cases": 449,
+        "distinct_types": 31,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 280
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 22
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 22
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 20
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 18
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 18
+          }
+        ],
+        "only_one_of": [
+          "Boston Bikes: Bike Lanes; Repair",
+          "Cross Metering - Sub-Metering",
+          "Egress",
+          "General Traffic Engineering Request",
+          "No Utilities Residential - Water",
+          "Pavement Marking Inspection",
+          "Plumbing",
+          "Unsatisfactory Utilities - Electrical  Plumbing"
+        ],
+        "resolved": [
+          {
+            "case": "Cross Metering - Sub-Metering",
+            "neighborhood": "Allston / Brighton",
+            "note": "Scheduled for 9/25/26"
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "neighborhood": "Charlestown",
+            "note": "This is a Boston Police Department enforcement issue to enforce the red light running."
+          },
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "South Boston / South Boston Waterfront",
+            "note": "This vehicle has a South Boston Resident Parking Permit"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "3-0",
+        "games_played": 3,
+        "games_scheduled": 28,
+        "last_result": {
+          "date": "2026-09-11",
+          "opponent": "MD2 University of Arkansas",
+          "home": false,
+          "us": 5,
+          "them": 2,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-09-26",
+          "opponent": "MD2 University of Jamestown",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "12:00 pm CDT"
+        },
+        "days_until_next_game": 9
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-16",
+        "published_that_day": 104,
+        "sampled_from": 100,
+        "title": "Surface Transportation Project Delivery Program; Ohio Department of Transportation Audit Report",
+        "type": "Notice",
+        "agencies": [
+          "Transportation Department",
+          "Federal Railroad Administration"
+        ],
+        "abstract": "This notice announces and solicits comments on the draft audit report for the Ohio Department of Transportation (ODOT). The Surface Transportation Project Delivery Program allows a State to assume FRA's environmental responsibilities for environmental review, consultation, and compliance under the National Environmental Policy Act (NEPA) for railroad projects should a State first assume NEPA responsibilities under the Federal Highway Administration (FHWA). When a State assumes these Federal resp",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/09/16/2026-18986/surface-transportation-project-delivery-program-ohio-department-of-transportation-audit-report"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 12"
+  },
+  "rotation": {
+    "builds_this_cycle": 25,
+    "builds_until_retirement": 5,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
