@@ -1,0 +1,155 @@
+{
+  "date": "2026-09-18",
+  "fetched_at": "2026-09-18T12:17:36+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Douglas, Georgia. South Georgia tobacco sharecropper in town for auction. Note tobacco sheets in which he brought tobacco from the farm",
+        "date": "1938-01-01",
+        "location": [
+          "douglas",
+          "united states",
+          "georgia",
+          "coffee county"
+        ],
+        "subject": [
+          "tobacco",
+          "united states",
+          "georgia",
+          "douglas",
+          "nitrate negatives",
+          "coffee county"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b32000/8b32700/8b32779v.jpg#h=1024&w=952",
+        "image_width": 952,
+        "item_url": "http://www.loc.gov/item/2017771098/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171073
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-09-16",
+        "total_cases": 422,
+        "distinct_types": 34,
+        "top": [
+          {
+            "case": "Parking Enforcement",
+            "n": 248
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 29
+          },
+          {
+            "case": "Abandoned Vehicles",
+            "n": 18
+          },
+          {
+            "case": "Traffic Signal Inspection",
+            "n": 16
+          },
+          {
+            "case": "Sign Repair",
+            "n": 15
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 15
+          }
+        ],
+        "only_one_of": [
+          "Abandoned Building",
+          "Contractors Complaint",
+          "Exceeding Terms of Permit",
+          "Food Alert - Confirmed",
+          "Heat - Excessive  Insufficient",
+          "Lead",
+          "New Sign  Crosswalk or Pavement Marking",
+          "No Price on Gas/Wrong Price"
+        ],
+        "resolved": [
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "Fenway / Kenmore / Audubon Circle / Longwood",
+            "note": "The violator(s) at this location was/were ticketed. Reported at 4:21 pm"
+          },
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "East Boston",
+            "note": "This location is \"All Clear\" of violators. Reported at 8:08 pm"
+          },
+          {
+            "case": "Parking Enforcement",
+            "neighborhood": "Roxbury",
+            "note": "This location is \"All Clear\" of violators. Reported at 6:41 pm"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "3-0",
+        "games_played": 3,
+        "games_scheduled": 28,
+        "last_result": {
+          "date": "2026-09-11",
+          "opponent": "MD2 University of Arkansas",
+          "home": false,
+          "us": 5,
+          "them": 2,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-09-26",
+          "opponent": "MD2 University of Jamestown",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "12:00 pm CDT"
+        },
+        "days_until_next_game": 8
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-09-17",
+        "published_that_day": 72,
+        "sampled_from": 72,
+        "title": "Granting of Requests for Early Termination of the Waiting Period Under the Premerger Notification Rules",
+        "type": "Notice",
+        "agencies": [
+          "Federal Trade Commission"
+        ],
+        "abstract": null,
+        "pages": 4,
+        "url": "https://www.federalregister.gov/documents/2026/09/17/2026-19024/granting-of-requests-for-early-termination-of-the-waiting-period-under-the-premerger-notification"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 11"
+  },
+  "rotation": {
+    "builds_this_cycle": 26,
+    "builds_until_retirement": 4,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
