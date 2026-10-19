@@ -1,0 +1,151 @@
+{
+  "date": "2026-10-19",
+  "fetched_at": "2026-10-19T14:47:13+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Dragging log from old dugout to be used in building new dugout, Pie Town, New Mexico",
+        "date": "1940-01-01",
+        "location": [
+          "new mexico",
+          "pie town",
+          "united states"
+        ],
+        "subject": [
+          "nitrate negatives",
+          "new mexico",
+          "united states",
+          "pie town"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a28000/8a28800/8a28848v.jpg#h=728&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017742552/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171077
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-10-17",
+        "total_cases": 54,
+        "distinct_types": 14,
+        "top": [
+          {
+            "case": "Working Beyond Hours",
+            "n": 13
+          },
+          {
+            "case": "Rodent Activity",
+            "n": 8
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 7
+          },
+          {
+            "case": "Building Inspection Request",
+            "n": 5
+          },
+          {
+            "case": "Contractors Complaint",
+            "n": 4
+          },
+          {
+            "case": "Heat - Excessive  Insufficient",
+            "n": 4
+          }
+        ],
+        "only_one_of": [
+          "Abandoned Bicycle",
+          "Boston Bikes: Bike Racks; Repair",
+          "Plumbing",
+          "Unsafe/Dangerous Conditions",
+          "Unsatisfactory Utilities - Electrical  Plumbing"
+        ],
+        "resolved": [
+          {
+            "case": "Working Beyond Hours",
+            "neighborhood": "Mission Hill",
+            "note": "Will contact GC"
+          },
+          {
+            "case": "Working Beyond Hours",
+            "neighborhood": "Charlestown",
+            "note": "Work stopped by on call Building Inspector"
+          },
+          {
+            "case": "Working Beyond Hours",
+            "neighborhood": "Allston / Brighton",
+            "note": "Saturday permit issued royal st address. On call Building Inspector responded"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "10-1",
+        "games_played": 11,
+        "games_scheduled": 32,
+        "last_result": {
+          "date": "2026-10-17",
+          "opponent": "MD1 University of Oregon",
+          "home": false,
+          "us": 4,
+          "them": 0,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-10-30",
+          "opponent": "MD1 Midland University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CDT"
+        },
+        "days_until_next_game": 11
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-10-16",
+        "published_that_day": 129,
+        "sampled_from": 100,
+        "title": "Agency Information Collection Activities: Information Collection Extension; Submission for OMB Review; Regulatory Capital Reporting for Institutions Subject to the Advanced Capital Adequacy Framework (FFIEC 101)",
+        "type": "Notice",
+        "agencies": [
+          "Treasury Department",
+          "Comptroller of the Currency",
+          "Federal Reserve System"
+        ],
+        "abstract": "In accordance with the requirements of the Paperwork Reduction Act of 1995 (PRA), the OCC, the Board, and the FDIC (the agencies) may not conduct or sponsor, and the respondent is not required to respond to, an information collection unless it displays a currently valid Office of Management and Budget (OMB) control number. On June 5, 2026, the Federal Financial Institutions Examination Council (FFIEC), of which the agencies are members, requested public comment for 60 days on a proposal to exten",
+        "pages": 3,
+        "url": "https://www.federalregister.gov/documents/2026/10/16/2026-21185/agency-information-collection-activities-information-collection-extension-submission-for-omb-review"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 3"
+  },
+  "rotation": {
+    "builds_this_cycle": 27,
+    "builds_until_retirement": 3,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
