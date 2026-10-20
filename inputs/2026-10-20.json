@@ -1,0 +1,152 @@
+{
+  "date": "2026-10-20",
+  "fetched_at": "2026-10-20T12:49:19+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: Shenandoah, Pennsylvania. Filipek's barroom where men are having lunch]",
+        "date": "1938-01-01",
+        "location": [
+          "united states",
+          "shenandoah",
+          "schuylkill county",
+          "pennsylvania"
+        ],
+        "subject": [
+          "schuylkill county",
+          "pennsylvania",
+          "nitrate negatives",
+          "united states",
+          "shenandoah"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8c28000/8c28700/8c28711v.jpg#h=1024&w=789",
+        "image_width": 789,
+        "item_url": "http://www.loc.gov/item/2017790750/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171077
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-10-18",
+        "total_cases": 68,
+        "distinct_types": 13,
+        "top": [
+          {
+            "case": "Rodent Activity",
+            "n": 20
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 17
+          },
+          {
+            "case": "Heat - Excessive  Insufficient",
+            "n": 10
+          },
+          {
+            "case": "Unsanitary Conditions - Establishment",
+            "n": 4
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 4
+          },
+          {
+            "case": "Abandoned Bicycle",
+            "n": 3
+          }
+        ],
+        "only_one_of": [
+          "Building Inspection Request",
+          "Contractors Complaint",
+          "Maintenance Complaint - Residential",
+          "Unsanitary Conditions - Food",
+          "Work w/out Permit"
+        ],
+        "resolved": [
+          {
+            "case": "Working Beyond Hours",
+            "neighborhood": "Dorchester",
+            "note": "Work stopped by on call Building Inspector"
+          },
+          {
+            "case": "Heat - Excessive  Insufficient",
+            "neighborhood": "Boston",
+            "note": "Not authorized address error. Remaking case"
+          },
+          {
+            "case": "Work w/out Permit",
+            "neighborhood": "West Roxbury",
+            "note": "On call Inspector responded allowed to continue roof work gc and property staff onsite"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "10-1",
+        "games_played": 11,
+        "games_scheduled": 32,
+        "last_result": {
+          "date": "2026-10-17",
+          "opponent": "MD1 University of Oregon",
+          "home": false,
+          "us": 4,
+          "them": 0,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-10-30",
+          "opponent": "MD1 Midland University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CDT"
+        },
+        "days_until_next_game": 10
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-10-19",
+        "published_that_day": 146,
+        "sampled_from": 100,
+        "title": "Arms Sales Notification",
+        "type": "Notice",
+        "agencies": [
+          "Defense Department",
+          null
+        ],
+        "abstract": "The DoD (referred to herein as \"the Department,\" \"Department of War\" or \"DoW\") is publishing the unclassified text of an arms sales notification.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/10/19/2026-21344/arms-sales-notification"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 11"
+  },
+  "rotation": {
+    "builds_this_cycle": 28,
+    "builds_until_retirement": 2,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
