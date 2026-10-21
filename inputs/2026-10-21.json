@@ -1,0 +1,152 @@
+{
+  "date": "2026-10-21",
+  "fetched_at": "2026-10-21T13:01:20+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Front door of white Cupboard Inn, old home converted into tavern for winter and summer visitors. Woodstock, Vermont",
+        "date": "1939-01-01",
+        "location": [
+          "vermont",
+          "woodstock",
+          "united states"
+        ],
+        "subject": [
+          "vermont",
+          "united states",
+          "woodstock",
+          "nitrate negatives"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a42000/8a42000/8a42074v.jpg#h=730&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017755779/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171143
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-10-19",
+        "total_cases": 98,
+        "distinct_types": 25,
+        "top": [
+          {
+            "case": "Rodent Activity",
+            "n": 20
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 17
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 14
+          },
+          {
+            "case": "Heat - Excessive  Insufficient",
+            "n": 9
+          },
+          {
+            "case": "Contractors Complaint",
+            "n": 6
+          },
+          {
+            "case": "Building Inspection Request",
+            "n": 3
+          }
+        ],
+        "only_one_of": [
+          "DISP 1019 Heat - Excessive  Insufficient",
+          "Electrical",
+          "Exceeding Terms of Permit",
+          "Food Alert - Unconfirmed",
+          "Illegal Rooming House",
+          "LM Heat - Excessive  Insufficient",
+          "No Utilities Residential - Water",
+          "SCH 1026/2026  Mice Infestation - Residential"
+        ],
+        "resolved": [
+          {
+            "case": "Mice Infestation - Residential",
+            "neighborhood": "Allston / Brighton",
+            "note": "Inspection Scheduled for Monday October 26 2026 with Inspector Olivea. CMK"
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "neighborhood": "Dorchester",
+            "note": "Inspection Scheduled for Monday October 26 2026 with Inspector Mc Neil. CMK"
+          },
+          {
+            "case": "Egress",
+            "neighborhood": "Roxbury",
+            "note": "invalid address"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "10-1",
+        "games_played": 11,
+        "games_scheduled": 32,
+        "last_result": {
+          "date": "2026-10-17",
+          "opponent": "MD1 University of Oregon",
+          "home": false,
+          "us": 4,
+          "them": 0,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-10-30",
+          "opponent": "MD1 Midland University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CDT"
+        },
+        "days_until_next_game": 9
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-10-20",
+        "published_that_day": 82,
+        "sampled_from": 82,
+        "title": "New Postal Products",
+        "type": "Notice",
+        "agencies": [
+          "Postal Regulatory Commission"
+        ],
+        "abstract": "The Commission is noticing a recent Postal Service filing for the Commission's consideration concerning a negotiated service agreement. This notice informs the public of the filing, invites public comment, and takes other administrative steps.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/10/20/2026-21421/new-postal-products"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 3"
+  },
+  "rotation": {
+    "builds_this_cycle": 29,
+    "builds_until_retirement": 1,
+    "overdue_builds": 0,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
