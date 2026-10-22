@@ -1,15 +1,22 @@
 {
   "roster": [
     "fsa",
-    "civic",
     "surplus",
     "hockey",
     "register"
   ],
   "retire_every_builds": 30,
-  "builds_this_cycle": 29,
-  "retired": [],
+  "builds_this_cycle": 0,
+  "retired": [
+    {
+      "key": "civic",
+      "date": "2026-10-22",
+      "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+    }
+  ],
   "overdue_builds": 0,
   "full_roster_size": 5,
-  "last_counted_date": "2026-10-21"
+  "last_counted_date": "2026-10-22",
+  "last_retirement_date": "2026-10-22",
+  "cycles_completed": 1
 }

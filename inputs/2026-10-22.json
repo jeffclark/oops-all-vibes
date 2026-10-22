@@ -1,0 +1,154 @@
+{
+  "date": "2026-10-22",
+  "fetched_at": "2026-10-22T13:03:31+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: Dam construction, Prince George's County, Maryland]",
+        "date": "1935-01-01",
+        "location": [
+          "greenbelt",
+          "maryland",
+          "prince georges county",
+          "united states"
+        ],
+        "subject": [
+          "united states",
+          "maryland",
+          "prince georges county",
+          "nitrate negatives",
+          "greenbelt"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a00000/8a00600/8a00623v.jpg#h=760&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017714442/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171152
+      }
+    },
+    "civic": {
+      "label": "What Boston reported broken yesterday (311)",
+      "data": {
+        "day": "2026-10-20",
+        "total_cases": 81,
+        "distinct_types": 23,
+        "top": [
+          {
+            "case": "Rodent Activity",
+            "n": 17
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "n": 13
+          },
+          {
+            "case": "Heat - Excessive  Insufficient",
+            "n": 9
+          },
+          {
+            "case": "Abandoned Bicycle",
+            "n": 5
+          },
+          {
+            "case": "Unsatisfactory Living Conditions",
+            "n": 5
+          },
+          {
+            "case": "Contractors Complaint",
+            "n": 4
+          }
+        ],
+        "only_one_of": [
+          "Bed Bugs",
+          "Boston Bikes: Bike Racks; Maintenance",
+          "Boston Bikes: Bikes - General; Enforcement",
+          "Chronic Dampness/Mold",
+          "DISPATCH 10/20/2026 Unsatisfactory Living Conditions",
+          "Environmental Services",
+          "Mice Infestation - Residential",
+          "Plumbing"
+        ],
+        "resolved": [
+          {
+            "case": "Heat - Excessive  Insufficient",
+            "neighborhood": "Allston / Brighton",
+            "note": "disp10/20/26 LB"
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "neighborhood": "Dorchester",
+            "note": "no information 10/20/26"
+          },
+          {
+            "case": "Pest Infestation - Residential",
+            "neighborhood": "Mission Hill",
+            "note": "Inspection Scheduled for Tuesday October 27 2026 with Inspector Pena. CMK"
+          }
+        ]
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "10-1",
+        "games_played": 11,
+        "games_scheduled": 32,
+        "last_result": {
+          "date": "2026-10-17",
+          "opponent": "MD1 University of Oregon",
+          "home": false,
+          "us": 4,
+          "them": 0,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-10-30",
+          "opponent": "MD1 Midland University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CDT"
+        },
+        "days_until_next_game": 8
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-10-21",
+        "published_that_day": 63,
+        "sampled_from": 63,
+        "title": "Petition for Rulemaking of Jason Plotzker",
+        "type": "Proposed Rule",
+        "agencies": [
+          "Federal Trade Commission"
+        ],
+        "abstract": "Please take notice that the Federal Trade Commission (\"Commission\") received a petition for rulemaking from Jason Plotzker and has published that petition online at https://www.regulations.gov. The Commission invites written comments concerning the petition. Publication of this petition is pursuant to the Commission's Rules of Practice and Procedure and does not affect the legal status of the petition or its final disposition.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/10/21/2026-21510/petition-for-rulemaking-of-jason-plotzker"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 5"
+  },
+  "rotation": {
+    "builds_this_cycle": 30,
+    "builds_until_retirement": 0,
+    "overdue_builds": 1,
+    "cycles_completed": 0,
+    "roster": [
+      "fsa",
+      "civic",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 5,
+    "full_roster_size": 5,
+    "retired": []
+  }
+}
