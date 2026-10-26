@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-26",
+  "fetched_at": "2026-10-26T14:25:09+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Defense housing. Ben Morrell Project, Norfolk, Virginia. A surveyor on the Ben Morrell Project near Norfolk, Virginia. The homes being built here by the Navy under the coordinated Defense Housing Program are for both married enlisted and civilian personnel employed at the Norfolk naval base. The project was built at a cost of 3,356,771 dollars and contains 1,362 units. Rentals run from $17-23 a month",
+        "date": "1941-01-01",
+        "location": [
+          "united states",
+          "norfolk",
+          "virginia"
+        ],
+        "subject": [
+          "united states",
+          "safety film negatives",
+          "norfolk",
+          "virginia"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b00000/8b00400/8b00445v.jpg#h=1024&w=822",
+        "image_width": 822,
+        "item_url": "http://www.loc.gov/item/2017689895/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171277
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "10-1",
+        "games_played": 11,
+        "games_scheduled": 34,
+        "last_result": {
+          "date": "2026-10-17",
+          "opponent": "MD1 University of Oregon",
+          "home": false,
+          "us": 4,
+          "them": 0,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-10-30",
+          "opponent": "MD1 Midland University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CDT"
+        },
+        "days_until_next_game": 4
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-10-23",
+        "published_that_day": 82,
+        "sampled_from": 82,
+        "title": "Request Notice: Use of Foreign-built Small Passenger Vessel in United States Coastwise Trade, M/V LUMINOSITY",
+        "type": "Notice",
+        "agencies": [
+          "Transportation Department",
+          "Maritime Administration"
+        ],
+        "abstract": "The Secretary of Transportation, as represented by MARAD, is authorized to make determinations regarding the coastwise use of foreign built; certain U.S. built; and U.S. and foreign rebuilt vessels that solely carry no more than twelve passengers for hire. MARAD has received such a determination request and is publishing this notice to solicit comments to assist with determining whether the proposed use of the vessel set forth in the request would have an adverse effect on U.S. vessel builders o",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/10/23/2026-21642/request-notice-use-of-foreign-built-small-passenger-vessel-in-united-states-coastwise-trade-mv"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 5"
+  },
+  "rotation": {
+    "builds_this_cycle": 4,
+    "builds_until_retirement": 26,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
