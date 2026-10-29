@@ -6,7 +6,7 @@
     "register"
   ],
   "retire_every_builds": 30,
-  "builds_this_cycle": 5,
+  "builds_this_cycle": 6,
   "retired": [
     {
       "key": "civic",
@@ -16,7 +16,7 @@
   ],
   "overdue_builds": 0,
   "full_roster_size": 5,
-  "last_counted_date": "2026-10-27",
+  "last_counted_date": "2026-10-29",
   "last_retirement_date": "2026-10-22",
   "cycles_completed": 1
 }
