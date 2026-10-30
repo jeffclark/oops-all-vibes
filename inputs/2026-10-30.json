@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-30",
+  "fetched_at": "2026-10-30T14:22:54+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Greenhouses on Seabrook Farms, between Bridgeton and Vineland, New Jersey. Farms such as this have made a science of agriculture. This one is run by an agronomist and tractor drivers under him. Little ordinary farm labor is employed and that only seasonably",
+        "date": "1938-01-01",
+        "location": [
+          "united states",
+          "new jersey",
+          "seabrook farms"
+        ],
+        "subject": [
+          "nitrate negatives",
+          "united states",
+          "new jersey",
+          "seabrook farms"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a15000/8a15000/8a15046v.jpg#h=721&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017728823/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171319
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "10-1",
+        "games_played": 11,
+        "games_scheduled": 34,
+        "last_result": {
+          "date": "2026-10-17",
+          "opponent": "MD1 University of Oregon",
+          "home": false,
+          "us": 4,
+          "them": 0,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-10-30",
+          "opponent": "MD1 Midland University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CDT"
+        },
+        "days_until_next_game": 0
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-10-29",
+        "published_that_day": 102,
+        "sampled_from": 100,
+        "title": "National Institute of Biomedical Imaging and Bioengineering; Notice of Meeting",
+        "type": "Notice",
+        "agencies": [
+          "Health and Human Services Department",
+          "National Institutes of Health"
+        ],
+        "abstract": null,
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/10/29/2026-22105/national-institute-of-biomedical-imaging-and-bioengineering-notice-of-meeting"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 4"
+  },
+  "rotation": {
+    "builds_this_cycle": 7,
+    "builds_until_retirement": 23,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
