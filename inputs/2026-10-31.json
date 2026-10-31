@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-31",
+  "fetched_at": "2026-10-31T13:44:37+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Tulare County, California. Farm Security Administration (FSA) camp for migratory agricultural workers at Farmersville. Nurse of Agricultural Workers' Health and Medical Association attends sick migrant woman while awaiting doctor",
+        "date": "1939-01-01",
+        "location": [
+          "tulare county",
+          "united states",
+          "farmersville",
+          "california"
+        ],
+        "subject": [
+          "tulare county",
+          "nitrate negatives",
+          "fsa camps",
+          "united states",
+          "farmersville",
+          "california"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b33000/8b33600/8b33688v.jpg#h=778&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017772061/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171319
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "11-1",
+        "games_played": 12,
+        "games_scheduled": 34,
+        "last_result": {
+          "date": "2026-10-30",
+          "opponent": "MD1 Midland University",
+          "home": false,
+          "us": 7,
+          "them": 3,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-10-31",
+          "opponent": "MD1 Midland University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CDT"
+        },
+        "days_until_next_game": 0
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-10-30",
+        "published_that_day": 119,
+        "sampled_from": 100,
+        "title": "Drugs for Human Use; Drug Efficacy Study Implementation: Estrogen-Androgen Fixed-Combination Drug Products; Third Extension of Effective Date of Final Resolution of Drug Efficacy Study Implementation 7661",
+        "type": "Notice",
+        "agencies": [
+          "Health and Human Services Department",
+          "Food and Drug Administration"
+        ],
+        "abstract": "The Food and Drug Administration (FDA or Agency) is extending the effective date of the notice published in the Federal Register on May 27, 2026, titled Drugs for Human Use; Drug Efficacy Study Implementation: Estrogen-Androgen Fixed-Combination Drug Products; Syntest D.S. and Syntest H.S. Tablets; Withdrawal of Hearing Requests; Final Resolution of Drug Efficacy Study Implementation 7661 (91 FR. 31462) (the \"May 2026 Notice\"), as previously extended by the notice published in the Federal Regist",
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/10/30/2026-22175/drugs-for-human-use-drug-efficacy-study-implementation-estrogen-androgen-fixed-combination-drug"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 12"
+  },
+  "rotation": {
+    "builds_this_cycle": 8,
+    "builds_until_retirement": 22,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
