@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-05",
+  "fetched_at": "2026-11-05T15:38:15+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: Ten year old child of George Cowley Family (rural rehabilitation client). Her bones break exceptionally easy (diet deficiency said to be one of causes) and one leg has been broken five times and doesn't mend properly. Pike County, Alabama]",
+        "date": "1939-01-01",
+        "location": [
+          "pike county",
+          "alabama",
+          "united states"
+        ],
+        "subject": [
+          "pike county",
+          "nitrate negatives",
+          "alabama",
+          "united states"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a40000/8a40000/8a40019v.jpg#h=724&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017753730/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171319
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "12-1",
+        "games_played": 13,
+        "games_scheduled": 34,
+        "last_result": {
+          "date": "2026-10-31",
+          "opponent": "MD1 Midland University",
+          "home": false,
+          "us": 5,
+          "them": 1,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-11-06",
+          "opponent": "MD1 Ohio University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm EST"
+        },
+        "days_until_next_game": 1
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-04",
+        "published_that_day": 92,
+        "sampled_from": 92,
+        "title": "Notice of Request for an Extension of a Currently Approved Information Collection",
+        "type": "Notice",
+        "agencies": [
+          "Agriculture Department",
+          "Foreign Agricultural Service"
+        ],
+        "abstract": "In accordance with the Paperwork Reduction Act of 1995, this notice announces the intention of the Foreign Agricultural Service to request an extension from the Office of Management and Budget (OMB) of a currently approved information collection for the Quality Samples Program.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/11/04/2026-22442/notice-of-request-for-an-extension-of-a-currently-approved-information-collection"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 11"
+  },
+  "rotation": {
+    "builds_this_cycle": 13,
+    "builds_until_retirement": 17,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
