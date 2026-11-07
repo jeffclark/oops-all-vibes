@@ -1,0 +1,98 @@
+{
+  "date": "2026-11-07",
+  "fetched_at": "2026-11-07T14:12:26+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Trailer camp opposite United Aircraft where many Pratt and Whitney workers live with their families, because of housing congestion in and near Hartford, Connecticut",
+        "date": "1941-01-01",
+        "location": [
+          "connecticut",
+          "hartford county",
+          "east hartford",
+          "united states"
+        ],
+        "subject": [
+          "united states",
+          "east hartford",
+          "hartford county",
+          "connecticut",
+          "safety film negatives"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8c35000/8c35900/8c35928v.jpg#h=775&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017807020/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171339
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "13-1",
+        "games_played": 14,
+        "games_scheduled": 34,
+        "last_result": {
+          "date": "2026-11-06",
+          "opponent": "MD1 Ohio University",
+          "home": false,
+          "us": 3,
+          "them": 2,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-11-07",
+          "opponent": "MD1 Ohio University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "5:00 pm EST"
+        },
+        "days_until_next_game": 0
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-06",
+        "published_that_day": 80,
+        "sampled_from": 80,
+        "title": "83 Investment Group Income Fund, et al.",
+        "type": "Notice",
+        "agencies": [
+          "Securities and Exchange Commission"
+        ],
+        "abstract": null,
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/11/06/2026-22648/83-investment-group-income-fund-et-al"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 5"
+  },
+  "rotation": {
+    "builds_this_cycle": 15,
+    "builds_until_retirement": 15,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
