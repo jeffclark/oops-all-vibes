@@ -1,0 +1,98 @@
+{
+  "date": "2026-11-08",
+  "fetched_at": "2026-11-08T14:24:43+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: Mrs. Mattie Hart, mother-in-law of John M. Washam, picking English peas out of their home garden. Transylvania Project, Louisiana]",
+        "date": "1940-01-01",
+        "location": [
+          "louisiana",
+          "united states",
+          "transylvania project",
+          "east carroll parish"
+        ],
+        "subject": [
+          "east carroll parish",
+          "united states",
+          "louisiana",
+          "transylvania project",
+          "safety film negatives"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8c12000/8c12200/8c12293v.jpg#h=786&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017803291/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171342
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "14-1",
+        "games_played": 15,
+        "games_scheduled": 34,
+        "last_result": {
+          "date": "2026-11-07",
+          "opponent": "MD1 Ohio University",
+          "home": false,
+          "us": 3,
+          "them": 1,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-11-13",
+          "opponent": "MD1 University of Illinois",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CST"
+        },
+        "days_until_next_game": 5
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-06",
+        "published_that_day": 80,
+        "sampled_from": 80,
+        "title": "Anti-Communism Week, 2026",
+        "type": "Presidential Document",
+        "agencies": [
+          "Executive Office of the President"
+        ],
+        "abstract": null,
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/11/06/2026-22787/anti-communism-week-2026"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 4"
+  },
+  "rotation": {
+    "builds_this_cycle": 16,
+    "builds_until_retirement": 14,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
