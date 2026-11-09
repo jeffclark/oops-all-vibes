@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-09",
+  "fetched_at": "2026-11-09T17:40:53+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Negroes standing on the corner of the main street on rainy Memorial Day. Roxboro, North Carolina",
+        "date": "1940-01-01",
+        "location": [
+          "north carolina",
+          "united states",
+          "roxboro"
+        ],
+        "subject": [
+          "north carolina",
+          "united states",
+          "nitrate negatives",
+          "roxboro"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a33000/8a33700/8a33761v.jpg#h=724&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017747523/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171342
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "14-1",
+        "games_played": 15,
+        "games_scheduled": 34,
+        "last_result": {
+          "date": "2026-11-07",
+          "opponent": "MD1 Ohio University",
+          "home": false,
+          "us": 3,
+          "them": 1,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-11-13",
+          "opponent": "MD1 University of Illinois",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CST"
+        },
+        "days_until_next_game": 4
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-06",
+        "published_that_day": 80,
+        "sampled_from": 80,
+        "title": "Agency Information Collection Activities; Submission to the Office of Management and Budget (OMB) for Review and Approval; Comment Request; Application Process To Waive the Import Qualification Criteria Measures To Restrict Stockpiling of Polysilicon and Polysilicon Derivatives",
+        "type": "Notice",
+        "agencies": [
+          "Commerce Department",
+          "Industry and Security Bureau"
+        ],
+        "abstract": "The Department of Commerce, in accordance with the Paperwork Reduction Act of 1995 (PRA), invites the general public and other Federal agencies to comment on proposed, and continuing information collections, which helps us assess the impact of our information collection requirements and minimize the public's reporting burden. The purpose of this notice is to allow for 60 days of public comment on the OMB approved emergency collection for the Temporary Final Rule \"Measures To Restrict Stockpiling",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/11/06/2026-22726/agency-information-collection-activities-submission-to-the-office-of-management-and-budget-omb-for"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 10"
+  },
+  "rotation": {
+    "builds_this_cycle": 17,
+    "builds_until_retirement": 13,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
