@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-10",
+  "fetched_at": "2026-11-10T15:41:20+00:00",
+  "inputs": {
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "14-1",
+        "games_played": 15,
+        "games_scheduled": 34,
+        "last_result": {
+          "date": "2026-11-07",
+          "opponent": "MD1 Ohio University",
+          "home": false,
+          "us": 3,
+          "them": 1,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-11-13",
+          "opponent": "MD1 University of Illinois",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CST"
+        },
+        "days_until_next_game": 3
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-09",
+        "published_that_day": 98,
+        "sampled_from": 98,
+        "title": "Order Under Section 36 of the Securities Exchange Act of 1934 (the \u201cExchange Act\u201d) Granting Conditional Exemptive Relief From Section 15(c)(3) of and Rule 15c3-3a, Note H Under the Exchange Act Relating to Certain Centrally Cleared U.S. Treasury Transactions",
+        "type": "Notice",
+        "agencies": [
+          "Securities and Exchange Commission"
+        ],
+        "abstract": null,
+        "pages": 5,
+        "url": "https://www.federalregister.gov/documents/2026/11/09/2026-22740/order-under-section-36-of-the-securities-exchange-act-of-1934-the-exchange-act-granting-conditional"
+      }
+    }
+  },
+  "failures": {
+    "fsa": "ValueError: page 1995: HTTPError",
+    "surplus": "ValueError: no listings on page 7"
+  },
+  "rotation": {
+    "builds_this_cycle": 18,
+    "builds_until_retirement": 12,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
