@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-11",
+  "fetched_at": "2026-11-11T15:27:46+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "V-mail. Paper reproduction for V-mail microfilm are inspected and then cut into individual letters by the \"chopper\" at the Pentagon building, Washington, D.C. V-mail is available to and from the armed forces stationed outside the United States. It is only 1/65th the weight of ordinary mail and saves ninety-eight percent of the cargo space required for ordinary letters. 1,600 letters can be placed on a roll of film little larger than a pack of cigarettes",
+        "date": "1943-01-01",
+        "location": [
+          "district of columbia",
+          "washington (d.c.)",
+          "washington d.c.",
+          "united states"
+        ],
+        "subject": [
+          "district of columbia",
+          "washington (d.c.)",
+          "nitrate negatives",
+          "united states"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b08000/8b08000/8b08028v.jpg#h=841&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017696447/",
+        "era": "OWI (wartime)",
+        "is_oklahoma": false,
+        "collection_total": 171342
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "14-1",
+        "games_played": 15,
+        "games_scheduled": 34,
+        "last_result": {
+          "date": "2026-11-07",
+          "opponent": "MD1 Ohio University",
+          "home": false,
+          "us": 3,
+          "them": 1,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-11-13",
+          "opponent": "MD1 University of Illinois",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:00 pm CST"
+        },
+        "days_until_next_game": 2
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-10",
+        "published_that_day": 108,
+        "sampled_from": 100,
+        "title": "Biweekly Notice; Applications and Amendments to Facility Operating Licenses and Combined Licenses Involving No Significant Hazards Considerations",
+        "type": "Notice",
+        "agencies": [
+          "Nuclear Regulatory Commission"
+        ],
+        "abstract": "Pursuant to section 189a.(2) of the Atomic Energy Act of 1954, as amended (the Act), the U.S. Nuclear Regulatory Commission (NRC) is publishing this regular biweekly notice. The Act requires the Commission to publish notice of any amendments issued, or proposed to be issued, and grants the Commission the authority to issue and make immediately effective any amendment to an operating license or combined license, as applicable, upon a determination by the Commission that such amendment involves no",
+        "pages": 8,
+        "url": "https://www.federalregister.gov/documents/2026/11/10/2026-22882/biweekly-notice-applications-and-amendments-to-facility-operating-licenses-and-combined-licenses"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 7"
+  },
+  "rotation": {
+    "builds_this_cycle": 19,
+    "builds_until_retirement": 11,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
