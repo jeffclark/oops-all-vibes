@@ -1,0 +1,98 @@
+{
+  "date": "2026-11-15",
+  "fetched_at": "2026-11-15T14:52:06+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "[Untitled photo, possibly related to: Bayamon, Puerto Rico (vicinity). Tent colony of twenty-five families who had been squatters on land taken over by the Navy. They are to be resettled by the land authority]",
+        "date": "1935-01-01",
+        "location": [
+          "bayamon",
+          "united states",
+          "puerto rico",
+          "bayamon municipality"
+        ],
+        "subject": [
+          "united states",
+          "safety film negatives",
+          "puerto rico",
+          "bayamon municipality",
+          "bayamon"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8c35000/8c35400/8c35453v.jpg#h=795&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017797101/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171341
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "16-1",
+        "games_played": 17,
+        "games_scheduled": 32,
+        "last_result": {
+          "date": "2026-11-13",
+          "opponent": "MD1 University of Illinois",
+          "home": false,
+          "us": 4,
+          "them": 1,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-11-20",
+          "opponent": "MD2 Sault College",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "4:30 pm EST"
+        },
+        "days_until_next_game": 5
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-13",
+        "published_that_day": 118,
+        "sampled_from": 100,
+        "title": "Fiscal Year List of Requests From States or Tribes for a Small Business Administration Disaster Declaration",
+        "type": "Notice",
+        "agencies": [
+          "Small Business Administration"
+        ],
+        "abstract": "This notice provides an updated list of requests received by the U.S. Small Business Administration to make a disaster declaration for a state, territory, or tribe. The published list complies with a directive in the explanatory statement of the Consolidated Appropriations Act, 2026, Public Law 119-75.",
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/11/13/2026-23179/fiscal-year-list-of-requests-from-states-or-tribes-for-a-small-business-administration-disaster"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 9"
+  },
+  "rotation": {
+    "builds_this_cycle": 22,
+    "builds_until_retirement": 8,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
