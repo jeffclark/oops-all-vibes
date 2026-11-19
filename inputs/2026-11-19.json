@@ -1,0 +1,73 @@
+{
+  "date": "2026-11-19",
+  "fetched_at": "2026-11-19T16:41:29+00:00",
+  "inputs": {
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "16-1",
+        "games_played": 17,
+        "games_scheduled": 32,
+        "last_result": {
+          "date": "2026-11-13",
+          "opponent": "MD1 University of Illinois",
+          "home": false,
+          "us": 4,
+          "them": 1,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-11-20",
+          "opponent": "MD2 Sault College",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "4:30 pm EST"
+        },
+        "days_until_next_game": 1
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-18",
+        "published_that_day": 112,
+        "sampled_from": 100,
+        "title": "Agency Information Collection Activities; Submission for OMB Review; Comment Request; Extension: Rule 19a-1",
+        "type": "Notice",
+        "agencies": [
+          "Securities and Exchange Commission"
+        ],
+        "abstract": null,
+        "pages": 2,
+        "url": "https://www.federalregister.gov/documents/2026/11/18/2026-23470/agency-information-collection-activities-submission-for-omb-review-comment-request-extension-rule"
+      }
+    }
+  },
+  "failures": {
+    "fsa": "ValueError: page 3212: rate limited (429); not retrying",
+    "surplus": "ValueError: no listings on page 3"
+  },
+  "rotation": {
+    "builds_this_cycle": 23,
+    "builds_until_retirement": 7,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
