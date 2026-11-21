@@ -1,0 +1,99 @@
+{
+  "date": "2026-11-21",
+  "fetched_at": "2026-11-21T15:28:03+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Spectators at soapbox auto race during July 4th celebration at Salisbury, Maryland",
+        "date": "1940-01-01",
+        "location": [
+          "salisbury",
+          "maryland",
+          "wicomico county",
+          "united states"
+        ],
+        "subject": [
+          "maryland",
+          "united states",
+          "nitrate negatives",
+          "wicomico county",
+          "salisbury"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a34000/8a34300/8a34315v.jpg#h=734&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017748072/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171440
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "17-1",
+        "games_played": 18,
+        "games_scheduled": 32,
+        "last_result": {
+          "date": "2026-11-20",
+          "opponent": "MD2 Sault College",
+          "home": false,
+          "us": 5,
+          "them": 3,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-11-21",
+          "opponent": "MD2 Sault College",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "20:00 1st"
+        },
+        "days_until_next_game": 0
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-20",
+        "published_that_day": 111,
+        "sampled_from": 100,
+        "title": "Safety Zone; Annual Fireworks Display Within the Sector Columbia River Captain of the Port Zone, Richland, WA",
+        "type": "Rule",
+        "agencies": [
+          "Homeland Security Department",
+          "Coast Guard"
+        ],
+        "abstract": "The Coast Guard will enforce a safety zone for the City of Richland Lighted Boat Parade Fireworks on December 5, 2026, to provide for the safety of life on navigable waters during a fireworks display. Our regulation for the fireworks display within the Northwest Coast Guard District designates safety zones and identifies approximate dates for these events. Specific date and times are identified in this notice. These regulations prohibit persons and vessels from entering or remaining in the safet",
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/11/20/2026-23676/safety-zone-annual-fireworks-display-within-the-sector-columbia-river-captain-of-the-port-zone"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 10"
+  },
+  "rotation": {
+    "builds_this_cycle": 24,
+    "builds_until_retirement": 6,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
