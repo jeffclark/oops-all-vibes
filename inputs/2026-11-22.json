@@ -1,0 +1,97 @@
+{
+  "date": "2026-11-22",
+  "fetched_at": "2026-11-22T15:28:56+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "Sawmill for making shingles near Jefferson, Texas",
+        "date": "1939-01-01",
+        "location": [
+          "texas",
+          "united states",
+          "jefferson"
+        ],
+        "subject": [
+          "lumber, paper mills",
+          "united states",
+          "nitrate negatives",
+          "jefferson",
+          "texas"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8a25000/8a25800/8a25847v.jpg#h=721&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017739638/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171440
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "18-1",
+        "games_played": 19,
+        "games_scheduled": 32,
+        "last_result": {
+          "date": "2026-11-21",
+          "opponent": "MD2 Sault College",
+          "home": false,
+          "us": 9,
+          "them": 1,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-12-04",
+          "opponent": "MD1 Minot State University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:30 pm CST"
+        },
+        "days_until_next_game": 12
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-20",
+        "published_that_day": 111,
+        "sampled_from": 100,
+        "title": "Self-Regulatory Organizations; Miami International Securities Exchange, LLC; Notice of Filing and Immediate Effectiveness of a Proposed Rule Change To Permit the Listing of Binary Options Overlying Key Performance Indicators Reported by Certain Issuers of Stock",
+        "type": "Notice",
+        "agencies": [
+          "Securities and Exchange Commission"
+        ],
+        "abstract": null,
+        "pages": 18,
+        "url": "https://www.federalregister.gov/documents/2026/11/20/2026-23649/self-regulatory-organizations-miami-international-securities-exchange-llc-notice-of-filing-and"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 8"
+  },
+  "rotation": {
+    "builds_this_cycle": 25,
+    "builds_until_retirement": 5,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
