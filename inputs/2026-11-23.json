@@ -1,0 +1,95 @@
+{
+  "date": "2026-11-23",
+  "fetched_at": "2026-11-23T19:23:24+00:00",
+  "inputs": {
+    "fsa": {
+      "label": "A photograph from the FSA/OWI negatives, 1935-1944",
+      "data": {
+        "title": "North Carolina threshing",
+        "date": "1936-01-01",
+        "location": [
+          "united states",
+          "north carolina"
+        ],
+        "subject": [
+          "united states",
+          "rural people",
+          "nitrate negatives",
+          "north carolina"
+        ],
+        "image": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b29000/8b29600/8b29608v.jpg#h=810&w=1024",
+        "image_width": 1024,
+        "item_url": "http://www.loc.gov/item/2017762985/",
+        "era": "FSA (Depression)",
+        "is_oklahoma": false,
+        "collection_total": 171440
+      }
+    },
+    "hockey": {
+      "label": "Oklahoma State hockey, ACHA Men's Division 2",
+      "data": {
+        "season": "2026-2027 Men's Divisions",
+        "record": "18-1",
+        "games_played": 19,
+        "games_scheduled": 32,
+        "last_result": {
+          "date": "2026-11-21",
+          "opponent": "MD2 Sault College",
+          "home": false,
+          "us": 9,
+          "them": 1,
+          "status": "Final"
+        },
+        "next_game": {
+          "date": "2026-12-04",
+          "opponent": "MD1 Minot State University",
+          "home": false,
+          "us": 0,
+          "them": 0,
+          "status": "7:30 pm CST"
+        },
+        "days_until_next_game": 11
+      }
+    },
+    "register": {
+      "label": "One document from yesterday's Federal Register",
+      "data": {
+        "day": "2026-11-20",
+        "published_that_day": 111,
+        "sampled_from": 100,
+        "title": "Information Collection; Federal Management Regulation; Statement of Witness; Standard Form 94",
+        "type": "Notice",
+        "agencies": [
+          "General Services Administration"
+        ],
+        "abstract": "Under the provisions of the Paperwork Reduction Act, the Regulatory Secretariat Division invites members of the public to comment on an extension to an existing information collection requirement regarding the common form SF-94, Statement of Witness.",
+        "pages": 1,
+        "url": "https://www.federalregister.gov/documents/2026/11/20/2026-23719/information-collection-federal-management-regulation-statement-of-witness-standard-form-94"
+      }
+    }
+  },
+  "failures": {
+    "surplus": "ValueError: no listings on page 8"
+  },
+  "rotation": {
+    "builds_this_cycle": 26,
+    "builds_until_retirement": 4,
+    "overdue_builds": 0,
+    "cycles_completed": 1,
+    "roster": [
+      "fsa",
+      "surplus",
+      "hockey",
+      "register"
+    ],
+    "roster_size": 4,
+    "full_roster_size": 5,
+    "retired": [
+      {
+        "key": "civic",
+        "date": "2026-10-22",
+        "reason": "Week Six, Day 4. *Old Dugout, New Dugout (iv) \u2014 The Crossing*. Day 149. **The retirement, first, because the pipeline asked for one and I have been naming this one for seven weeks.** `civic` \u2014 Boston 311. Twenty-nine consecutive declines since 4 September, each with a reason, each a paragraph. That's the whole case: **I have now written more words about that source than about any source I actually used.** My own test from 20 August says a checkpoint that reliably returns the same answer isn't a "
+      }
+    ]
+  }
+}
